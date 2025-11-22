@@ -2,6 +2,7 @@
 # Build output
 bin/
 obj/
+Migrations/
 
 # User-specific files
 *.user
@@ -9,6 +10,7 @@ obj/
 *.suo
 *.sln.docstates
 *.vscode/
+.editorconfig
 
 # IDE and tooling
 .vs/
@@ -56,7 +58,7 @@ out/
 # appsettings.json
 # appsettings.Development.json
 # appsettings.Production.json
-launchSettings.json
+# launchSettings.json
 *.deps.json
 *.runtimeconfig.json
 *.config
