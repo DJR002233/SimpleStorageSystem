@@ -7,6 +7,7 @@ using System;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
+using SimpleStorageSystem.AvaloniaDesktop.Handler;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 
@@ -53,6 +54,8 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         _createAccountVM = createAccountVM;
         _mainMenuVM = mainMenuVM;
 
+        ((RouterHandler)HostScreen).CurrentTransition = null;
+
         LoginCommand = ReactiveCommand.CreateFromTask(LoginButtonAsync);
         CreateAccountViewCommand = ReactiveCommand.Create(CreateAccountViewAsync);
     }
@@ -65,14 +68,17 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
+        LoadingOverlay.Show("Logging in...");
         Response res = await _authService.LoginAsync(Email, Password);
         
         if (res.StatusMessage == StatusMessage.Success)
         {
             Router.Navigate.Execute(_mainMenuVM());
+            LoadingOverlay.Close();
             return;
         }
 
+        LoadingOverlay.Close();
         await DialogBox.Show(res.Title, res.Message);
     }
 
@@ -80,7 +86,5 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     {
         Router.Navigate.Execute(_createAccountVM());
     }
-
-    //public async Task InitializeAsync() {}
-
+    
 }

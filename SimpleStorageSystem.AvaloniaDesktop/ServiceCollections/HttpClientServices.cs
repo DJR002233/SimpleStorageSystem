@@ -12,6 +12,7 @@ public static class HttpClientCollection
         var baseUri = new Uri("http://localhost:5144/api/");
 
         services.AddHttpClient<ISessionManager, SessionManager>(client => {client.BaseAddress = baseUri;})
+            .AddHttpMessageHandler<RefreshTokenHeaderHttpHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
         services.AddHttpClient<AuthService>( client => { client.BaseAddress = baseUri; })

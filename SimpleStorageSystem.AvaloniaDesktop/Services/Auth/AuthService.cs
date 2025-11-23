@@ -2,19 +2,21 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using AutoMapper;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 
 public class AuthService
 {
     private readonly HttpClient _httpClient;
+    private readonly IMapper _mapper;
     private readonly ISessionManager _sessionManager;
 
-    public AuthService(HttpClient httpClient, ISessionManager sessionManager)
+    public AuthService(HttpClient httpClient, IMapper mapper, ISessionManager sessionManager)
     {
         _httpClient = httpClient;
+        _mapper = mapper;
         _sessionManager = sessionManager;
     }
 
@@ -29,20 +31,19 @@ public class AuthService
             };
 
             var response = await _httpClient.PostAsJsonAsync("accounts/login", loginData);
-            
-            var content = await response.Content.ReadFromJsonAsync<ApiResponse<Session>>();
-            var res = content!.MapToResponse();
 
-            if (res.StatusMessage == StatusMessage.Success && res.Data is not null)
+            var res = await response.Content.ReadFromJsonAsync<Response<Session>>();
+
+            if (res!.StatusMessage == StatusMessage.Success && res.Data is not null)
                 await _sessionManager.SetSessionAsync(res.Data);
 
             return res;
         } catch (HttpRequestException ex)
         {
-            return ResponseMapper.MapHttpRequestException(ex);
+            return _mapper.Map<Response>(ex);
         } catch (Exception ex)
         {
-            return ResponseMapper.MapException(ex);
+            return _mapper.Map<Response>(ex);;
         }
 
     }
@@ -59,28 +60,34 @@ public class AuthService
             };
             var response = await _httpClient.PostAsJsonAsync("accounts/sign_up", AccountData);
 
-            var content = await response.Content.ReadFromJsonAsync<ApiResponse>();
+            var res = await response.Content.ReadFromJsonAsync<Response>();
 
-            return content!.MapToResponse();
+            return res!;
         } catch (HttpRequestException ex)
         {
-            return ResponseMapper.MapHttpRequestException(ex);
+            return _mapper.Map<Response>(ex);
         } catch (Exception ex)
         {
-            return ResponseMapper.MapException(ex);
+            return _mapper.Map<Response>(ex);
         }
 
     }
 
-    public async Task<Response> InitializeSession()
+    public async Task<Response> ResumeSessionAsync()
     {
         try
         {
-            await _sessionManager.InitializeSessionAsync();
-            Response res = new Response{};
+            Response res = await _sessionManager.InitializeSessionAsync();
+
             return res;
-        }catch (Exception ex){
-            return ResponseMapper.MapException(ex);
+        } catch (HttpRequestException ex)
+        {
+            return _mapper.Map<Response>(ex);
+        } catch (Exception ex)
+        {
+            return _mapper.Map<Response>(ex);
         }
+
     }
+    
 }

@@ -5,7 +5,7 @@ namespace SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 
 public interface ISessionManager
 {
-    Task<string?> GetAccessTokenAsync();
+    Task<Response<string?>> GetAccessTokenAsync();
     string? GetRefreshToken();
     Task<bool> SetSessionAsync(Session session);
     Task<Response> InitializeSessionAsync();

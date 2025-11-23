@@ -6,6 +6,7 @@ using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.Handler.HttpHandler;
+using SimpleStorageSystem.AvaloniaDesktop.AutoMapperProfiles;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ServiceCollections;
 
@@ -18,14 +19,16 @@ public static class BaseCollection
         else
             throw new PlatformNotSupportedException();
 
+        services.AddAutoMapper(typeof(ResponseProfile));
+
         services.AddSingleton<IScreen, RouterHandler>();
         services.AddSingleton<OnUnauthorizedHandler>();
         services.AddSingleton<LoadingOverlay>();
+        services.AddSingleton<Session>();
 
         services.AddTransient<HttpSocketExceptionHandler>();
         services.AddTransient<AccessTokenHeaderHttpHandler>();
         services.AddTransient<RefreshTokenHeaderHttpHandler>();
-        /**/
 
         return services;
     }

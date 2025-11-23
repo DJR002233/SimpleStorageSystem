@@ -1,22 +1,21 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Handler.HttpHandler;
 
 public class RefreshTokenHeaderHttpHandler : DelegatingHandler
 {
-    private readonly ISessionManager _sessionManager;
+    private readonly Session _session;
 
-    public RefreshTokenHeaderHttpHandler(SessionManager sessionManager)
+    public RefreshTokenHeaderHttpHandler(Session session)
     {
-        _sessionManager = sessionManager;
+        _session = session;
     }
     
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var refreshToken = _sessionManager.GetRefreshToken();
+        var refreshToken = _session.RefreshToken;
 
         if (!string.IsNullOrEmpty(refreshToken))
             request.Headers.Add("X-Refresh-Token", refreshToken);
