@@ -15,17 +15,15 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
 {
     #region IRoutableViewModel
     public string? UrlPathSegment => "LoginView";
-    public IScreen HostScreen { get; }
+    private readonly INavigation Navigation;
+    public IScreen HostScreen => Navigation;
     private RoutingState Router => HostScreen.Router;
     #endregion IRoutableViewModel
     
-    #region Services.Auth
+    #region Services
     public AuthService _authService;
-    #endregion Services.Auth
-
-    #region Services.Components
     public LoadingOverlay LoadingOverlay { get; }
-    #endregion Services.Components
+    #endregion Services
 
     #region VMs
     private readonly Func<MainMenuViewModel> _mainMenuVM;
@@ -44,17 +42,16 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     #endregion Properties
 
     public LoginViewModel(
-        IScreen screen, LoadingOverlay loadingOverlay, AuthService authService, 
+        INavigation screen,
+        AuthService authService, LoadingOverlay loadingOverlay,
         Func<MainMenuViewModel> mainMenuVM, Func<CreateAccountViewModel> createAccountVM
     )
     {
-        HostScreen = screen;
-        LoadingOverlay = loadingOverlay;
+        Navigation = screen;
         _authService = authService;
-        _createAccountVM = createAccountVM;
+        LoadingOverlay = loadingOverlay;
         _mainMenuVM = mainMenuVM;
-
-        ((RouterHandler)HostScreen).CurrentTransition = null;
+        _createAccountVM = createAccountVM;
 
         LoginCommand = ReactiveCommand.CreateFromTask(LoginButtonAsync);
         CreateAccountViewCommand = ReactiveCommand.Create(CreateAccountViewAsync);
@@ -73,7 +70,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         
         if (res.StatusMessage == StatusMessage.Success)
         {
-            Router.Navigate.Execute(_mainMenuVM());
+            Navigation.NavigateTo(_mainMenuVM());
             LoadingOverlay.Close();
             return;
         }
@@ -84,7 +81,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
 
     public void CreateAccountViewAsync()
     {
-        Router.Navigate.Execute(_createAccountVM());
+        Navigation.NavigateTo(_createAccountVM());
     }
     
 }

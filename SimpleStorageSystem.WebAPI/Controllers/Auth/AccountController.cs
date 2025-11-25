@@ -45,7 +45,7 @@ public class AccountsController : ControllerBase
         return Forbid();
     }
 
-    [HttpGet("renew_token")]
+    [HttpGet("renew_access_token")]
     public async Task<IActionResult> RenewToken([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
     {
         if (String.IsNullOrWhiteSpace(refreshToken))

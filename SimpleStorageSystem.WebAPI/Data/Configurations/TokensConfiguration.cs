@@ -26,6 +26,8 @@ public static class TokensConfiguration
             entity.Property(b => b.UserId).HasColumnName("user_id");
 
             entity.Property<uint>("xmin").HasColumnName("xmin").IsConcurrencyToken().ValueGeneratedOnAddOrUpdate();
+
+            entity.HasIndex(b => b.Token).IsUnique();
         });
     }
 }

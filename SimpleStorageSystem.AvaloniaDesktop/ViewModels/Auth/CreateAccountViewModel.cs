@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
+using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
@@ -13,16 +14,14 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
 {
     #region IRoutableViewModel
     public string? UrlPathSegment => "CreateAccountView";
-    public IScreen HostScreen { get; }
+    private readonly INavigation Navigation;
+    public IScreen HostScreen => Navigation;
     private RoutingState Router => HostScreen.Router;
     #endregion IRoutableViewModel
 
-    #region Services.Components
-    public LoadingOverlay LoadingOverlay { get; }
-    #endregion Services.Components
-
     #region Services
     private readonly AuthService _authService;
+    public LoadingOverlay LoadingOverlay { get; }
     #endregion Services
 
     #region VMs
@@ -42,13 +41,14 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
     #endregion Properties
 
     public CreateAccountViewModel(
-        IScreen screen, LoadingOverlay loadingOverlay, AuthService authService,
+        INavigation navigation,
+        AuthService authService, LoadingOverlay loadingOverlay,
         Func<LoginViewModel> loginVM
     )
     {
-        HostScreen = screen;
-        LoadingOverlay = loadingOverlay;
+        Navigation = navigation;
         _authService = authService;
+        LoadingOverlay = loadingOverlay;
         _loginVM = loginVM;
 
         CreateAccountCommand = ReactiveCommand.CreateFromTask(CreateAccountAsync);
@@ -81,7 +81,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
             LoadingOverlay.Close();
             await DialogBox.Show(res.StatusMessage.ToString(), 
                 "Account created successfully!\n\nClick Ok to automatically redirect to the login page...");
-            Router.Navigate.Execute(_loginVM());
+            Navigation.NavigateTo(_loginVM());
             return;
         }
 
@@ -91,7 +91,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
 
     public void Back()
     {
-        Router.Navigate.Execute(_loginVM());
+        Navigation.NavigateBack();
     }
     
 }

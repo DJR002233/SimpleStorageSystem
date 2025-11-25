@@ -2,7 +2,24 @@ using System;
 
 public class Session
 {
-    public string? AccessToken { get; set; }
+    private string? accessToken;
     public DateTime? Expiration { get; set; }
     public string? RefreshToken { get; set; }
+
+    public string? AccessToken
+    {
+        get
+        {
+            if (
+                Expiration is not null &&
+                !String.IsNullOrWhiteSpace(accessToken) &&
+                Expiration > DateTime.UtcNow &&
+                !String.IsNullOrWhiteSpace(RefreshToken)
+            )
+                return accessToken;
+            return null;
+        }
+
+        set => accessToken = value;
+    }
 }

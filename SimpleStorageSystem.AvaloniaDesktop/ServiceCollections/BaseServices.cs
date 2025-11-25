@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using SimpleStorageSystem.AvaloniaDesktop.Services.CredentialsStore;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.Handler.HttpHandler;
 using SimpleStorageSystem.AvaloniaDesktop.AutoMapperProfiles;
 
@@ -21,7 +20,6 @@ public static class BaseCollection
 
         services.AddAutoMapper(typeof(ResponseProfile));
 
-        services.AddSingleton<IScreen, RouterHandler>();
         services.AddSingleton<OnUnauthorizedHandler>();
         services.AddSingleton<LoadingOverlay>();
         services.AddSingleton<Session>();

@@ -2,7 +2,6 @@ using System.Reactive.Disposables;
 using Avalonia.Controls;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
-using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views;
@@ -22,9 +21,10 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         InitializeComponent();
         this.WhenActivated(disposables =>
         {
-            this.Bind(ViewModel, vm => vm.HostScreen.Router, v => v.RoutedViewHost.Router).DisposeWith(disposables);
-            // Unhandled exception. System.ArgumentException: Property 'Avalonia.Animation.IPageTransition CurrentTransition' is not defined for type 'ReactiveUI.IScreen' (Parameter 'property')
-            this.OneWayBind(ViewModel, vm => ((RouterHandler)vm.HostScreen).CurrentTransition, v => v.RoutedViewHost.PageTransition).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.Navigation.Router, v => v.RoutedViewHost.Router).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.Navigation.Transition, v => v.RoutedViewHost.PageTransition).DisposeWith(disposables);
+            // ViewModel!.HostScreen.Transition = new CrossFade {Duration = TimeSpan.FromMilliseconds(600)};
+            // Observable.FromAsync(ViewModel.Initialize).Subscribe().DisposeWith(disposables);
         });
     }
 }

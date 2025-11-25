@@ -73,6 +73,11 @@ public class AuthService
 
     }
 
+    public async Task<Response> LogoutAsync()
+    {
+        return new Response();
+    }
+
     public async Task<Response> ResumeSessionAsync()
     {
         try

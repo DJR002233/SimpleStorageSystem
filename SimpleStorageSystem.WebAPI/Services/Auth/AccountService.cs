@@ -97,9 +97,9 @@ public class AccountService
         string newRefreshToken = GenerateRefreshToken();
 
         rfToken.Revoked = true;
-        rfToken.ReplacedByToken = refreshToken;
+        rfToken.ReplacedByToken = newRefreshToken;
 
-        _context.Tokens.Add(new RefreshToken { Token = refreshToken, UserId = rfToken.UserId });
+        _context.Tokens.Add(new RefreshToken { Token = newRefreshToken, UserId = rfToken.UserId });
 
         JwtTokenModel accessToken = GenerateAccessToken(rfToken.UserId, rfToken.Account.Email);
 

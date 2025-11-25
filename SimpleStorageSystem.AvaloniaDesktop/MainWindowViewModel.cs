@@ -5,65 +5,68 @@ using System.Threading.Tasks;
 using Avalonia.Animation;
 using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
+using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
+using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels;
 
 public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
 {
-    #region IScreen
-    public IScreen HostScreen { get; }
-    private RoutingState Router => HostScreen.Router;
-    #endregion IScreen
+    #region INavigation
+    public INavigation Navigation { get; }
+    private RoutingState Router => Navigation.Router;
+    #endregion INavigation
 
-    #region Others
-    // private IPageTransition? _currentTransition;
-    // public IPageTransition? CurrentTransition
-    // {
-    //     get => _currentTransition;
-    //     set => this.RaiseAndSetIfChanged(ref _currentTransition, value);
-    // }
     public ViewModelActivator Activator { get; } = new();
-    #endregion Others
 
     #region Events
     private readonly OnUnauthorizedHandler _authEvent;
     #endregion Events
 
     private readonly AuthService _authService;
+
+    #region ViewModels
     private readonly LoginViewModel _loginVM;
+    private readonly MainMenuViewModel _mainMenuVM;
+    #endregion ViewModels
     
     public MainWindowViewModel(
-        IScreen screen, OnUnauthorizedHandler authEvent, AuthService authService,
-        LoginViewModel loginVM
+        INavigation navigation,
+        OnUnauthorizedHandler authEvent,
+        AuthService authService,
+        LoginViewModel loginVM, MainMenuViewModel mainMenuVM
     )
     {
-        HostScreen = screen;
+        Navigation = navigation;
         _authEvent = authEvent;
+        _authEvent.OnUnauthorized += HandleUnauthorized;
         _authService = authService;
         _loginVM = loginVM;
-
-        ((RouterHandler)HostScreen).CurrentTransition = null;
-
-        _authEvent.OnUnauthorized += HandleUnauthorized;
+        _mainMenuVM = mainMenuVM;
 
         this.WhenActivated(disposables =>
         {
-            ((RouterHandler)HostScreen).CurrentTransition = new CrossFade {Duration = TimeSpan.FromMilliseconds(600)};
             Observable.FromAsync(Initialize).Subscribe().DisposeWith(disposables);
         });
     }
 
     public async Task Initialize()
     {
-        await Task.Delay(3000);
-        await Router.Navigate.Execute(_loginVM);
+        Response res = await _authService.ResumeSessionAsync();
+        if (res.StatusMessage == StatusMessage.Success)
+        {
+            Navigation.NavigateTo(_mainMenuVM, new CrossFade {Duration = TimeSpan.FromMilliseconds(600)});
+            return;
+        }
+
+        Navigation.NavigateTo(_loginVM, new CrossFade {Duration = TimeSpan.FromMilliseconds(600)});
     }
 
     private void HandleUnauthorized()
     {
-        Router.Navigate.Execute(_loginVM);
+        Navigation.NavigateTo(_loginVM);
     }
 
 }

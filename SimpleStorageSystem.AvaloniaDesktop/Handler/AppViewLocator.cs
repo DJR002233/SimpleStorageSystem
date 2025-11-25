@@ -7,6 +7,7 @@ namespace SimpleStorageSystem.AvaloniaDesktop.Handler;
 
 public class AppViewLocator : IViewLocator
 {
+    // private readonly INavigation Navigation;
     private string? currentView = null;
     public IViewFor? ResolveView<T>(T viewModel, string? contract = null)
     {
@@ -27,6 +28,7 @@ public class AppViewLocator : IViewLocator
         var view = (Control)Activator.CreateInstance(viewType)!;
         view.DataContext = viewModel;
         currentView = viewTypeName;
+        // Navigation.Transition = null;
         return (IViewFor)view;/**/
         /*
         return viewModel switch
@@ -36,4 +38,10 @@ public class AppViewLocator : IViewLocator
             _ => throw new ArgumentOutOfRangeException(nameof(viewModel))
         };/**/
     }
+
+    // public AppViewLocator()
+    // {
+    //     Navigation = App.Services.GetRequiredService<INavigation>();
+    // }
+
 }

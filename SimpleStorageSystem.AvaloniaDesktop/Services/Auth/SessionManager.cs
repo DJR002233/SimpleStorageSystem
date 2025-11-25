@@ -29,7 +29,7 @@ public class SessionManager : ISessionManager
 
     public async Task<Response<string?>> GetAccessTokenAsync()
     {
-        if (_session.Expiration > DateTime.UtcNow && !String.IsNullOrWhiteSpace(_session.AccessToken))
+        if (!String.IsNullOrWhiteSpace(_session.AccessToken))
             return new Response<string?>
             {
                 StatusMessage = StatusMessage.Success,
@@ -83,7 +83,7 @@ public class SessionManager : ISessionManager
     public async Task<Response> InitializeSessionAsync()
     {
         string? refreshToken = await _credentialsStore.GetAsync();
-
+        
         if (String.IsNullOrWhiteSpace(refreshToken))
             return new Response { StatusMessage = StatusMessage.Unauthenticated };
 
