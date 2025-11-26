@@ -3,22 +3,22 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
+using SimpleStorageSystem.AvaloniaDesktop.Services.TokenStore;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Handler.HttpHandler;
 
 public class AccessTokenHeaderHttpHandler : DelegatingHandler
 {
-    private readonly ISessionManager _sessionManager;
+    private readonly ITokenStore _tokenStore;
 
-    public AccessTokenHeaderHttpHandler(ISessionManager sessionManager)
+    public AccessTokenHeaderHttpHandler(ITokenStore tokenStore)
     {
-        _sessionManager = sessionManager;
+        _tokenStore = tokenStore;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        Response<string?> accessToken = await _sessionManager.GetAccessTokenAsync();
+        Response<string?> accessToken = await _tokenStore.GetAccessTokenAsync();
 
         if (!string.IsNullOrEmpty(accessToken.Data))
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Data);

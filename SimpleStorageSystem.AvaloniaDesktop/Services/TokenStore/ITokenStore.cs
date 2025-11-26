@@ -2,11 +2,11 @@ using System.Threading.Tasks;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Models.Auth;
 
-namespace SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
+namespace SimpleStorageSystem.AvaloniaDesktop.Services.TokenStore;
 
-public interface ISessionManager
+public interface ITokenStore
 {
+    string? RefreshToken { get; set; }
     Task<bool> SetSessionAsync(Session session);
-    Task<Response> InitializeSessionAsync();
-    Task<Response> TerminateSessionAsync();
+    Task<Response<string?>> GetAccessTokenAsync();
 }

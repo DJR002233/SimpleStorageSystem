@@ -1,5 +1,7 @@
 using System;
 
+namespace SimpleStorageSystem.AvaloniaDesktop.Models.Auth;
+
 public class Session
 {
     private string? accessToken;
@@ -22,4 +24,5 @@ public class Session
 
         set => accessToken = value;
     }
+
 }

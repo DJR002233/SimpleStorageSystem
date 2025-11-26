@@ -54,6 +54,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
 
     public async Task Initialize()
     {
+        await Task.Delay(1000);
         Response res = await _authService.ResumeSessionAsync();
         if (res.StatusMessage == StatusMessage.Success)
         {

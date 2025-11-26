@@ -13,12 +13,12 @@ public class Response
     public string? Message { get; set; }
     public Dictionary<string, string[]>? Errors { get; set; }
     public string? TraceId { get; set; }
-    public object? Data { get; set; }
+    // public object? Data { get; set; }
 }
 
 public class Response<T> : Response
 {
-    public new T? Data { get; set; }
+    public T? Data { get; set; }
 }
 
 public enum StatusMessage

@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 
-namespace SimpleStorageSystem.AvaloniaDesktop.Services.CredentialsStore;
+namespace SimpleStorageSystem.AvaloniaDesktop.Services.CredentialStore;
 
-public class LinuxSecretToolStore : ICredentialsStore
+public class LinuxSecretToolStore : ICredentialStore
 {
     private const string AttrLabel = "RefreshToken";
     private const string AttrApp = "SimpleStorageApp";
@@ -92,7 +92,7 @@ public class LinuxSecretToolStore : ICredentialsStore
             throw new PlatformNotSupportedException();
 
         if (!IsSecretToolAvailable())
-            return;
+            throw new InvalidOperationException("secret-tool is not installed on this machine.");
 
         var psi = new ProcessStartInfo("secret-tool",
             $"clear app {AttrApp}")
@@ -105,4 +105,5 @@ public class LinuxSecretToolStore : ICredentialsStore
         using var p = Process.Start(psi) ?? throw new InvalidOperationException("failed to start secret-tool");
         await p.WaitForExitAsync();
     }
+    
 }

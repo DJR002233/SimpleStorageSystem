@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
+using SimpleStorageSystem.AvaloniaDesktop.Models.Auth;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 
@@ -11,14 +12,8 @@ public class AuthService
 {
     private readonly HttpClient _httpClient;
     private readonly IMapper _mapper;
-    private readonly ISessionManager _sessionManager;
 
-    public AuthService(HttpClient httpClient, IMapper mapper, ISessionManager sessionManager)
-    {
-        _httpClient = httpClient;
-        _mapper = mapper;
-        _sessionManager = sessionManager;
-    }
+    private readonly ISessionManager _sessionManager;
 
     public async Task<Response> LoginAsync(string email, string password)
     {
@@ -75,7 +70,8 @@ public class AuthService
 
     public async Task<Response> LogoutAsync()
     {
-        return new Response();
+        Response res = await _sessionManager.TerminateSessionAsync();
+        return res;
     }
 
     public async Task<Response> ResumeSessionAsync()
@@ -95,4 +91,15 @@ public class AuthService
 
     }
     
+    public AuthService(
+        HttpClient httpClient, IMapper mapper,
+        ISessionManager sessionManager
+    )
+    {
+        _httpClient = httpClient;
+        _mapper = mapper;
+
+        _sessionManager = sessionManager;
+    }
+
 }

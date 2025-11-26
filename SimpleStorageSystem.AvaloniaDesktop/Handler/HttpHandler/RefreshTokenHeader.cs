@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using SimpleStorageSystem.AvaloniaDesktop.Models.Auth;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Handler.HttpHandler;
 
