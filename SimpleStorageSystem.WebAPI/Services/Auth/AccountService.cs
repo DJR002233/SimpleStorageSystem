@@ -3,13 +3,13 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using SimpleStorageSystem.WebAPI.Data;
-using SimpleStorageSystem.WebAPI.Models.Auth;
 using SimpleStorageSystem.WebAPI.Requests.Auth;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SimpleStorageSystem.WebAPI.Models;
 using SimpleStorageSystem.WebAPI.Services.Helper;
+using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Services.Auth;
 
@@ -39,7 +39,7 @@ public class AccountService
             return invalidResponse;
 
         string dbToken = GenerateRefreshToken();
-        JwtTokenModel jwtToken = GenerateAccessToken(account.UserId!.Value, account.Email);
+        JwtTokenModel jwtToken = GenerateAccessToken(account.UserId!.Value, account.Email!);
 
         account.Token.Add(new RefreshToken { Token = dbToken, UserId = account.UserId!.Value });
         await _context.SaveChangesAsync();
@@ -101,7 +101,7 @@ public class AccountService
 
         _context.Tokens.Add(new RefreshToken { Token = newRefreshToken, UserId = rfToken.UserId });
 
-        JwtTokenModel accessToken = GenerateAccessToken(rfToken.UserId, rfToken.Account.Email);
+        JwtTokenModel accessToken = GenerateAccessToken(rfToken.UserId, rfToken.Account.Email!);
 
         try
         {

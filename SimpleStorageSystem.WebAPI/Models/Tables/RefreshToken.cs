@@ -1,9 +1,9 @@
-namespace SimpleStorageSystem.WebAPI.Models.Auth;
+namespace SimpleStorageSystem.WebAPI.Models.Tables;
 
 public class RefreshToken
 {
     public long Id { get; set; }
-    public required string Token { get; set; }
+    public string? Token { get; set; }
     public DateTime ExpiresAt { get; set; } = DateTime.UtcNow.AddDays(7);
     //public bool Used { get; set; } = false;
     public bool Revoked { get; set; } = false;

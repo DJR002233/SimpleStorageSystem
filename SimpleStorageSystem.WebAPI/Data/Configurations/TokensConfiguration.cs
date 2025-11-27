@@ -1,5 +1,5 @@
-using SimpleStorageSystem.WebAPI.Models.Auth;
 using Microsoft.EntityFrameworkCore;
+using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Data.Configurations;
 
@@ -9,21 +9,21 @@ public static class TokensConfiguration
     {
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.ToTable("tokens");
+            entity.ToTable("refresh_tokens");
             entity.HasKey(b => b.Id);
-            entity.Property(b => b.Id).HasColumnName("id");
-            entity.Property(b => b.Token).HasColumnName("token").HasColumnType("Text");
-            entity.Property(b => b.ExpiresAt).HasColumnName("expires_at");
-            entity.Property(b => b.Revoked).HasColumnName("revoked");
-            entity.Property(b => b.CreatedAt).HasColumnName("created_at");
+            entity.Property(b => b.Id).HasColumnName("id").IsRequired();
+            entity.Property(b => b.Token).HasColumnName("token").HasColumnType("Text").IsRequired();
+            entity.Property(b => b.ExpiresAt).HasColumnName("expires_at").IsRequired();
+            entity.Property(b => b.Revoked).HasColumnName("revoked").IsRequired();
+            entity.Property(b => b.CreatedAt).HasColumnName("created_at").IsRequired();
             entity.Property(b => b.ReplacedByToken).HasColumnName("replaced_by_token");
 
+            entity.Property(b => b.UserId).HasColumnName("user_id");
             entity.HasOne(a => a.Account)
                 .WithMany(b => b.Token)
                 .HasForeignKey(b => b.UserId)
                 .HasPrincipalKey(a => a.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
-            entity.Property(b => b.UserId).HasColumnName("user_id");
 
             entity.Property<uint>("xmin").HasColumnName("xmin").IsConcurrencyToken().ValueGeneratedOnAddOrUpdate();
 

@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using SimpleStorageSystem.WebAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using SimpleStorageSystem.WebAPI.Requests.Auth;
-using SimpleStorageSystem.WebAPI.Models.Auth;
 using SimpleStorageSystem.WebAPI.Services.Auth;
 using SimpleStorageSystem.WebAPI.Services.Helper;
+using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Controllers;
 
@@ -35,7 +35,7 @@ public class AccountsController : ControllerBase
         if (request.AnyPropertyIsNullorWhiteSpace())
             return BadRequest(CreateResponse.Failed("Missing Values!"));
 
-        AccountInformation account = new AccountInformation { Username = request.Username, Email = request.Email!, Password = request.Password! };
+        AccountInformation account = new AccountInformation { Username = request.Username, Email = request.Email, Password = request.Password };
 
         Response res = await _accountService.CreateAccountAsync(account);
 

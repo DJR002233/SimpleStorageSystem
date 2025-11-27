@@ -1,7 +1,7 @@
 using SimpleStorageSystem.WebAPI.Data.Configurations;
 using Microsoft.EntityFrameworkCore;
-using SimpleStorageSystem.WebAPI.Models.Auth;
 using Microsoft.EntityFrameworkCore.Design;
+using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Data;
 

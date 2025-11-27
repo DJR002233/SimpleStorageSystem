@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SimpleStorageSystem.WebAPI.Data;
-using SimpleStorageSystem.WebAPI.Models.Auth;
+using SimpleStorageSystem.WebAPI.Models.Tables;
 using SimpleStorageSystem.WebAPI.Services.Auth;
 
 namespace SimpleStorageSystem.WebAPI;
