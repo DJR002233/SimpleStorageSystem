@@ -7,6 +7,7 @@ using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
+using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 
@@ -63,6 +64,8 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
         }
 
         Navigation.NavigateTo(_loginVM, new CrossFade {Duration = TimeSpan.FromMilliseconds(600)});
+        if (res.StatusMessage == StatusMessage.Error)
+            await DialogBox.Show("Connection Error!", res.Message);
     }
 
     private void HandleUnauthorized()

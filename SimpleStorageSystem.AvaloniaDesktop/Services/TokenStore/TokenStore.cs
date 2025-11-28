@@ -60,10 +60,14 @@ public class TokenStore : ITokenStore
             return res;
         } catch (HttpRequestException ex)
         {
-            return _mapper.Map<Response<string?>>(ex);
+            Response<string?> res = _mapper.Map<Response<string?>>(ex);
+            res.StatusMessage = StatusMessage.Error;
+            return res;
         } catch (Exception ex)
         {
-            return _mapper.Map<Response<string?>>(ex);
+            Response<string?> res = _mapper.Map<Response<string?>>(ex);
+            res.StatusMessage = StatusMessage.Error;
+            return res;
         }
     }
 

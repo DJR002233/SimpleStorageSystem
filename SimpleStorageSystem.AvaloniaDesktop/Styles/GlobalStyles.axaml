@@ -1,0 +1,18 @@
+<Styles xmlns="https://github.com/avaloniaui"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Style Selector="MenuItem.warning">
+        <Setter Property="Background" Value="LightCoral"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Style Selector="^:pointerover /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="Red"/>
+            <!-- <Setter Property="Foreground" Value="White"/> -->
+        </Style>
+        <!-- <Style Selector="^:pointerover /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="White"/>
+        </Style> -->
+        <Style Selector="^:pressed /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="FireBrick"/>
+            <!-- <Setter Property="Foreground" Value="White"/> -->
+        </Style>
+    </Style>
+</Styles>

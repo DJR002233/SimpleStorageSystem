@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
@@ -32,6 +33,9 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
     #endregion Commands
 
+    #region Properties
+    
+    #endregion Properties
     public MainMenuViewModel(
         INavigation navigation,
         AuthService authService, LoadingOverlay loadingOverlay,
