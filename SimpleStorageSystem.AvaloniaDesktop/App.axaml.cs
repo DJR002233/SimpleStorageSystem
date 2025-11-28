@@ -29,6 +29,7 @@ public partial class App : Application
             services.InitializeBaseServices();
             services.InitializeHttpClientServices();
             services.InitializeViewModelServices();
+            services.InitializeMainMenuPagesServices();
 
             services.AddTransient(sp => new MainWindow
             {

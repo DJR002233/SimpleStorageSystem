@@ -6,11 +6,26 @@
     d:DesignWidth="800" d:DesignHeight="450"
     x:Class="SimpleStorageSystem.AvaloniaDesktop.Views.Main.MainMenuView"
     x:DataType="vm:MainMenuViewModel"
-
-    xmlns:rxui="http://reactiveui.net"
     
     xmlns:components="using:SimpleStorageSystem.AvaloniaDesktop.Views.Components"
-    xmlns:v="using:SimpleStorageSystem.AvaloniaDesktop.Views.Main">
+    xmlns:pagevm="using:SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages"
+    xmlns:pagev="using:SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages">
+    
+    <UserControl.DataTemplates>
+        <DataTemplate DataType="pagevm:AccountPageViewModel">
+            <pagev:AccountPageView/>
+        </DataTemplate>
+        <DataTemplate DataType="pagevm:ActivityPageViewModel">
+            <pagev:ActivityPageView/>
+        </DataTemplate>
+        <DataTemplate DataType="pagevm:SettingsPageViewModel">
+            <pagev:SettingsPageView/>
+        </DataTemplate>
+        <DataTemplate DataType="pagevm:StorageDevicesPageViewModel">
+            <pagev:StorageDevicesPageView/>
+        </DataTemplate>
+    </UserControl.DataTemplates>
+
     <Grid ColumnDefinitions="*" RowDefinitions="*">
         <DockPanel>
             <Grid RowDefinitions="*" ColumnDefinitions="*, Auto"
@@ -44,17 +59,7 @@
                     </Button.Flyout>
                 </Button>
             </Grid>
-            <rxui:RoutedViewHost x:Name="MainMenuPageViewHost">
-                <rxui:RoutedViewHost.DefaultContent>
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" >
-                        <TextBlock Text="Main Menu" FontSize="24"
-                        Grid.ColumnSpan="2" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                    </StackPanel>
-                </rxui:RoutedViewHost.DefaultContent>
-                <rxui:RoutedViewHost.ViewLocator>
-                    <v:MainMenuPageSwapper />
-                </rxui:RoutedViewHost.ViewLocator>
-            </rxui:RoutedViewHost>
+            <ContentControl x:Name="PageView" />
         </DockPanel>
         <components:LoadingOverlay x:Name="LoadingOverlay"/>
     </Grid>

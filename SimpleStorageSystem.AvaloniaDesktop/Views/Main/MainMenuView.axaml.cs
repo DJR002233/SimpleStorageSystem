@@ -12,10 +12,14 @@ public partial class MainMenuView : ReactiveUserControl<MainMenuViewModel>
         InitializeComponent();
         this.WhenActivated(disposables =>
         {
-            // this.BindCommand(ViewModel, vm => vm.ToggleMenuCommand, v => v.SettingsButton).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowAccountPageCommand, v => v.AccountMenuItem).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowActivityPageCommand, v => v.ActivityMenuItem).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowSettingsPageCommand, v => v.SettingsMenuItem).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowStorageDevicesPageCommand, v => v.StorageDevicesMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutMenuItem).DisposeWith(disposables);
 
-            // this.Bind(ViewModel, vm => vm.MenuIsVisible, v => v.MenuPanel.IsVisible).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.CurrentPage, v => v.PageView.Content).DisposeWith(disposables);
+
             this.Bind(ViewModel, vm => vm.LoadingOverlay.IsVisible, v => v.LoadingOverlay.Visible).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.LoadingOverlay.Message, v => v.LoadingOverlay.Message).DisposeWith(disposables);
         });
