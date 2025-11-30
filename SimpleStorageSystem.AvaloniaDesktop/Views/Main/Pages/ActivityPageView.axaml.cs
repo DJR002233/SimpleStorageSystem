@@ -12,7 +12,7 @@ public partial class ActivityPageView : ReactiveUserControl<ActivityPageViewMode
         InitializeComponent();
         this.WhenActivated(disposables =>
         {
-            this.BindCommand(ViewModel, vm => vm.ShowLoading, v => v.ShowLoading).DisposeWith(disposables);
+            // this.BindCommand(ViewModel, vm => vm.ShowLoading, v => v.ShowLoading).DisposeWith(disposables);
 
             // this.Bind(ViewModel, vm => vm.LoadingOverlay.IsVisible, v => v.LoadingOverlay.Visible).DisposeWith(disposables);
             // this.Bind(ViewModel, vm => vm.LoadingOverlay.Message, v => v.LoadingOverlay.Message).DisposeWith(disposables);

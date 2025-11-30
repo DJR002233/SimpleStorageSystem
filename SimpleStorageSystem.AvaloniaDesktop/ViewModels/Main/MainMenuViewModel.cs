@@ -18,7 +18,6 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     public string? UrlPathSegment => "MainMenuView";
     private readonly INavigation Navigation;
     public IScreen HostScreen => Navigation;
-    private RoutingState Router => HostScreen.Router;
     #endregion IRoutableViewModel
 
     #region Services
@@ -43,7 +42,8 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     #endregion Commands
 
     #region Properties
-    [Reactive] public ReactiveObject CurrentPage { get; set; }
+    [Reactive] public string? PageTitle { get; set; }
+    [Reactive] public ReactiveObject? CurrentPage { get; set; }
     #endregion Properties
     
     public MainMenuViewModel(
@@ -63,7 +63,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
         _storageDevicesPageVM = storageDevicesPageVM;
         _loginVM = loginVM;
 
-        CurrentPage = _activityPageVM;
+        NavigateToActivityPage();
 
         ShowAccountPageCommand = ReactiveCommand.Create(NavigateToAccountPage);
         ShowActivityPageCommand = ReactiveCommand.Create(NavigateToActivityPage);
@@ -75,21 +75,25 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     public void NavigateToAccountPage()
     {
         CurrentPage = _accountPageVM;
+        PageTitle = "Account";
     }
 
     public void NavigateToActivityPage()
     {
         CurrentPage = _activityPageVM;
+        PageTitle = "Activity";
     }
 
     public void NavigateToSettingsPage()
     {
         CurrentPage = _settingsPageVM;
+        PageTitle = "Settings";
     }
 
     public void NavigateToStorageDevicesPage()
     {
         CurrentPage = _storageDevicesPageVM;
+        PageTitle = "Storage Devices";
     }
 
     public async Task Logout()

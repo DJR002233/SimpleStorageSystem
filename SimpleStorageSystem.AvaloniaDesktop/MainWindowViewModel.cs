@@ -17,7 +17,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
 {
     #region INavigation
     public INavigation Navigation { get; }
-    private RoutingState Router => Navigation.Router;
+    // private RoutingState Router => Navigation.Router;
     #endregion INavigation
 
     public ViewModelActivator Activator { get; } = new();

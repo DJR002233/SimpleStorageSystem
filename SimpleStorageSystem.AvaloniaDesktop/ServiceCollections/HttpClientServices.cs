@@ -3,6 +3,7 @@ using System;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.Handler.HttpHandler;
 using SimpleStorageSystem.AvaloniaDesktop.Services.TokenStore;
+using SimpleStorageSystem.AvaloniaDesktop.Services.Main;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ServiceCollections;
 
@@ -24,7 +25,10 @@ public static class HttpClientCollection
         services.AddHttpClient<AuthService>( client => { client.BaseAddress = baseUri; })
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
+        services.AddHttpClient<AccountService>( client => { client.BaseAddress = baseUri; })
+            .AddHttpMessageHandler<AccessTokenHeaderHttpHandler>()
+            .AddHttpMessageHandler<HttpSocketExceptionHandler>();
+
         return services;
     }
 }
-        

@@ -2,6 +2,7 @@ using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
+using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
@@ -16,7 +17,6 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
     public string? UrlPathSegment => "CreateAccountView";
     private readonly INavigation Navigation;
     public IScreen HostScreen => Navigation;
-    private RoutingState Router => HostScreen.Router;
     #endregion IRoutableViewModel
 
     #region Services
@@ -36,8 +36,8 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
     #region Properties
     public string? Username { get; set; }
     public string? Email { get; set; }
-    public string? Password { get; set; }
-    public string? RePassword { get; set; }
+    [Reactive] public string? Password { get; set; }
+    [Reactive] public string? RePassword { get; set; }
     #endregion Properties
 
     public CreateAccountViewModel(
@@ -76,17 +76,19 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
 
         LoadingOverlay.Show("Creating account...");
         Response res = await _authService.CreateAccountAsync(Username!, Email!, Password!);
+        LoadingOverlay.Close();
+        RePassword = "";
+        
         if (res.StatusMessage == StatusMessage.Success)
         {
-            LoadingOverlay.Close();
+            Password = "";
             await DialogBox.Show(res.StatusMessage.ToString(), 
                 "Account created successfully!\n\nClick Ok to automatically redirect to the login page...");
             Navigation.NavigateTo(_loginVM());
             return;
         }
 
-        LoadingOverlay.Close();
-        await DialogBox.Show(res.StatusMessage.ToString(), res.Message);
+        await DialogBox.Show(res.Title, res.Message);
     }
 
     public void Back()

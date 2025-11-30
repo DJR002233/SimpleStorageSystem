@@ -15,7 +15,7 @@ public class TokenStore : ITokenStore
     private readonly HttpClient _httpClient;
     private readonly IMapper _mapper;
     private readonly ICredentialStore _credentialStore;
-    
+
     private readonly Session _session;
 
     public string? RefreshToken { get => _session.RefreshToken; set => _session.RefreshToken = value; }
@@ -24,7 +24,7 @@ public class TokenStore : ITokenStore
     {
         if (ModelChecker.AnyPropertyIsNullorWhiteSpace(session))
             return false;
-        
+
         _session.AccessToken = session.AccessToken;
         _session.Expiration = session.Expiration;
         _session.RefreshToken = session.RefreshToken;
@@ -34,6 +34,13 @@ public class TokenStore : ITokenStore
         return true;
     }
 
+    public void ClearSession()
+    {
+        _session.AccessToken = null;
+        _session.Expiration = null;
+        _session.RefreshToken = null;
+    }
+    
     public async Task<Response<string?>> GetAccessTokenAsync()
     {
         if (String.IsNullOrWhiteSpace(_session.RefreshToken))
@@ -44,31 +51,18 @@ public class TokenStore : ITokenStore
                 StatusMessage = StatusMessage.Success,
                 Data = _session.AccessToken
             };
-        
-        try
-        {
-            var response = await _httpClient.GetFromJsonAsync<Response<Session>>("accounts/renew_access_token");
-            Response<string?> res = _mapper.Map<Response<string?>>(response);
 
-            if (response!.StatusMessage == StatusMessage.Success && response.Data is not null)
-            {
-                await SetSessionAsync(response.Data);
-                res.Data = response.Data.AccessToken;
-                return res;
-            }
-            
-            return res;
-        } catch (HttpRequestException ex)
+        var response = await _httpClient.GetFromJsonAsync<Response<Session>>("accounts/renew_access_token");
+        Response<string?> res = _mapper.Map<Response<string?>>(response);
+
+        if (response!.StatusMessage == StatusMessage.Success && response.Data is not null)
         {
-            Response<string?> res = _mapper.Map<Response<string?>>(ex);
-            res.StatusMessage = StatusMessage.Error;
-            return res;
-        } catch (Exception ex)
-        {
-            Response<string?> res = _mapper.Map<Response<string?>>(ex);
-            res.StatusMessage = StatusMessage.Error;
+            await SetSessionAsync(response.Data);
+            res.Data = response.Data.AccessToken;
             return res;
         }
+
+        return res;
     }
 
     public TokenStore(

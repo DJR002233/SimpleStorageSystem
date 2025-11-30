@@ -14,7 +14,7 @@ public class ActivityPageViewModel : ReactiveObject
     #endregion VMs
     
     #region Commands
-    public ReactiveCommand<Unit, Unit> ShowLoading;
+    // public ReactiveCommand<Unit, Unit> ShowLoading;
     #endregion Commands
 
     #region Properties
@@ -27,12 +27,12 @@ public class ActivityPageViewModel : ReactiveObject
     {
         LoadingOverlay = loadingOverlay;
 
-        ShowLoading = ReactiveCommand.Create(ShowLoadingOverlay);
+        // ShowLoading = ReactiveCommand.Create(ShowLoadingOverlay);
     }
 
-    public void ShowLoadingOverlay()
-    {
-        LoadingOverlay.Show("Loading from ActivityPageViewModel");
-    }
+    // public void ShowLoadingOverlay()
+    // {
+    //     LoadingOverlay.Show("Loading from ActivityPageViewModel");
+    // }
     
 }

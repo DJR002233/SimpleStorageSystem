@@ -25,8 +25,11 @@ public class SessionManager : ISessionManager
 
     public async Task<Response> InitializeSessionAsync()
     {
+        if (!String.IsNullOrWhiteSpace(_tokenStore.RefreshToken))
+            _tokenStore.ClearSession();
+
         string? refreshToken = await _credentialStore.GetAsync();
-        
+
         if (String.IsNullOrWhiteSpace(refreshToken))
             return new Response { StatusMessage = StatusMessage.Unauthenticated };
 
@@ -39,24 +42,12 @@ public class SessionManager : ISessionManager
 
     public async Task<Response> TerminateSessionAsync()
     {
-        try
-        {
-            var res = await _httpClient.GetFromJsonAsync<Response>("accounts/logout");
+        var res = await _httpClient.GetFromJsonAsync<Response>("accounts/logout");
 
-            if (res!.StatusMessage == StatusMessage.Success || res.StatusMessage == StatusMessage.Failed)
-            {
-                await _tokenStore.SetSessionAsync(new Session {});
-                await _credentialStore.DeleteAsync();
-            }
+        _tokenStore.ClearSession();
+        await _credentialStore.DeleteAsync();
 
-            return res;
-        } catch (HttpRequestException ex)
-        {
-            return _mapper.Map<Response>(ex);
-        } catch (Exception ex)
-        {
-            return _mapper.Map<Response>(ex);;
-        }
+        return res!;
     }
 
     public SessionManager(

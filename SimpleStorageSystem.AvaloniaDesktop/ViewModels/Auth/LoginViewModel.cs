@@ -8,6 +8,7 @@ using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 using SimpleStorageSystem.AvaloniaDesktop.Models;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
+using ReactiveUI.Fody.Helpers;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 
@@ -17,7 +18,6 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     public string? UrlPathSegment => "LoginView";
     private readonly INavigation Navigation;
     public IScreen HostScreen => Navigation;
-    private RoutingState Router => HostScreen.Router;
     #endregion IRoutableViewModel
     
     #region Services
@@ -37,7 +37,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
 
     #region Properties
     public string? Email { get; set; }
-    public string? Password { get; set; }
+    [Reactive] public string? Password { get; set; }
 
     #endregion Properties
 
@@ -67,15 +67,15 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
 
         LoadingOverlay.Show("Logging in...");
         Response res = await _authService.LoginAsync(Email, Password);
+        LoadingOverlay.Close();
+        Password = "";
         
         if (res.StatusMessage == StatusMessage.Success)
         {
             Navigation.NavigateTo(_mainMenuVM());
-            LoadingOverlay.Close();
             return;
         }
 
-        LoadingOverlay.Close();
         await DialogBox.Show(res.Title, res.Message);
     }
 
