@@ -1,5 +1,3 @@
-using System;
-
 namespace SimpleStorageSystem.Daemon.Models;
 
 public class Session
