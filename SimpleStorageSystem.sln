@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{46EFD654-AA27-4294-A9C9-67B3BE8B7CCE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleStorageSystem.AvaloniaDesktop", "src\SimpleStorageSystem.AvaloniaDesktop\SimpleStorageSystem.AvaloniaDesktop.csproj", "{670D92AF-B270-4913-BEFC-4CBD6BB267C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleStorageSystem.WebAPI", "src\SimpleStorageSystem.WebAPI\SimpleStorageSystem.WebAPI.csproj", "{CB9E063A-7346-4C2E-B4EE-01C2764756E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleStorageSystem.Daemon", "src\SimpleStorageSystem.Daemon\SimpleStorageSystem.Daemon.csproj", "{104B0B2E-002D-4745-969A-7F24DB119B63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimpleStorageSystem.Shared", "src\SimpleStorageSystem.Shared\SimpleStorageSystem.Shared.csproj", "{4C85357D-1230-4C84-9621-18E67339983E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{670D92AF-B270-4913-BEFC-4CBD6BB267C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{670D92AF-B270-4913-BEFC-4CBD6BB267C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{670D92AF-B270-4913-BEFC-4CBD6BB267C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{670D92AF-B270-4913-BEFC-4CBD6BB267C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB9E063A-7346-4C2E-B4EE-01C2764756E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB9E063A-7346-4C2E-B4EE-01C2764756E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB9E063A-7346-4C2E-B4EE-01C2764756E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB9E063A-7346-4C2E-B4EE-01C2764756E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{104B0B2E-002D-4745-969A-7F24DB119B63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{104B0B2E-002D-4745-969A-7F24DB119B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{104B0B2E-002D-4745-969A-7F24DB119B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{104B0B2E-002D-4745-969A-7F24DB119B63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C85357D-1230-4C84-9621-18E67339983E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C85357D-1230-4C84-9621-18E67339983E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C85357D-1230-4C84-9621-18E67339983E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C85357D-1230-4C84-9621-18E67339983E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{670D92AF-B270-4913-BEFC-4CBD6BB267C5} = {46EFD654-AA27-4294-A9C9-67B3BE8B7CCE}
+		{CB9E063A-7346-4C2E-B4EE-01C2764756E0} = {46EFD654-AA27-4294-A9C9-67B3BE8B7CCE}
+		{104B0B2E-002D-4745-969A-7F24DB119B63} = {46EFD654-AA27-4294-A9C9-67B3BE8B7CCE}
+		{4C85357D-1230-4C84-9621-18E67339983E} = {46EFD654-AA27-4294-A9C9-67B3BE8B7CCE}
+	EndGlobalSection
+EndGlobal

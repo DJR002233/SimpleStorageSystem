@@ -1,0 +1,127 @@
+using System.Net.Http.Json;
+using AutoMapper;
+using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
+using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Models;
+using SimpleStorageSystem.Shared.Services.Helper;
+
+namespace SimpleStorageSystem.Daemon.Services.Auth.TokenStore;
+
+public class TokenStore : ITokenStore
+{
+    private readonly IHttpClientFactory _httpFactory;
+    private readonly IMapper _mapper;
+
+    private readonly object _sync = new();
+    private readonly SemaphoreSlim _lock = new(1, 1);
+
+    private readonly ICredentialStore _credentialStore;
+    private readonly AccessToken _accessToken;
+
+    public TokenStore(
+        IHttpClientFactory httpFactory, IMapper mapper,
+        ICredentialStore credentialStore
+    )
+    {
+        _httpFactory = httpFactory;
+        _mapper = mapper;
+
+        _credentialStore = credentialStore;
+        _accessToken = new AccessToken { };
+    }
+
+    public async Task<ApiResponse<string?>> GetTokenAsync()
+    {
+        await _lock.WaitAsync();
+        if (
+            !String.IsNullOrWhiteSpace(_accessToken.Token) &&
+            _accessToken.Expiration is not null &&
+            _accessToken.Expiration >= DateTime.UtcNow.AddMinutes(3)
+        )
+            return CreateApiResponse.Success<string?>(_accessToken.Token);
+
+        ApiResponse apiResponse = await RefreshAccessTokenAsync();
+        if (apiResponse.StatusMessage == ApiStatus.Success)
+            return CreateApiResponse.Success<string?>(_accessToken.Token);
+
+        return _mapper.Map<ApiResponse<string?>>(apiResponse);
+    }
+
+    public async Task<ApiResponse<AccessToken>> GetAccessTokenAsync()
+    {
+        await _lock.WaitAsync();
+        if (
+            !String.IsNullOrWhiteSpace(_accessToken.Token) &&
+            _accessToken.Expiration is not null
+        )
+            return CreateApiResponse.Success(_accessToken);
+
+        ApiResponse apiResponse = await RefreshAccessTokenAsync();
+        if (apiResponse.StatusMessage == ApiStatus.Success)
+            return CreateApiResponse.Success(_accessToken);
+
+        return _mapper.Map<ApiResponse<AccessToken>>(apiResponse);
+    }
+
+    public void SetAccessToken(AccessToken accessToken)
+    {
+        lock (_sync)
+        {
+            if (ModelChecker.AnyPropertyIsNullorWhiteSpace(accessToken))
+                throw new Exception("Access token is invalid!");
+
+            _accessToken.SetNew(accessToken);
+        }
+    }
+
+    public void ClearAccessToken()
+    {
+        lock (_sync)
+        {
+            _accessToken.Clear();
+        }
+    }
+
+    public async Task<ApiResponse> RefreshAccessTokenAsync()
+    {
+        await _lock.WaitAsync();
+        if (String.IsNullOrWhiteSpace(await _credentialStore.GetAsync()))
+            return CreateApiResponse.Unauthenticated();
+
+        var client = _httpFactory.CreateClient("TokenClient");
+        var apiResponse = await client.GetFromJsonAsync<ApiResponse<Session>>("auth/refresh_session");
+
+        if (apiResponse!.StatusMessage == ApiStatus.Success && apiResponse.Data is not null)
+        {
+            await _credentialStore.StoreAsync(apiResponse.Data.RefreshToken!);
+            _accessToken.SetNew(apiResponse.Data.AccessToken!);
+        }
+
+        return apiResponse;
+    }
+
+    public bool HasToken()
+    {
+        lock (_sync)
+        {
+            if (!String.IsNullOrWhiteSpace(_accessToken.Token))
+                return true;
+            return false;
+        }
+    }
+
+    public bool HasActiveToken()
+    {
+        lock (_sync)
+        {
+            if (
+                !String.IsNullOrWhiteSpace(_accessToken.Token) &&
+                _accessToken.Expiration is not null &&
+                _accessToken.Expiration > DateTime.UtcNow
+            )
+                return true;
+            return false;
+        }
+    }
+
+}
