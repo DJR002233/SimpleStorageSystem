@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using ReactiveUI;
 using System.Reactive;
 using System;
@@ -10,6 +9,7 @@ using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.AvaloniaDesktop.Client;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 
@@ -22,7 +22,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     #endregion IRoutableViewModel
     
     #region Services
-    public AuthService _authService;
+    public AuthClient _authClient;
     public LoadingOverlay LoadingOverlay { get; }
     #endregion Services
 
@@ -44,12 +44,12 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
 
     public LoginViewModel(
         INavigation screen,
-        AuthService authService, LoadingOverlay loadingOverlay,
+        AuthClient authClient, LoadingOverlay loadingOverlay,
         Func<MainMenuViewModel> mainMenuVM, Func<CreateAccountViewModel> createAccountVM
     )
     {
         Navigation = screen;
-        _authService = authService;
+        _authClient = authClient;
         LoadingOverlay = loadingOverlay;
         _mainMenuVM = mainMenuVM;
         _createAccountVM = createAccountVM;
@@ -67,7 +67,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         }
 
         LoadingOverlay.Show("Logging in...");
-        IpcResponse ipcResponse = await _authService.LoginAsync(Email, Password);
+        IpcResponse ipcResponse = await _authClient.RequestLoginAsync(Email, Password);
         LoadingOverlay.Close();
         Password = "";
         

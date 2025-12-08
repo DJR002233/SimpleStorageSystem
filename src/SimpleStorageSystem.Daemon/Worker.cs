@@ -1,15 +1,15 @@
+using SimpleStorageSystem.Daemon.Services;
 using SimpleStorageSystem.Daemon.Services.Auth;
-using SimpleStorageSystem.Daemon.Services.PipeServers;
 
 namespace SimpleStorageSystem.Daemon;
 
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly AuthPipeServer _authPipe;
+    private readonly PipeServer _authPipe;
     private readonly AuthService _authService;
 
-    public Worker(ILogger<Worker> logger, AuthPipeServer authPipe, AuthService authService)
+    public Worker(ILogger<Worker> logger, PipeServer authPipe, AuthService authService)
     {
         _logger = logger;
         _authPipe = authPipe;

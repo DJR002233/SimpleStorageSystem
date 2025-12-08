@@ -1,8 +1,8 @@
 using Microsoft.Extensions.DependencyInjection;
+using SimpleStorageSystem.AvaloniaDesktop.Client;
+using SimpleStorageSystem.AvaloniaDesktop.Client.Main;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Main;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ServiceCollections;
 
@@ -18,8 +18,8 @@ public static class BaseCollection
         services.AddSingleton<OnUnauthorizedHandler>();
         services.AddSingleton<LoadingOverlay>();
 
-        services.AddTransient<AuthService>();
-        services.AddTransient<AccountService>();
+        services.AddTransient<AuthClient>();
+        services.AddTransient<AccountClient>();
 
         return services;
     }

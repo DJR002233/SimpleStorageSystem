@@ -29,64 +29,116 @@ public class AuthService
 
     public async Task<ApiResponse> LoginAsync(string email, string password)
     {
-        var data = new LoginRequest
+        try
         {
-            Email = email,
-            Password = password
-        };
+            var data = new LoginRequest
+            {
+                Email = email,
+                Password = password
+            };
 
-        var client = _httpFactory.CreateClient("BasicClient");
-        var httpResponse = await client.PostAsJsonAsync("auth/login", data);
+            var httpClient = _httpFactory.CreateClient("BasicClient");
+            var httpResponse = await httpClient.PostAsJsonAsync("auth/login", data);
 
-        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<Session>>();
+            var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<Session>>();
 
-        if (apiResponse!.StatusMessage == ApiStatus.Success && apiResponse.Data is not null)
-        {
-            await _credentialStore.StoreAsync(apiResponse.Data.RefreshToken!);
-            _tokenStore.SetAccessToken(apiResponse.Data.AccessToken!);
+            if (apiResponse!.StatusMessage == ApiStatus.Success && apiResponse.Data is not null)
+            {
+                await _credentialStore.StoreAsync(apiResponse.Data.RefreshToken!);
+                _tokenStore.SetAccessToken(apiResponse.Data.AccessToken!);
+            }
+
+            return apiResponse;
         }
-
-        return apiResponse;
+        catch (HttpRequestException ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
+        catch (Exception ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
 
     }
 
     public async Task<ApiResponse> CreateAccountAsync(string username, string email, string password)
     {
-        var data = new CreateAccountRequest
+        try
         {
-            Username = username,
-            Email = email,
-            Password = password,
-        };
+            var data = new CreateAccountRequest
+            {
+                Username = username,
+                Email = email,
+                Password = password,
+            };
 
-        var client = _httpFactory.CreateClient("BasicClient");
-        var httpResponse = await client.PostAsJsonAsync("auth/sign_up", data);
+            var httpClient = _httpFactory.CreateClient("BasicClient");
+            var httpResponse = await httpClient.PostAsJsonAsync("auth/sign_up", data);
 
-        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse>();
+            var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse>();
 
-        return apiResponse!;
+            return apiResponse!;
+        }
+        catch (HttpRequestException ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
+        catch (Exception ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
 
     }
 
     public async Task<ApiResponse> LogoutAsync()
     {
-        var client = _httpFactory.CreateClient("AuthenticatedClient");
-        var apiResponse = await client.GetFromJsonAsync<ApiResponse>("auth/logout");
-
-        if (apiResponse!.StatusMessage == ApiStatus.Success)
+        try
         {
-            await _credentialStore.DeleteAsync();
-            _tokenStore.ClearAccessToken();
-        }
+            var httpClient = _httpFactory.CreateClient("LogoutClient");
+            var apiResponse = await httpClient.GetFromJsonAsync<ApiResponse>("auth/logout");
+            if (apiResponse!.StatusMessage == ApiStatus.Success)
+            {
+                await _credentialStore.DeleteAsync();
+                _tokenStore.ClearAccessToken();
+            }
 
-        return apiResponse!;
+            return apiResponse!;
+        }
+        catch (HttpRequestException ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
+        catch (Exception ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
 
     }
 
     public async Task<ApiResponse> InitializeSessionAsync()
     {
-        ApiResponse apiResponse = await _tokenStore.RefreshAccessTokenAsync();
-        return apiResponse;
+        try
+        {
+            ApiResponse apiResponse = await _tokenStore.RefreshAccessTokenAsync();
+            return apiResponse;
+        }
+        catch (HttpRequestException ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
+        catch (Exception ex)
+        {
+            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            return apiResponse;
+        }
+
     }
 
     public bool HasSession()

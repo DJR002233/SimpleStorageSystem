@@ -13,9 +13,6 @@ public class RefreshTokenHeaderHttpHandler : DelegatingHandler
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (!String.Equals(request.RequestUri!.AbsolutePath, "/api/auth/refresh_session"))
-            return await base.SendAsync(request, cancellationToken);
-
         string? refreshToken = await _credentialStore.GetAsync();
         if (!String.IsNullOrWhiteSpace(refreshToken))
             request.Headers.Add("X-Refresh-Token", refreshToken);

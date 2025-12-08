@@ -3,8 +3,8 @@ using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using SimpleStorageSystem.AvaloniaDesktop.Client;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.Shared.Enums;
@@ -21,7 +21,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
     #endregion IRoutableViewModel
 
     #region Services
-    private readonly AuthService _authService;
+    private readonly AuthClient _authClient;
     public LoadingOverlay LoadingOverlay { get; }
     #endregion Services
 
@@ -43,12 +43,12 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
 
     public CreateAccountViewModel(
         INavigation navigation,
-        AuthService authService, LoadingOverlay loadingOverlay,
+        AuthClient authClient, LoadingOverlay loadingOverlay,
         Func<LoginViewModel> loginVM
     )
     {
         Navigation = navigation;
-        _authService = authService;
+        _authClient = authClient;
         LoadingOverlay = loadingOverlay;
         _loginVM = loginVM;
 
@@ -76,7 +76,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
         }
 
         LoadingOverlay.Show("Creating account...");
-        IpcResponse ipcResponse = await _authService.CreateAccountAsync(Username!, Email!, Password!);
+        IpcResponse ipcResponse = await _authClient.RequestCreateAccountAsync(Username!, Email!, Password!);
         LoadingOverlay.Close();
         RePassword = "";
         

@@ -3,8 +3,8 @@ using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using SimpleStorageSystem.AvaloniaDesktop.Client;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
@@ -23,7 +23,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     #endregion IRoutableViewModel
 
     #region Services
-    private readonly AuthService _authService;
+    private readonly AuthClient _authClient;
     public LoadingOverlay LoadingOverlay { get; }
     #endregion Services
 
@@ -50,13 +50,13 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     
     public MainMenuViewModel(
         INavigation navigation,
-        AuthService authService, LoadingOverlay loadingOverlay,
+        AuthClient authClient, LoadingOverlay loadingOverlay,
         AccountPageViewModel accountPageVM, ActivityPageViewModel activityPageVM, SettingsPageViewModel settingsPageVM, StorageDevicesPageViewModel storageDevicesPageVM, Func<LoginViewModel> loginVM
     )
     {
         Navigation = navigation;
 
-        _authService = authService;
+        _authClient = authClient;
         LoadingOverlay = loadingOverlay;
 
         _accountPageVM = accountPageVM;
@@ -100,7 +100,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
 
     public async Task Logout()
     {
-        IpcResponse ipcResponse = await _authService.LogoutAsync();
+        IpcResponse ipcResponse = await _authClient.RequestLogoutAsync();
 
         if (ipcResponse.Status == IpcStatus.OK)
         {

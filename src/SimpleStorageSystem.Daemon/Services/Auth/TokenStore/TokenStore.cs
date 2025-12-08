@@ -13,7 +13,7 @@ public class TokenStore : ITokenStore
     private readonly IMapper _mapper;
 
     private readonly object _sync = new();
-    private readonly SemaphoreSlim _lock = new(1, 1);
+    // private readonly SemaphoreSlim _lock = new(1, 1);
 
     private readonly ICredentialStore _credentialStore;
     private readonly AccessToken _accessToken;
@@ -32,27 +32,20 @@ public class TokenStore : ITokenStore
 
     public async Task<ApiResponse<string?>> GetTokenAsync()
     {
-        await _lock.WaitAsync();
-        if (
-            !String.IsNullOrWhiteSpace(_accessToken.Token) &&
-            _accessToken.Expiration is not null &&
-            _accessToken.Expiration >= DateTime.UtcNow.AddMinutes(3)
-        )
-            return CreateApiResponse.Success<string?>(_accessToken.Token);
-
-        ApiResponse apiResponse = await RefreshAccessTokenAsync();
-        if (apiResponse.StatusMessage == ApiStatus.Success)
-            return CreateApiResponse.Success<string?>(_accessToken.Token);
-
-        return _mapper.Map<ApiResponse<string?>>(apiResponse);
+        // await _lock.WaitAsync();
+        ApiResponse<AccessToken> accessToken = await GetAccessTokenAsync();
+        ApiResponse<string?> res = _mapper.Map<ApiResponse<string?>>(accessToken);
+        res.Data = accessToken.Data?.Token;
+        return res;
     }
 
     public async Task<ApiResponse<AccessToken>> GetAccessTokenAsync()
     {
-        await _lock.WaitAsync();
+        // await _lock.WaitAsync();
         if (
             !String.IsNullOrWhiteSpace(_accessToken.Token) &&
-            _accessToken.Expiration is not null
+            _accessToken.Expiration is not null &&
+            _accessToken.Expiration >= DateTime.UtcNow.AddMinutes(3)
         )
             return CreateApiResponse.Success(_accessToken);
 
@@ -84,7 +77,7 @@ public class TokenStore : ITokenStore
 
     public async Task<ApiResponse> RefreshAccessTokenAsync()
     {
-        await _lock.WaitAsync();
+        // await _lock.WaitAsync();
         if (String.IsNullOrWhiteSpace(await _credentialStore.GetAsync()))
             return CreateApiResponse.Unauthenticated();
 

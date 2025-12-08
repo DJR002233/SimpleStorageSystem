@@ -15,6 +15,11 @@ public static class HttpClientCollection
             .AddHttpMessageHandler<RefreshTokenHeaderHttpHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
+        services.AddHttpClient("LogoutClient", client => {client.BaseAddress = baseUri;})
+            .AddHttpMessageHandler<AccessTokenHeaderHttpHandler>()
+            .AddHttpMessageHandler<RefreshTokenHeaderHttpHandler>()
+            .AddHttpMessageHandler<HttpSocketExceptionHandler>();
+
         services.AddHttpClient("AuthenticatedClient", client => { client.BaseAddress = baseUri; })
             .AddHttpMessageHandler<AccessTokenHeaderHttpHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();

@@ -8,6 +8,7 @@ builder.Services.AddHostedService<Worker>();
 
 builder.Services.InitializeBaseServices();
 builder.Services.InitializeHttpClientServices();
+builder.Services.InitializeIpcCommandHandlerServices();
 
 var host = builder.Build();
 host.Run();

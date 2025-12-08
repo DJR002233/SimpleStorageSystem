@@ -1,0 +1,26 @@
+using SimpleStorageSystem.Daemon.Services.Auth;
+using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Models;
+using SimpleStorageSystem.Shared.Requests;
+
+namespace SimpleStorageSystem.Daemon.Commands.Auth;
+
+public class LogoutCommand : IIpcCommandHandler
+{
+    private readonly AuthService _authService;
+    public IpcCommand Command => IpcCommand.LOGOUT;
+
+    public LogoutCommand(AuthService authService)
+    {
+        _authService = authService;
+    }
+
+    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    {
+        ApiResponse apiResponse = await _authService.LogoutAsync();
+
+        bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
+        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.OK : IpcStatus.FAILED, apiResponse.Message);
+    }
+
+}

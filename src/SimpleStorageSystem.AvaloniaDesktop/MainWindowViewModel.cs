@@ -4,8 +4,8 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using Avalonia.Animation;
 using ReactiveUI;
+using SimpleStorageSystem.AvaloniaDesktop.Client;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 using SimpleStorageSystem.Shared.Enums;
@@ -26,7 +26,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
     private readonly OnUnauthorizedHandler _authEvent;
     #endregion Events
 
-    private readonly AuthService _authService;
+    private readonly AuthClient _authClient;
 
     #region ViewModels
     private readonly LoginViewModel _loginVM;
@@ -36,14 +36,14 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
     public MainWindowViewModel(
         INavigation navigation,
         OnUnauthorizedHandler authEvent,
-        AuthService authService,
+        AuthClient authClient,
         LoginViewModel loginVM, MainMenuViewModel mainMenuVM
     )
     {
         Navigation = navigation;
         _authEvent = authEvent;
         _authEvent.OnUnauthorized += HandleUnauthorized;
-        _authService = authService;
+        _authClient = authClient;
         _loginVM = loginVM;
         _mainMenuVM = mainMenuVM;
 
@@ -56,7 +56,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
     public async Task Initialize()
     {
         await Task.Delay(1000);
-        IpcResponse res = await _authService.HasSessionAsync();
+        IpcResponse res = await _authClient.RequestHasSessionAsync();
         if (res.Status == IpcStatus.OK)
         {
             Navigation.NavigateTo(_mainMenuVM, new CrossFade {Duration = TimeSpan.FromMilliseconds(600)});

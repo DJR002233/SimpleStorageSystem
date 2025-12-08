@@ -1,17 +1,58 @@
-using System.Text.Json;
 using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Models;
 
 namespace SimpleStorageSystem.Shared.Requests;
 
 public class IpcRequest
 {
-    public IpcType Type { get; set; }
-    public IpcCommand Command { get; set; }
-    public string? RequestId { get; set; } = Guid.NewGuid().ToString();
-    public JsonElement Payload { get; set; }
+    public IpcType? Type { get; set; } = IpcType.Request;
+    public IpcCommand? Command { get; set; }
+    public required string RequestId { get; set; }// = Guid.NewGuid().ToString();
+    public object? Payload { get; set; }
+
+    public static IpcRequest Create(IpcCommand ipcCommand, object? payload = null)
+    {
+        return new IpcRequest
+        {
+            Command = ipcCommand,
+            RequestId = Guid.NewGuid().ToString(),
+            Payload = payload,
+        };
+    }
+
+    public static IpcRequest CreateFromIpcResponse(IpcResponse response, IpcCommand ipcCommand, object? payload = null)
+    {
+        return new IpcRequest
+        {
+            Command = ipcCommand,
+            RequestId = response.RequestId,
+            Payload = payload,
+        };
+    }
 }
 
 public class IpcRequest<T> : IpcRequest
 {
     public new T? Payload { get; set; }
+
+    public static IpcRequest<T> Create(IpcCommand ipcCommand, T payload)
+    {
+        return new IpcRequest<T>
+        {
+            Command = ipcCommand,
+            RequestId = Guid.NewGuid().ToString(),
+            Payload = payload,
+        };
+    }
+
+    public static IpcRequest<T> CreateFromIpcResponse(IpcResponse response, IpcCommand ipcCommand, T payload)
+    {
+        return new IpcRequest<T>
+        {
+            Command = ipcCommand,
+            RequestId = response.RequestId,
+            Payload = payload,
+        };
+    }
+
 }

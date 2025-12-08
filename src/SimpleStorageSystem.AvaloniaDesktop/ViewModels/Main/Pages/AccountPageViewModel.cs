@@ -2,8 +2,11 @@ using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using SimpleStorageSystem.AvaloniaDesktop.Client.Main;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Main;
+using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
+using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Models;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
@@ -11,7 +14,7 @@ public class AccountPageViewModel : ReactiveObject
 {
     #region Services
     public LoadingOverlay LoadingOverlay { get; }
-    private readonly AccountService _accountService;
+    private readonly AccountClient _accountClient;
     #endregion Services
     
     #region Commands
@@ -27,11 +30,11 @@ public class AccountPageViewModel : ReactiveObject
 
     public AccountPageViewModel(
         LoadingOverlay loadingOverlay,
-        AccountService accountService
+        AccountClient accountClient
     )
     {
         LoadingOverlay = loadingOverlay;
-        _accountService = accountService;
+        _accountClient = accountClient;
 
         SaveCommand = ReactiveCommand.CreateFromTask(Save);
     }
@@ -39,8 +42,13 @@ public class AccountPageViewModel : ReactiveObject
     public async Task Save()
     {
         LoadingOverlay.Show("Delaying Task for 3 sec.");
-        await Task.Delay(3000);
+        IpcResponse res = await _accountClient.RequestUpdateAccountInformation(Username, Email, Password);
         LoadingOverlay.Close();
+
+        if (res.Status == IpcStatus.OK)
+            await DialogBox.Show(res.Status.ToString(), "Information updated successfully!");
+
+        await DialogBox.Show(res.Status.ToString(), res.Payload);
     }
     
 }

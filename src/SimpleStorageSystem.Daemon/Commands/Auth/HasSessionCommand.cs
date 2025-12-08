@@ -1,0 +1,29 @@
+using SimpleStorageSystem.Daemon.Services.Auth;
+using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Models;
+using SimpleStorageSystem.Shared.Requests;
+
+namespace SimpleStorageSystem.Daemon.Commands.Auth;
+
+public class HasSessionCommand : IIpcCommandHandler
+{
+    private readonly AuthService _authService;
+    public IpcCommand Command => IpcCommand.HAS_SESSION;
+
+    public HasSessionCommand(AuthService authService)
+    {
+        _authService = authService;
+    }
+
+    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    {
+        var response = await Task.Run(() =>
+        {
+            bool hasSession = _authService.HasSession();
+            return IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.OK : IpcStatus.FAILED);
+        });
+
+        return response;
+        
+    }
+}

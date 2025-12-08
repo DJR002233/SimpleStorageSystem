@@ -1,4 +1,4 @@
-namespace SimpleStorageSystem.Shared.DTOs;
+namespace SimpleStorageSystem.Shared.Requests;
 
 public class UpdateAccountRequest
 {

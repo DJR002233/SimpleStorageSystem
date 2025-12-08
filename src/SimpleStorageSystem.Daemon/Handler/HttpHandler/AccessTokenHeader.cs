@@ -16,7 +16,6 @@ public class AccessTokenHeaderHttpHandler : DelegatingHandler
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         ApiResponse<string?> accessToken = await _tokenStore.GetTokenAsync();
-
         if (!String.IsNullOrEmpty(accessToken.Data))
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken.Data);
 

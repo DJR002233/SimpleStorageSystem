@@ -1,0 +1,27 @@
+using SimpleStorageSystem.Daemon.Commands;
+using SimpleStorageSystem.Daemon.Commands.Auth;
+using SimpleStorageSystem.Daemon.Commands.Main.Account;
+using SimpleStorageSystem.Daemon.Services;
+
+namespace SimpleStorageSystem.Daemon.ServiceCollections;
+
+public static class IpcCommandHandlerCollection
+{
+    public static IServiceCollection InitializeIpcCommandHandlerServices(this IServiceCollection services)
+    {
+        #region Auth CommandHandlers
+        services.AddTransient<IIpcCommandHandler, LoginCommand>();
+        services.AddTransient<IIpcCommandHandler, CreateAccountCommand>();
+        services.AddTransient<IIpcCommandHandler, HasSessionCommand>();
+        services.AddTransient<IIpcCommandHandler, LogoutCommand>();
+        #endregion Auth CommandHandlers
+
+        #region Account CommandHandlers
+        services.AddTransient<IIpcCommandHandler, UpdateAccountCommand>();
+        #endregion Account CommandHandlers
+
+        services.AddTransient<IpcCommandRouter>();
+        
+        return services;
+    }
+}
