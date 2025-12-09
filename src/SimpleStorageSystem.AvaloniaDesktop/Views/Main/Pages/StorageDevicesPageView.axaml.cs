@@ -12,7 +12,7 @@ public partial class StorageDevicesPageView : ReactiveUserControl<StorageDevices
         InitializeComponent();
         this.WhenActivated(disposables =>
         {
-            // this.BindCommand(ViewModel, vm => vm.ToggleMenuCommand, v => v.SettingsButton).DisposeWith(disposables);
+            // this.OneWayBind(ViewModel, vm => vm.Items, v => v.StorageDeviceItemsRepeater.ItemsSource).DisposeWith(disposables);
         });
 
     }

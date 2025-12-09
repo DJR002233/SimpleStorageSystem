@@ -1,10 +1,11 @@
 
-using SimpleStorageSystem.WebAPI;
+using SimpleStorageSystem.WebAPI.ServiceCollections;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //builder.Services.AddOpenApi();
-builder.Services.InitializeServices(builder.Configuration);
+builder.Services.InitializeRequiredServices(builder.Configuration);
+builder.Services.InitializeBaseServices();
 
 var app = builder.Build();
 if (app.Environment.IsDevelopment())

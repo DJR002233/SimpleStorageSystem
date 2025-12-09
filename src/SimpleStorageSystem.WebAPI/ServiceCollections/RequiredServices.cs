@@ -1,21 +1,14 @@
 using System.Text;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SimpleStorageSystem.WebAPI.Data;
-using SimpleStorageSystem.WebAPI.Models.Tables;
-using SimpleStorageSystem.WebAPI.Services.Auth;
 
-namespace SimpleStorageSystem.WebAPI;
+namespace SimpleStorageSystem.WebAPI.ServiceCollections;
 
-public static class ServiceCollectionExtensions
+public static class RequiredCollection
 {
-    public static IServiceCollection InitializeServices(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection InitializeRequiredServices(this IServiceCollection services, IConfiguration configuration)
     {
-        //services.AddAutoMapper(typeof(Program));
-        services.AddScoped<AccountService>();
-        services.AddScoped<PasswordHasher<AccountInformation>>();
-
         services.AddDbContext<MyDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
@@ -23,6 +16,7 @@ public static class ServiceCollectionExtensions
                 {
                     npgsqlOptions.MigrationsHistoryTable("__EFMigrationsHistory", "main");
                 }));
+
         var jwtSettings = configuration.GetSection("Jwt");
         services.AddAuthentication("Bearer")
             .AddJwtBearer("Bearer", options =>

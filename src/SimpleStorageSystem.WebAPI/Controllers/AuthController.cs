@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using SimpleStorageSystem.WebAPI.Services.Auth;
 using SimpleStorageSystem.WebAPI.Models.Tables;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.WebAPI.Services;
 using SimpleStorageSystem.Shared.Services.Helper;
 
 namespace SimpleStorageSystem.WebAPI.Controllers;
@@ -13,21 +13,32 @@ namespace SimpleStorageSystem.WebAPI.Controllers;
 [Route("api/[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly AccountService _accountService;
-    public AuthController(AccountService accountService)
+    private readonly AuthService _authService;
+    public AuthController(AuthService authService)
     {
-        _accountService = accountService;
+        _authService = authService;
     }
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         // if (request.AnyPropertyIsNullorWhiteSpace())
         //     return Unauthorized(CreateApiResponse.Failed("Invalid Credentials!"));
-        ApiResponse<Session> res = await _accountService.LoginAccountAsync(request);
-        if (res.StatusMessage == ApiStatus.Success && !String.IsNullOrWhiteSpace(res?.Data?.ToString()))
-            return Ok(res);
 
-        return Unauthorized(res);
+        try
+        {
+            ApiResponse<Session> res = await _authService.LoginAccountAsync(request);
+
+            if (res.StatusMessage == ApiStatus.Success && !String.IsNullOrWhiteSpace(res?.Data?.ToString()))
+                return Ok(res);
+
+            return Unauthorized(res);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return Problem(ex.Message);
+        }
+
     }
 
     [HttpPost("sign_up")]
@@ -36,44 +47,65 @@ public class AuthController : ControllerBase
         // if (request.AnyPropertyIsNullorWhiteSpace())
         //     return BadRequest(CreateApiResponse.Failed("Missing Values!"));
 
-        AccountInformation account = new AccountInformation { Username = request.Username, Email = request.Email, Password = request.Password };
+        try
+        {
+            AccountInformation account = new AccountInformation { Username = request.Username, Email = request.Email, Password = request.Password };
 
-        ApiResponse res = await _accountService.CreateAccountAsync(account);
+            ApiResponse res = await _authService.CreateAccountAsync(account);
 
-        if (res.StatusMessage == ApiStatus.Success) return Ok(res);
-        else if (res.StatusMessage == ApiStatus.Failed) return Conflict(res);
+            if (res.StatusMessage == ApiStatus.Success) return Ok(res);
+            else if (res.StatusMessage == ApiStatus.Failed) return Conflict(res);
 
-        return Forbid();
+            return Forbid(res.Message!);
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
+
     }
 
     [HttpGet("refresh_session")]
     public async Task<IActionResult> RenewToken([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
     {
-        if (String.IsNullOrWhiteSpace(refreshToken))
-            return BadRequest(new { Message = "Missing Token Header" });
-        //return Ok(new { StatusMessage = "Error", Message = refreshToken });
-        //int accountId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
-        ApiResponse<Session> res = await _accountService.GetAccessTokenAsync(refreshToken);
-        //Console.WriteLine(res.Message);
-        //return Ok(res);
-        //Thread.Sleep(10000);
-        if (res.StatusMessage == ApiStatus.Success)
-            return Ok(res);
+        try
+        {
+            if (String.IsNullOrWhiteSpace(refreshToken))
+                return BadRequest(CreateApiResponse.Failed("Missing Token Header"));
 
-        return Unauthorized(res);
+            ApiResponse<Session> res = await _authService.GetAccessTokenAsync(refreshToken);
+
+            if (res.StatusMessage == ApiStatus.Success) return Ok(res);
+
+            return Unauthorized(res);
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
+
     }
 
     [Authorize]
     [HttpGet("logout")]
     public async Task<IActionResult> Logout([FromHeader(Name = "X-Refresh-Token")] string? refreshToken)
     {
-        if (String.IsNullOrWhiteSpace(refreshToken))
-            return BadRequest(new { Message = "Missing Token Header" });
-        ApiResponse res = await _accountService.ClearTokenAsync(refreshToken);
-        if (res.StatusMessage == ApiStatus.Success)
-            return Ok(res);
+        try
+        {
+            if (String.IsNullOrWhiteSpace(refreshToken))
+                return BadRequest(CreateApiResponse.Failed("Missing Token Header"));
 
-        return Unauthorized(res);/**/
+            ApiResponse res = await _authService.ClearTokenAsync(refreshToken);
+
+            if (res.StatusMessage == ApiStatus.Success) return Ok(res);
+
+            return Unauthorized(res);/**/
+        }
+        catch (Exception ex)
+        {
+            return Problem(ex.Message);
+        }
+
     }
 
 }

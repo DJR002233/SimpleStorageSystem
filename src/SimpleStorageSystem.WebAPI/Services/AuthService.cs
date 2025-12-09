@@ -6,22 +6,20 @@ using SimpleStorageSystem.WebAPI.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using SimpleStorageSystem.WebAPI.Models;
 using SimpleStorageSystem.WebAPI.Models.Tables;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Services.Helper;
-using SimpleStorageSystem.Shared.Enums;
 
-namespace SimpleStorageSystem.WebAPI.Services.Auth;
+namespace SimpleStorageSystem.WebAPI.Services;
 
-public class AccountService
+public class AuthService
 {
     private readonly MyDbContext _context;
     private IConfiguration _configuration;
     private PasswordHasher<AccountInformation> _passwordHasher;
 
-    public AccountService(MyDbContext context, IConfiguration configuration, PasswordHasher<AccountInformation> passwordHasher)
+    public AuthService(MyDbContext context, IConfiguration configuration, PasswordHasher<AccountInformation> passwordHasher)
     {
         _context = context;
         _configuration = configuration;
@@ -41,9 +39,9 @@ public class AccountService
             return invalidResponse;
 
         string dbToken = GenerateRefreshToken();
-        AccessToken jwtToken = GenerateAccessToken(account.UserId!.Value, account.Email!);
+        AccessToken jwtToken = GenerateAccessToken(account.UserId.Value, account.Email!);
 
-        account.Token.Add(new RefreshToken { Token = dbToken, UserId = account.UserId!.Value });
+        account.Token.Add(new RefreshToken { Token = dbToken, UserId = account.UserId.Value });
         await _context.SaveChangesAsync();
 
         return CreateApiResponse.Success(
@@ -63,7 +61,7 @@ public class AccountService
     {
         bool isDisabled = false;
         if(isDisabled)
-            return CreateApiResponse.Failed("Account creation is disabled");
+            return CreateApiResponse.Unauthorized("Account creation is disabled");
             
         user.Password = _passwordHasher.HashPassword(user, user.Password!);
         bool emailExists = await _context.Accounts.AnyAsync(b => b.Email == user.Email);
@@ -77,7 +75,7 @@ public class AccountService
         if (rowsAffected > 0)
             return CreateApiResponse.Success("Account Created!");
 
-        return CreateApiResponse.Failed("Failed to create account!");
+        return CreateApiResponse.Error("Failed to create account!");
     }
 
     public async Task<ApiResponse<Session>> GetAccessTokenAsync(string refreshToken)
@@ -130,18 +128,19 @@ public class AccountService
                 }
             );
 
-        } catch (DbUpdateConcurrencyException ex)
+        } catch (DbUpdateConcurrencyException)
         {
             // This happens if EF detects someone else modified the same record
             // await RevokeAllUserTokensAsync(token.UserId);
             // return false;
             await RevokeAllUserTokensAsync(rfToken.UserId);
-            return new ApiResponse<Session>
-            {
-                Title = ex.GetType().ToString(),
-                StatusMessage = ApiStatus.Error,
-                Message = "Token Has been modified"
-            };
+            throw;
+            // return new ApiResponse<Session>
+            // {
+            //     Title = ex.GetType().ToString(),
+            //     StatusMessage = ApiStatus.Error,
+            //     Message = "Token Has been modified"
+            // };
         }/* catch (DbUpdateException) {
             // General database failure (constraint violation, FK error, etc.)
             // await RevokeAllUserTokensAsync(token.UserId);
@@ -193,18 +192,19 @@ public class AccountService
                 return CreateApiResponse.Failed("Token Expired!\nPlease login again...");
 
             return CreateApiResponse.Success();
-        } catch (DbUpdateConcurrencyException ex)
+        } catch (DbUpdateConcurrencyException)
         {
             // This happens if EF detects someone else modified the same record
             // await RevokeAllUserTokensAsync(token.UserId);
             // return false;
             await RevokeAllUserTokensAsync(rfToken.UserId);
-            return new ApiResponse<Session>
-            {
-                Title = ex.GetType().ToString(),
-                StatusMessage = ApiStatus.Error,
-                Message = "Token Has been modified"
-            };
+            throw;
+            // return new ApiResponse<Session>
+            // {
+            //     Title = ex.GetType().ToString(),
+            //     StatusMessage = ApiStatus.Error,
+            //     Message = "Token Has been modified"
+            // };
         }
     }
 

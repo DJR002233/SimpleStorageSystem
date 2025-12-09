@@ -1,3 +1,4 @@
+using System;
 using System.Reactive;
 using System.Threading.Tasks;
 using ReactiveUI;
@@ -41,12 +42,21 @@ public class AccountPageViewModel : ReactiveObject
 
     public async Task Save()
     {
+        if (!String.IsNullOrWhiteSpace(Password) && !String.Equals(Password, RePassword))
+        {
+            await DialogBox.Show("Warning", "Password does not match!\n\nClear password textbox to not change it");
+            return;
+        }
+
         LoadingOverlay.Show("Delaying Task for 3 sec.");
         IpcResponse res = await _accountClient.RequestUpdateAccountInformation(Username, Email, Password);
         LoadingOverlay.Close();
 
         if (res.Status == IpcStatus.OK)
+        {
             await DialogBox.Show(res.Status.ToString(), "Information updated successfully!");
+            return;
+        }
 
         await DialogBox.Show(res.Status.ToString(), res.Payload);
     }

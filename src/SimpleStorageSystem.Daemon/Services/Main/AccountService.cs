@@ -31,7 +31,7 @@ public class AccountService
                 Password = password
             };
             var httpClient = _httpFactory.CreateClient("AuthenticatedClient");
-            var response = await httpClient.PutAsJsonAsync("api/account/update", data);
+            var response = await httpClient.PutAsJsonAsync("account/update", data);
 
             var res = await response.Content.ReadFromJsonAsync<ApiResponse>();
 
