@@ -5,7 +5,7 @@ using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
-public class StorageDevicesPageViewModel : ReactiveObject
+public class StorageDrivesPageViewModel : ReactiveObject
 {
     #region Services
     public LoadingOverlay LoadingOverlay { get; }
@@ -21,18 +21,18 @@ public class StorageDevicesPageViewModel : ReactiveObject
     [Reactive] public ObservableCollection<Info> Items { get; set; }
     #endregion Properties
 
-    public StorageDevicesPageViewModel(
+    public StorageDrivesPageViewModel(
         LoadingOverlay loadingOverlay
     )
     {
         LoadingOverlay = loadingOverlay;
         Items = new ObservableCollection<Info>
         {
-            new Info {Name = "lol", Value = 100},
-            new Info {Name = "lmao", Value = 202},
-            new Info {Name = "kek", Value = 364},
-            new Info {Name = "lmfao", Value = 635},
-            new Info {Name = "hehe", Value = 586},
+            new Info {Name = "Main Android", Icon = "Smartphone"},
+            new Info {Name = "Shared", Icon = "Harddisk"},
+            new Info {Name = "My Laptop", Icon = "Laptop"},
+            new Info {Name = "i5-4460_xubuntu.minimal", Icon = "Linux"},
+            new Info {Name = "i5-4460_win10", Icon = "Windows"},
         };
     }
     
@@ -41,5 +41,5 @@ public class StorageDevicesPageViewModel : ReactiveObject
 public class Info
 {
     public required string Name { get; set; }
-    public int Value { get; set; }
+    public required string Icon { get; set; }
 }

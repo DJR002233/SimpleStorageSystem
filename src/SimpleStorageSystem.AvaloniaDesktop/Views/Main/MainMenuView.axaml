@@ -21,8 +21,8 @@
         <DataTemplate DataType="pagevm:SettingsPageViewModel">
             <pagev:SettingsPageView/>
         </DataTemplate>
-        <DataTemplate DataType="pagevm:StorageDevicesPageViewModel">
-            <pagev:StorageDevicesPageView/>
+        <DataTemplate DataType="pagevm:StorageDrivesPageViewModel">
+            <pagev:StorageDrivesPageView/>
         </DataTemplate>
     </UserControl.DataTemplates>
 
@@ -45,7 +45,7 @@
                             <MenuItem x:Name="AccountMenuItem" Header="Account">
                                 <!-- <PathIcon Data="M12 2a10..."/> -->
                             </MenuItem>
-                            <MenuItem x:Name="StorageDevicesMenuItem" Header="Storage Devices">
+                            <MenuItem x:Name="StorageDrivesMenuItem" Header="Storage Drives">
                                 <!-- <PathIcon Data="M12 2a10..."/> -->
                             </MenuItem>
                             <MenuItem x:Name="SettingsMenuItem" Header="Settings">

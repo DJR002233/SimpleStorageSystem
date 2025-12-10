@@ -4,8 +4,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages"
     d:DesignWidth="800" d:DesignHeight="450"
-    x:Class="SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages.StorageDevicesPageView"
-    x:DataType="vm:StorageDevicesPageViewModel"
+    x:Class="SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages.StorageDrivesPageView"
+    x:DataType="vm:StorageDrivesPageViewModel"
 
     xmlns:components="using:SimpleStorageSystem.AvaloniaDesktop.Views.Components">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -19,14 +19,16 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid ColumnDefinitions="Auto" RowDefinitions="Auto,Auto">
-                        <TextBlock Text="{Binding Name}"
-                        Grid.Row="0"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <TextBlock Text="{Binding Value}"
-                        Grid.Row="1"
-                        HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Grid>
+                    <Button x:Name="StorageDrivesButton" Width="150" Height="200">
+                        <Grid ColumnDefinitions="*" RowDefinitions="*,Auto">
+                            <TextBlock Text="{Binding Icon}" TextAlignment="Center"
+                            Grid.Row="0"
+                            HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding Name}" TextAlignment="Center"
+                            Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                            Margin="0,15,0,10"/>
+                        </Grid>
+                    </Button>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

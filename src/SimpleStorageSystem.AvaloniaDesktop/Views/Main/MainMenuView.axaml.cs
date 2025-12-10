@@ -15,7 +15,7 @@ public partial class MainMenuView : ReactiveUserControl<MainMenuViewModel>
             this.BindCommand(ViewModel, vm => vm.ShowAccountPageCommand, v => v.AccountMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShowActivityPageCommand, v => v.ActivityMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShowSettingsPageCommand, v => v.SettingsMenuItem).DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.ShowStorageDevicesPageCommand, v => v.StorageDevicesMenuItem).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowStorageDevicesPageCommand, v => v.StorageDrivesMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutMenuItem).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.PageTitle, v => v.PageTitle.Text).DisposeWith(disposables);

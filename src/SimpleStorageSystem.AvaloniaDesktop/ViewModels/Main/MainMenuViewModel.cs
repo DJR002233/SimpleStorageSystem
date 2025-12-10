@@ -31,7 +31,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     private readonly AccountPageViewModel _accountPageVM;
     private readonly ActivityPageViewModel _activityPageVM;
     private readonly SettingsPageViewModel _settingsPageVM;
-    private readonly StorageDevicesPageViewModel _storageDevicesPageVM;
+    private readonly StorageDrivesPageViewModel _storageDrivesPageVM;
     private readonly Func<LoginViewModel> _loginVM;
     #endregion VMs
     
@@ -51,7 +51,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     public MainMenuViewModel(
         INavigation navigation,
         AuthClient authClient, LoadingOverlay loadingOverlay,
-        AccountPageViewModel accountPageVM, ActivityPageViewModel activityPageVM, SettingsPageViewModel settingsPageVM, StorageDevicesPageViewModel storageDevicesPageVM, Func<LoginViewModel> loginVM
+        AccountPageViewModel accountPageVM, ActivityPageViewModel activityPageVM, SettingsPageViewModel settingsPageVM, StorageDrivesPageViewModel storageDrivesPageVM, Func<LoginViewModel> loginVM
     )
     {
         Navigation = navigation;
@@ -62,7 +62,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
         _accountPageVM = accountPageVM;
         _activityPageVM = activityPageVM;
         _settingsPageVM = settingsPageVM;
-        _storageDevicesPageVM = storageDevicesPageVM;
+        _storageDrivesPageVM = storageDrivesPageVM;
         _loginVM = loginVM;
 
         NavigateToActivityPage();
@@ -70,7 +70,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
         ShowAccountPageCommand = ReactiveCommand.Create(NavigateToAccountPage);
         ShowActivityPageCommand = ReactiveCommand.Create(NavigateToActivityPage);
         ShowSettingsPageCommand = ReactiveCommand.Create(NavigateToSettingsPage);
-        ShowStorageDevicesPageCommand = ReactiveCommand.Create(NavigateToStorageDevicesPage);
+        ShowStorageDevicesPageCommand = ReactiveCommand.Create(NavigateToStorageDrivesPage);
         LogoutCommand = ReactiveCommand.CreateFromTask(Logout);
     }
 
@@ -92,10 +92,10 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
         PageTitle = "Settings";
     }
 
-    public void NavigateToStorageDevicesPage()
+    public void NavigateToStorageDrivesPage()
     {
-        CurrentPage = _storageDevicesPageVM;
-        PageTitle = "Storage Devices";
+        CurrentPage = _storageDrivesPageVM;
+        PageTitle = "Storage Drives";
     }
 
     public async Task Logout()

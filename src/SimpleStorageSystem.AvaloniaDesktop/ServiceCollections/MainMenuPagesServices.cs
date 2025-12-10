@@ -10,7 +10,7 @@ public static class MainMenuPagesCollection
         services.AddTransient<AccountPageViewModel>();
         services.AddTransient<ActivityPageViewModel>();
         services.AddTransient<SettingsPageViewModel>();
-        services.AddTransient<StorageDevicesPageViewModel>();
+        services.AddTransient<StorageDrivesPageViewModel>();
         
         return services;
     }

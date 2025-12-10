@@ -5,9 +5,9 @@ using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages;
 
-public partial class StorageDevicesPageView : ReactiveUserControl<StorageDevicesPageViewModel>
+public partial class StorageDrivesPageView : ReactiveUserControl<StorageDrivesPageViewModel>
 {
-    public StorageDevicesPageView()
+    public StorageDrivesPageView()
     {
         InitializeComponent();
         this.WhenActivated(disposables =>
