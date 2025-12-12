@@ -1,6 +1,4 @@
-using System;
-
-namespace SimpleStorageSystem.AvaloniaDesktop.Models.Tables;
+namespace SimpleStorageSystem.Daemon.Models.Tables;
 
 public class FileInformation
 {
@@ -10,6 +8,7 @@ public class FileInformation
     public required string Hash { get; set; }
     public DateTime? LastSync { get; set; }
     public int? PendingSyncOperation { get; set; }
+    public string? MountFolder { get; set; }
 
     public int StorageDriveId { get; set; }
     public StorageDrive drive { get; set; } = null!;

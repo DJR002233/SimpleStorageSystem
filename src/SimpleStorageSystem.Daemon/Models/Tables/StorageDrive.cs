@@ -1,12 +1,12 @@
-using System.Collections;
-using System.Collections.Generic;
+using SimpleStorageSystem.Shared.Enums;
 
-namespace SimpleStorageSystem.AvaloniaDesktop.Models.Tables;
+namespace SimpleStorageSystem.Daemon.Models.Tables;
 
 public class StorageDrive
 {
     public int StorageDriveId { get; set; }
     public required string Name { get; set; }
+    public MountOption Mount { get; set; }
     
     public ICollection<FileInformation> Files { get; set; } = new List<FileInformation>();
 }

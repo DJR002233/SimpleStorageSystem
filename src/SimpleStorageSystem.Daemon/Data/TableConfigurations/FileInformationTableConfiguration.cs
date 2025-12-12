@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using SimpleStorageSystem.AvaloniaDesktop.Models.Tables;
+using SimpleStorageSystem.Daemon.Models.Tables;
 
-namespace SimpleStorageSystem.AvaloniaDesktop.Data.TableConfigurations;
+namespace SimpleStorageSystem.Daemon.Data.TableConfigurations;
 
 public static class FileInformationTableConfiguration
 {
@@ -16,6 +16,7 @@ public static class FileInformationTableConfiguration
             entity.Property(f => f.Hash).HasColumnName("hash").HasColumnType("varchar").IsRequired();
             entity.Property(f => f.LastSync).HasColumnName("last_sync");
             entity.Property(f => f.PendingSyncOperation).HasColumnName("pending_sync_operation");
+            entity.Property(f => f.MountFolder).HasColumnName("mount_folder");
 
             entity.Property(f => f.StorageDriveId).HasColumnName("storage_drive_id");
             

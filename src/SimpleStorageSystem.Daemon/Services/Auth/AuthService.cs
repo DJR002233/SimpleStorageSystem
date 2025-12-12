@@ -1,28 +1,26 @@
 using System.Net.Http.Json;
-using AutoMapper;
 using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 using SimpleStorageSystem.Daemon.Services.Auth.TokenStore;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
+using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Auth;
 
 public class AuthService
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IMapper _mapper;
 
     private readonly ITokenStore _tokenStore;
     private readonly ICredentialStore _credentialStore;
 
     public AuthService(
-        IHttpClientFactory httpFactory, IMapper mapper,
+        IHttpClientFactory httpFactory,
         ITokenStore tokenStore, ICredentialStore credentialsStore
     )
     {
         _httpFactory = httpFactory;
-        _mapper = mapper;
         _tokenStore = tokenStore;
         _credentialStore = credentialsStore;
     }
@@ -52,12 +50,12 @@ public class AuthService
         }
         catch (HttpRequestException ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
         catch (Exception ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
 
@@ -83,12 +81,12 @@ public class AuthService
         }
         catch (HttpRequestException ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
         catch (Exception ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
 
@@ -110,12 +108,12 @@ public class AuthService
         }
         catch (HttpRequestException ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
         catch (Exception ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
 
@@ -130,12 +128,12 @@ public class AuthService
         }
         catch (HttpRequestException ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
         catch (Exception ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
 

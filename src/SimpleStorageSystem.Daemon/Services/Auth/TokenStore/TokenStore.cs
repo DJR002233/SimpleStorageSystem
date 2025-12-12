@@ -1,16 +1,15 @@
 using System.Net.Http.Json;
-using AutoMapper;
 using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Services.Helper;
+using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Auth.TokenStore;
 
 public class TokenStore : ITokenStore
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IMapper _mapper;
 
     private readonly object _sync = new();
     // private readonly SemaphoreSlim _lock = new(1, 1);
@@ -19,12 +18,11 @@ public class TokenStore : ITokenStore
     private readonly AccessToken _accessToken;
 
     public TokenStore(
-        IHttpClientFactory httpFactory, IMapper mapper,
+        IHttpClientFactory httpFactory,
         ICredentialStore credentialStore
     )
     {
         _httpFactory = httpFactory;
-        _mapper = mapper;
 
         _credentialStore = credentialStore;
         _accessToken = new AccessToken { };
@@ -34,7 +32,7 @@ public class TokenStore : ITokenStore
     {
         // await _lock.WaitAsync();
         ApiResponse<AccessToken> accessToken = await GetAccessTokenAsync();
-        ApiResponse<string?> res = _mapper.Map<ApiResponse<string?>>(accessToken);
+        ApiResponse<string?> res = ModelMapper.Map<ApiResponse<string?>>(accessToken);
         res.Data = accessToken.Data?.Token;
         return res;
     }
@@ -53,7 +51,7 @@ public class TokenStore : ITokenStore
         if (apiResponse.StatusMessage == ApiStatus.Success)
             return CreateApiResponse.Success(_accessToken);
 
-        return _mapper.Map<ApiResponse<AccessToken>>(apiResponse);
+        return ModelMapper.Map<ApiResponse<AccessToken>>(apiResponse);
     }
 
     public void SetAccessToken(AccessToken accessToken)

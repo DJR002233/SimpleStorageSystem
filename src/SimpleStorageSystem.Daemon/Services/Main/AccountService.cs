@@ -1,23 +1,20 @@
 using System.Net.Http.Json;
-using AutoMapper;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Services.Helper;
+using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Main;
 
 public class AccountService
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly IMapper _mapper;
 
     public AccountService(
-        IHttpClientFactory httpFactory,
-        IMapper mapper
+        IHttpClientFactory httpFactory
     )
     {
         _httpFactory = httpFactory;
-        _mapper = mapper;
     }
 
     public async Task<ApiResponse> UpdateAccountInformationAsync(string? username, string? email, string? password)
@@ -39,12 +36,12 @@ public class AccountService
         }
         catch (HttpRequestException ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
         catch (Exception ex)
         {
-            ApiResponse apiResponse = _mapper.Map<ApiResponse>(ex);
+            ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
 
