@@ -4,7 +4,7 @@ using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 
-namespace SimpleStorageSystem.Daemon.Services;
+namespace SimpleStorageSystem.Daemon.Services.Worker;
 
 public class PipeServer
 {

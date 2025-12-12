@@ -1,5 +1,5 @@
 using SimpleStorageSystem.Daemon.Data;
-using SimpleStorageSystem.Daemon.Services;
+using SimpleStorageSystem.Daemon.Services.Worker;
 using SimpleStorageSystem.Daemon.Services.Auth;
 
 namespace SimpleStorageSystem.Daemon;
@@ -22,9 +22,7 @@ public class Worker : BackgroundService
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         if (_logger.IsEnabled(LogLevel.Information))
-        {
             _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-        }
 
         using (var scope = _serviceProvider.CreateScope())
         {
@@ -32,10 +30,24 @@ public class Worker : BackgroundService
             db.Database.EnsureCreated();
         }
 
-        await _authService.InitializeSessionAsync();
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            try
+            {
+                if (_logger.IsEnabled(LogLevel.Information))
+                    _logger.LogInformation("Worker re-ran");
 
-        var pipeServer = _pipeServer.ListenAsync(stoppingToken);
+                await _authService.InitializeSessionAsync();
 
-        await Task.WhenAll(pipeServer);
+                var pipeServer = _pipeServer.ListenAsync(stoppingToken);
+                // new Thread(() => {Console.WriteLine();}){IsBackground = true}.Start();
+
+                await Task.WhenAll(pipeServer);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Service failed but recovered.");
+            }
+        }
     }
 }

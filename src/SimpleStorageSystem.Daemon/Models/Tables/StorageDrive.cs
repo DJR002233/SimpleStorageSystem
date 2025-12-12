@@ -8,5 +8,5 @@ public class StorageDrive
     public required string Name { get; set; }
     public MountOption Mount { get; set; }
     
-    public ICollection<FileInformation> Files { get; set; } = new List<FileInformation>();
+    public ICollection<FileItem> Files { get; set; } = new List<FileItem>();
 }

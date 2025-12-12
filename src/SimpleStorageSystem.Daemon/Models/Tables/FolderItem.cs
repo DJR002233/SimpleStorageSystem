@@ -1,11 +1,9 @@
 namespace SimpleStorageSystem.Daemon.Models.Tables;
 
-public class FileInformation
+public class FolderItem
 {
-    public long FileId { get; set; }
-    public required string Path { get; set; }
-    public required DateTime LastModified { get; set; }
-    public required string Hash { get; set; }
+    public long FolderId { get; set; }
+    public required string[] Path { get; set; }
     public DateTime? LastSync { get; set; }
     public int? PendingSyncOperation { get; set; }
     public string? MountFolder { get; set; }

@@ -56,13 +56,13 @@ public class CreateApiResponse
         };
     }
     
-    public static ApiResponse<T> ErrorFromException<T>(T exception)
+    public static ApiResponse<T> ErrorFromException<T>(Exception exception)
     {
         return new ApiResponse<T>
         {
             Title = exception?.GetType().ToString(),
             StatusMessage = ApiStatus.Error,
-            Data = exception
+            Message = exception?.Message
         };
     }
 
@@ -91,4 +91,8 @@ public class CreateApiResponse
         return Error<object>(message, title);
     }
     
+    public static ApiResponse ErrorFromException(Exception exception)
+    {
+        return ErrorFromException<object>(exception);
+    }
 }

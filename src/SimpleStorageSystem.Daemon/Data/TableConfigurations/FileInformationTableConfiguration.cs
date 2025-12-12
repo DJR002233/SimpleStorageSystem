@@ -7,7 +7,7 @@ public static class FileInformationTableConfiguration
 {
     public static void ConfigureFileInformationTable(this ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<FileInformation>(entity =>
+        modelBuilder.Entity<FileItem>(entity =>
         {
             entity.ToTable("file_informations");
             entity.HasKey(f => f.FileId);
@@ -16,7 +16,7 @@ public static class FileInformationTableConfiguration
             entity.Property(f => f.Hash).HasColumnName("hash").HasColumnType("varchar").IsRequired();
             entity.Property(f => f.LastSync).HasColumnName("last_sync");
             entity.Property(f => f.PendingSyncOperation).HasColumnName("pending_sync_operation");
-            entity.Property(f => f.MountFolder).HasColumnName("mount_folder");
+            // entity.Property(f => f.MountFolder).HasColumnName("mount_folder");
 
             entity.Property(f => f.StorageDriveId).HasColumnName("storage_drive_id");
             

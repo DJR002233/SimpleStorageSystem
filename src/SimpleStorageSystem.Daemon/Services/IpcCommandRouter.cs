@@ -16,18 +16,11 @@ public class IpcCommandRouter
 
     public async Task<IpcResponse> DispatchAsync(IpcRequest request)
     {
-        try
-        {
-            IpcCommand ipcCommand = request.Command ?? throw new Exception("Command is null");
-            if (!_commandHandler.TryGetValue(ipcCommand, out var handler))
-                return IpcResponse.CreateFromIpcRequest(request, IpcStatus.ERROR, $"Command not found. Command: {request.Command}");
+        IpcCommand ipcCommand = request.Command ?? throw new Exception("Command is null");
+        if (!_commandHandler.TryGetValue(ipcCommand, out var handler))
+            return IpcResponse.CreateFromIpcRequest(request, IpcStatus.ERROR, $"Command not found. Command: {request.Command}");
 
-            return await handler.HandleAsync(request);
-        }
-        catch (Exception ex)
-        {
-            return IpcResponse.CreateFromIpcRequest(request, IpcStatus.ERROR, ex.Message);
-        }
+        return await handler.HandleAsync(request);
     }
 
 }

@@ -2,7 +2,7 @@ using System.Runtime.InteropServices;
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Daemon.Data;
 using SimpleStorageSystem.Daemon.Handler.HttpHandler;
-using SimpleStorageSystem.Daemon.Services;
+using SimpleStorageSystem.Daemon.Services.Worker;
 using SimpleStorageSystem.Daemon.Services.Auth;
 using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 using SimpleStorageSystem.Daemon.Services.Auth.TokenStore;
