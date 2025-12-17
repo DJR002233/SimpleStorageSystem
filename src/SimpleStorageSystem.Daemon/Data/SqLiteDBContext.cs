@@ -12,11 +12,14 @@ public class SqLiteDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // modelBuilder.HasDefaultSchema("main");
-        modelBuilder.ConfigureFileInformationTable();
+        modelBuilder.ConfigureFileItemTable();
+        modelBuilder.ConfigureFolderItemTable();
         modelBuilder.ConfigureStorageDrivesTable();
         base.OnModelCreating(modelBuilder);
     }
-    public DbSet<FileInformation> FileInformation { get; set; }
+    public DbSet<FileItem> Files { get; set; }
+    public DbSet<FolderItem> Folder { get; set; }
+    public DbSet<StorageDrive> Drive { get; set; }
 }
 
 /*

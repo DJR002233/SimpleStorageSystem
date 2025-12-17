@@ -9,4 +9,5 @@ public class StorageDrive
     public MountOption Mount { get; set; }
     
     public ICollection<FileItem> Files { get; set; } = new List<FileItem>();
+    public ICollection<FolderItem> Folders { get; set; } = new List<FolderItem>();
 }
