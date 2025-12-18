@@ -4,11 +4,11 @@ using SimpleStorageSystem.Shared.Models;
 
 namespace SimpleStorageSystem.Daemon.Handler.HttpHandler;
 
-public class AccessTokenHeaderHttpHandler : DelegatingHandler
+public class AccessTokenHeaderHandler : DelegatingHandler
 {
     private readonly ITokenStore _tokenStore;
 
-    public AccessTokenHeaderHttpHandler(ITokenStore tokenStore)
+    public AccessTokenHeaderHandler(ITokenStore tokenStore)
     {
         _tokenStore = tokenStore;
     }

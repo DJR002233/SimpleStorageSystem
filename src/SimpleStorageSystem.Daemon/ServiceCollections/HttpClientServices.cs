@@ -6,22 +6,24 @@ public static class HttpClientCollection
 {
     public static IServiceCollection InitializeHttpClientServices(this IServiceCollection services)
     {
-        var baseUri = new Uri("http://localhost:5144/api/");
-
-        services.AddHttpClient("BasicClient", client => {client.BaseAddress = baseUri;})
+        services.AddHttpClient("BasicClient")
+            .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
-        services.AddHttpClient("TokenClient", client => {client.BaseAddress = baseUri;})
-            .AddHttpMessageHandler<RefreshTokenHeaderHttpHandler>()
+        services.AddHttpClient("TokenClient")
+            .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
+            .AddHttpMessageHandler<RefreshTokenHeaderHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
-        services.AddHttpClient("LogoutClient", client => {client.BaseAddress = baseUri;})
-            .AddHttpMessageHandler<AccessTokenHeaderHttpHandler>()
-            .AddHttpMessageHandler<RefreshTokenHeaderHttpHandler>()
+        services.AddHttpClient("LogoutClient")
+            .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
+            .AddHttpMessageHandler<AccessTokenHeaderHandler>()
+            .AddHttpMessageHandler<RefreshTokenHeaderHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
-        services.AddHttpClient("AuthenticatedClient", client => { client.BaseAddress = baseUri; })
-            .AddHttpMessageHandler<AccessTokenHeaderHttpHandler>()
+        services.AddHttpClient("AuthenticatedClient")
+            .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
+            .AddHttpMessageHandler<AccessTokenHeaderHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
         return services;

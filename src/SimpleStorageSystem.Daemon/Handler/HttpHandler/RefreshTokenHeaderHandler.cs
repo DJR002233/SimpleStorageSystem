@@ -2,11 +2,11 @@ using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 
 namespace SimpleStorageSystem.Daemon.Handler.HttpHandler;
 
-public class RefreshTokenHeaderHttpHandler : DelegatingHandler
+public class RefreshTokenHeaderHandler : DelegatingHandler
 {
     private readonly ICredentialStore _credentialStore;
 
-    public RefreshTokenHeaderHttpHandler(ICredentialStore credentialStore)
+    public RefreshTokenHeaderHandler(ICredentialStore credentialStore)
     {
         _credentialStore = credentialStore;
     }

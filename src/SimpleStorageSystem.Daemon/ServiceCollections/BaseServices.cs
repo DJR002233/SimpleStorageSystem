@@ -7,6 +7,7 @@ using SimpleStorageSystem.Daemon.Services.Auth;
 using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 using SimpleStorageSystem.Daemon.Services.Auth.TokenStore;
 using SimpleStorageSystem.Daemon.Services.Main;
+using SimpleStorageSystem.Daemon.Services;
 
 namespace SimpleStorageSystem.Daemon.ServiceCollections;
 
@@ -24,9 +25,12 @@ public static class BaseCollection
             options.UseSqlite("Data Source=FileManagementRecord.db");
         });
 
-        services.AddTransient<AccessTokenHeaderHttpHandler>();
-        services.AddTransient<RefreshTokenHeaderHttpHandler>();
+        services.AddSingleton<SettingsManager>();
+
+        services.AddTransient<HttpClientBaseConfigHandler>();
         services.AddTransient<HttpSocketExceptionHandler>();
+        services.AddTransient<AccessTokenHeaderHandler>();
+        services.AddTransient<RefreshTokenHeaderHandler>();
 
         services.AddSingleton<ITokenStore, TokenStore>();
 
