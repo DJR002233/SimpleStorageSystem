@@ -7,6 +7,8 @@ namespace SimpleStorageSystem.Daemon.Services.Worker;
 public class DriveSync
 {
     private readonly SqLiteDbContext _dbContext;
+    private readonly List<FileItem> _fileStructure = new();
+    private readonly List<FolderItem> _folderStructure = new();
 
     public DriveSync(SqLiteDbContext dbContext)
     {
@@ -22,11 +24,16 @@ public class DriveSync
                 d.Mount == Shared.Enums.MountOption.MAIN_ON_SERVER
             );
 
-            foreach(var folder in mainDrive?.Folders!)
+            foreach (var folder in mainDrive?.Folders!)
             {
                 await DirectoryRecursiver(folder.Path);
             }
-            
+
+            await Broadcaster.PublishInOrder(_fileStructure);
+            await Broadcaster.PublishInOrder(_folderStructure);
+
+            ClearStructureList();
+
             await Task.Delay(15 * 1000);
         }
 
@@ -48,8 +55,7 @@ public class DriveSync
                 CreationTime = dir.CreationTimeUtc,
                 LastModified = dir.LastWriteTimeUtc,
             };
-
-            News.Publish(folderItem);
+            _folderStructure.Add(folderItem);
         }
 
         var files = dir.EnumerateFiles();
@@ -68,8 +74,16 @@ public class DriveSync
             CreationTime = file.CreationTimeUtc,
             LastModified = file.LastWriteTimeUtc,
         };
+        _fileStructure.Add(fileItem);
+    }
 
-        News.Publish(fileItem);
+    public void ClearStructureList()
+    {
+        _fileStructure.Clear();
+        _folderStructure.Clear();
+
+        _fileStructure.TrimExcess();
+        _folderStructure.TrimExcess();
     }
 
 }
