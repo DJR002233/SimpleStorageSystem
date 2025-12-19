@@ -11,12 +11,13 @@ public static class FileItemTableConfiguration
         {
             entity.ToTable("file_items");
             entity.HasKey(f => f.FileId);
-            entity.Property(f => f.Name).HasColumnName("name").HasColumnType("varchar").IsRequired();
-            entity.Property(f => f.Path).HasColumnName("path").HasColumnType("varchar").IsRequired();
+            entity.Property(f => f.FullName).HasColumnName("full_name").HasColumnType("varchar").IsRequired();
 
-            entity.Property(f => f.StartSequence).HasColumnName("start_sequence").HasColumnType("varchar").IsRequired();
-            entity.Property(f => f.MiddleSequence).HasColumnName("middle_sequence").HasColumnType("varchar").IsRequired();
-            entity.Property(f => f.EndSequence).HasColumnName("end_sequence").HasColumnType("varchar").IsRequired();
+            // entity.Property(f => f.FirstHash).HasColumnName("first_hash").HasColumnType("varchar").IsRequired();
+            // entity.Property(f => f.SecondHash).HasColumnName("second_hash").HasColumnType("varchar").IsRequired();
+            // entity.Property(f => f.ThirdHash).HasColumnName("third_hash").HasColumnType("varchar").IsRequired();
+            // entity.Property(f => f.FourthHash).HasColumnName("fourth_hash").HasColumnType("varchar").IsRequired();
+            // entity.Property(f => f.FifthHash).HasColumnName("fifth_hash").HasColumnType("varchar").IsRequired();
 
             entity.Property(f => f.CreationTime).HasColumnName("creation_time").IsRequired();
             entity.Property(f => f.LastModified).HasColumnName("last_modified").IsRequired();

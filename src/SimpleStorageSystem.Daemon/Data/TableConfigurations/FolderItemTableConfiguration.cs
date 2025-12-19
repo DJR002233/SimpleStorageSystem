@@ -11,8 +11,7 @@ public static class FolderItemTableConfiguration
         {
             entity.ToTable("folder_items");
             entity.HasKey(f => f.FolderId);
-            entity.Property(f => f.Name).HasColumnName("path").HasColumnType("varchar").IsRequired();
-            entity.Property(f => f.Path).HasColumnName("path").HasColumnType("varchar").IsRequired();
+            entity.Property(f => f.FullName).HasColumnName("full_name").HasColumnType("varchar").IsRequired();
             entity.Property(f => f.CreationTime).HasColumnName("creation_time").IsRequired();
             entity.Property(f => f.LastModified).HasColumnName("last_modified").IsRequired();
             entity.Property(f => f.LastSync).HasColumnName("last_sync");

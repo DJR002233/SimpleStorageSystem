@@ -18,8 +18,8 @@ public class SqLiteDbContext : DbContext
         base.OnModelCreating(modelBuilder);
     }
     public DbSet<FileItem> Files { get; set; }
-    public DbSet<FolderItem> Folder { get; set; }
-    public DbSet<StorageDrive> Drive { get; set; }
+    public DbSet<FolderItem> Folders { get; set; }
+    public DbSet<StorageDrive> Drives { get; set; }
 }
 
 /*
