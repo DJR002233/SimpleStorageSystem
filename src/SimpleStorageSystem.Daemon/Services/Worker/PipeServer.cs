@@ -47,7 +47,7 @@ public class PipeServer
             }
             catch (Exception ex)
             {
-                IpcResponse ipcResponse = IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.ERROR, ex.Message);
+                IpcResponse ipcResponse = IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.Error, ex.Message);
 
                 string json = JsonSerializer.Serialize(ipcResponse);
 

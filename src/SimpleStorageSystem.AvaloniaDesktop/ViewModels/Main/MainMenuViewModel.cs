@@ -102,7 +102,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     {
         IpcResponse ipcResponse = await _authClient.RequestLogoutAsync();
 
-        if (ipcResponse.Status == IpcStatus.OK)
+        if (ipcResponse.Status == IpcStatus.Ok)
         {
             Navigation.NavigateTo(_loginVM());
             return;

@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Daemon.Data;
 using SimpleStorageSystem.Daemon.Models.Tables;
@@ -24,9 +23,9 @@ public class LocalSyncer
     public async ValueTask FileStructureSync(List<(string FullName, ItemType Item)> structure)
     {
         var filesDb = _dbContext.Files;
-        await filesDb.LoadAsync();
+        await filesDb.LoadAsync(); // Note to Self: don't use this. occupies memory. especially if there are a lot of records.
 
-        HashSet<string>? fileStructure = structure.Where(file => file.Item == ItemType.FILE).Select(col => col.FullName).ToHashSet();
+        HashSet<string>? fileStructure = structure.Where(file => file.Item == ItemType.File).Select(col => col.FullName).ToHashSet();
 
         foreach (var file in fileStructure)
         {

@@ -57,7 +57,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
     {
         await Task.Delay(1000);
         IpcResponse res = await _authClient.RequestHasSessionAsync();
-        if (res.Status == IpcStatus.OK)
+        if (res.Status == IpcStatus.Ok)
         {
             Navigation.NavigateTo(_mainMenuVM, new CrossFade {Duration = TimeSpan.FromMilliseconds(600)});
             return;

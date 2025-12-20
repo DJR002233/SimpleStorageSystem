@@ -4,8 +4,6 @@ using SimpleStorageSystem.Daemon.Services.Auth.TokenStore;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
-using SimpleStorageSystem.Shared.Services.Helper;
-using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Auth;
 
@@ -34,7 +32,7 @@ public class AuthService
             Password = password
         };
 
-        var httpClient = _httpFactory.CreateClient("BasicClient");
+        var httpClient = _httpFactory.CreateClient(HttpClientName.BasicClient.ToString());
         var httpResponse = await httpClient.PostAsJsonAsync("auth/login", data);
 
         var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<Session>>();
@@ -58,7 +56,7 @@ public class AuthService
             Password = password,
         };
 
-        var httpClient = _httpFactory.CreateClient("BasicClient");
+        var httpClient = _httpFactory.CreateClient(HttpClientName.BasicClient.ToString());
         var httpResponse = await httpClient.PostAsJsonAsync("auth/sign_up", data);
 
         var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse>();
@@ -69,7 +67,7 @@ public class AuthService
 
     public async Task<ApiResponse> LogoutAsync()
     {
-        var httpClient = _httpFactory.CreateClient("LogoutClient");
+        var httpClient = _httpFactory.CreateClient(HttpClientName.LogoutClient.ToString());
         var apiResponse = await httpClient.GetFromJsonAsync<ApiResponse>("auth/logout");
         if (apiResponse!.StatusMessage == ApiStatus.Success)
         {

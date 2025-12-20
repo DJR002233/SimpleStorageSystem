@@ -8,7 +8,7 @@ namespace SimpleStorageSystem.Daemon.Commands.Auth;
 public class HasSessionCommand : IIpcCommandHandler
 {
     private readonly AuthService _authService;
-    public IpcCommand Command => IpcCommand.HAS_SESSION;
+    public IpcCommand Command => IpcCommand.HasSession;
 
     public HasSessionCommand(AuthService authService)
     {
@@ -20,7 +20,7 @@ public class HasSessionCommand : IIpcCommandHandler
         var response = await Task.Run(() =>
         {
             bool hasSession = _authService.HasSession();
-            return IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.OK : IpcStatus.FAILED);
+            return IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.Ok : IpcStatus.Failed);
         });
 
         return response;

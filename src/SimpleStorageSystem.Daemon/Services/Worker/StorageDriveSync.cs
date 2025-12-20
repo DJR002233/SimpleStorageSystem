@@ -4,12 +4,12 @@ using SimpleStorageSystem.Shared.Enums;
 
 namespace SimpleStorageSystem.Daemon.Services.Worker;
 
-public class DriveSync
+public class StorageDriveSyncer
 {
     private readonly SqLiteDbContext _dbContext;
     private readonly List<(string, ItemType)> _directoryStructure = new();
 
-    public DriveSync(SqLiteDbContext dbContext)
+    public StorageDriveSyncer(SqLiteDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -19,8 +19,8 @@ public class DriveSync
         while (!stoppingToken.IsCancellationRequested)
         {
             var mainDrive = await _dbContext.Drives.SingleOrDefaultAsync(
-                d => d.Mount == MountOption.MAIN_ON_DRIVE ||
-                d.Mount == MountOption.MAIN_ON_SERVER
+                d => d.Mount == MountOption.MainOnDrive ||
+                d.Mount == MountOption.MainOnServer
             );
 
             foreach (var folder in mainDrive?.Folders!)
@@ -52,7 +52,7 @@ public class DriveSync
             //     CreationTime = dir.CreationTimeUtc,
             //     LastModified = dir.LastWriteTimeUtc,
             // };
-            _directoryStructure.Add((subDir.FullName,ItemType.FOLDER));
+            _directoryStructure.Add((subDir.FullName,ItemType.Folder));
         }
 
         var files = dir.EnumerateFiles();
@@ -70,7 +70,7 @@ public class DriveSync
         //     CreationTime = file.CreationTimeUtc,
         //     LastModified = file.LastWriteTimeUtc,
         // };
-        _directoryStructure.Add((file.FullName, ItemType.FILE));
+        _directoryStructure.Add((file.FullName, ItemType.File));
     }
 
     public void ClearStructureList()

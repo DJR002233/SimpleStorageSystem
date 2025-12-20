@@ -79,7 +79,7 @@ public class TokenStore : ITokenStore
         if (String.IsNullOrWhiteSpace(await _credentialStore.GetAsync()))
             return CreateApiResponse.Unauthenticated();
 
-        var client = _httpFactory.CreateClient("TokenClient");
+        var client = _httpFactory.CreateClient(HttpClientName.TokenClient.ToString());
         var apiResponse = await client.GetFromJsonAsync<ApiResponse<Session>>("auth/refresh_session");
 
         if (apiResponse!.StatusMessage == ApiStatus.Success && apiResponse.Data is not null)

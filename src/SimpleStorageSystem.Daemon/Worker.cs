@@ -7,16 +7,22 @@ namespace SimpleStorageSystem.Daemon;
 public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
-    private readonly PipeServer _pipeServer;
-    private readonly AuthService _authService;
     private readonly IServiceProvider _serviceProvider;
 
-    public Worker(ILogger<Worker> logger, PipeServer pipeServer, AuthService authService, IServiceProvider serviceProvider)
+    private readonly PipeServer _pipeServer;
+    private readonly AuthService _authService;
+    private readonly StorageDriveSyncer _syncer;
+
+    public Worker(
+        ILogger<Worker> logger, IServiceProvider serviceProvider,
+        PipeServer pipeServer, AuthService authService, StorageDriveSyncer syncer)
     {
         _logger = logger;
+        _serviceProvider = serviceProvider;
+
         _pipeServer = pipeServer;
         _authService = authService;
-        _serviceProvider = serviceProvider;
+        _syncer = syncer;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -39,10 +45,10 @@ public class Worker : BackgroundService
 
                 await _authService.InitializeSessionAsync();
 
-                var pipeServer = _pipeServer.ListenAsync(stoppingToken);
-                // new Thread(() => {Console.WriteLine();}){IsBackground = true}.Start();
-
-                await Task.WhenAll(pipeServer);
+                await Task.WhenAll(
+                    _pipeServer.ListenAsync(stoppingToken),
+                    _syncer.ListenAsync(stoppingToken)
+                );
             }
             catch (Exception ex)
             {

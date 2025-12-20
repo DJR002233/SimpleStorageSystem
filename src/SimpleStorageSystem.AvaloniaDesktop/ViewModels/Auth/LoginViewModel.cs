@@ -71,7 +71,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         LoadingOverlay.Close();
         Password = "";
         
-        if (ipcResponse.Status == IpcStatus.OK)
+        if (ipcResponse.Status == IpcStatus.Ok)
         {
             Navigation.NavigateTo(_mainMenuVM());
             return;

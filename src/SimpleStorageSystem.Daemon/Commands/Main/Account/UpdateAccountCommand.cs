@@ -9,7 +9,7 @@ namespace SimpleStorageSystem.Daemon.Commands.Main.Account;
 public class UpdateAccountCommand : IIpcCommandHandler
 {
     private readonly AccountService _accountService;
-    public IpcCommand Command => IpcCommand.UPDATE_ACCOUNT;
+    public IpcCommand Command => IpcCommand.UpdateAccount;
 
     public UpdateAccountCommand(AccountService accountService)
     {
@@ -22,6 +22,6 @@ public class UpdateAccountCommand : IIpcCommandHandler
         ApiResponse apiResponse = await _accountService.UpdateAccountInformationAsync(payload!.Username, payload.Email, payload.Password);
 
         bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.OK : IpcStatus.FAILED, apiResponse.Message);
+        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 }

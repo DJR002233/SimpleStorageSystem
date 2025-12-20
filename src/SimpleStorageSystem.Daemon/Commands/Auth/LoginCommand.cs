@@ -9,7 +9,7 @@ namespace SimpleStorageSystem.Daemon.Commands.Auth;
 public class LoginCommand : IIpcCommandHandler
 {
     private readonly AuthService _authService;
-    public IpcCommand Command => IpcCommand.LOGIN;
+    public IpcCommand Command => IpcCommand.Login;
 
     public LoginCommand(AuthService authService)
     {
@@ -23,6 +23,6 @@ public class LoginCommand : IIpcCommandHandler
 
         bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
 
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.OK : IpcStatus.FAILED, apiResponse.Message);
+        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 }

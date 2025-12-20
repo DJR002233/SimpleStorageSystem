@@ -13,7 +13,7 @@ public class AccountClient
     public async Task<IpcResponse> RequestUpdateAccountInformation(string? username, string? email, string? password)
     {
         var updateAccountRequest = new UpdateAccountRequest { Username = username, Email = email, Password = password };
-        var ipcRequest = IpcRequest.Create(IpcCommand.UPDATE_ACCOUNT, updateAccountRequest);
+        var ipcRequest = IpcRequest.Create(IpcCommand.UpdateAccount, updateAccountRequest);
         try
         {
             using var pipeClient = new PipeClient();
@@ -24,7 +24,7 @@ public class AccountClient
         }
         catch (Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.ERROR, ex.Message);
+            return IpcResponse.Create(IpcStatus.Error, ex.Message);
         }
     }
     

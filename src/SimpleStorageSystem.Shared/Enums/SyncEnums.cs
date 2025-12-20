@@ -2,11 +2,11 @@ namespace SimpleStorageSystem.Shared.Enums;
 
 public enum ItemType
 {
-    FILE,
-    FOLDER
+    File,
+    Folder
 }
 
 public enum SyncStatus
 {
-    START_SERVER_SYNC
+    StartServerSync
 }

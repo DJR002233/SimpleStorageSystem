@@ -12,8 +12,11 @@ public static class StorageDriveTableConfiguration
         {
             entity.ToTable("storage_drives");
             entity.HasKey(s => s.StorageDriveId);
+            entity.Property(s => s.StorageDriveId).HasColumnName("storage_drive_id");
             entity.Property(s => s.Name).HasColumnName("name").HasColumnType("varchar").IsRequired();
-            entity.Property(s => s.Mount).HasColumnName("mount").IsRequired().HasDefaultValue(MountOption.INACTIVE);
+            entity.Property(s => s.Mount).HasColumnName("mount").IsRequired().HasDefaultValue(MountOption.Inactive);
+
+            entity.HasIndex(s => s.Name).IsUnique();
         });
     }
 }

@@ -9,7 +9,7 @@ namespace SimpleStorageSystem.Daemon.Commands.Auth;
 public class CreateAccountCommand : IIpcCommandHandler
 {
     private readonly AuthService _authService;
-    public IpcCommand Command => IpcCommand.CREATE_ACCOUNT;
+    public IpcCommand Command => IpcCommand.CreateAccount;
 
     public CreateAccountCommand(AuthService authService)
     {
@@ -22,6 +22,6 @@ public class CreateAccountCommand : IIpcCommandHandler
         ApiResponse apiResponse = await _authService.CreateAccountAsync(payload!.Username, payload.Email, payload.Password);
 
         bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.OK : IpcStatus.FAILED, apiResponse.Message);
+        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 }

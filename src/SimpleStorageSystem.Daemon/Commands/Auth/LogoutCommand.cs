@@ -8,7 +8,7 @@ namespace SimpleStorageSystem.Daemon.Commands.Auth;
 public class LogoutCommand : IIpcCommandHandler
 {
     private readonly AuthService _authService;
-    public IpcCommand Command => IpcCommand.LOGOUT;
+    public IpcCommand Command => IpcCommand.Logout;
 
     public LogoutCommand(AuthService authService)
     {
@@ -20,7 +20,7 @@ public class LogoutCommand : IIpcCommandHandler
         ApiResponse apiResponse = await _authService.LogoutAsync();
 
         bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.OK : IpcStatus.FAILED, apiResponse.Message);
+        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 
 }

@@ -8,16 +8,16 @@ public enum IpcType
 
 public enum IpcCommand
 {
-    LOGIN,
-    CREATE_ACCOUNT,
-    HAS_SESSION,
-    LOGOUT,
-    UPDATE_ACCOUNT,
+    Login,
+    CreateAccount,
+    HasSession,
+    Logout,
+    UpdateAccount,
 }
 
 public enum IpcStatus
 {
-    OK,
-    FAILED,
-    ERROR
+    Ok,
+    Failed,
+    Error
 }

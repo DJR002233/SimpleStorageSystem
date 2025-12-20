@@ -1,4 +1,5 @@
 using SimpleStorageSystem.Daemon.Handler.HttpHandler;
+using SimpleStorageSystem.Shared.Enums;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ServiceCollections;
 
@@ -6,22 +7,22 @@ public static class HttpClientCollection
 {
     public static IServiceCollection InitializeHttpClientServices(this IServiceCollection services)
     {
-        services.AddHttpClient("BasicClient")
+        services.AddHttpClient(HttpClientName.BasicClient.ToString())
             .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
-        services.AddHttpClient("TokenClient")
+        services.AddHttpClient(HttpClientName.TokenClient.ToString())
             .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
             .AddHttpMessageHandler<RefreshTokenHeaderHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
-        services.AddHttpClient("LogoutClient")
+        services.AddHttpClient(HttpClientName.LogoutClient.ToString())
             .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
             .AddHttpMessageHandler<AccessTokenHeaderHandler>()
             .AddHttpMessageHandler<RefreshTokenHeaderHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();
 
-        services.AddHttpClient("AuthenticatedClient")
+        services.AddHttpClient(HttpClientName.AuthenticatedClient.ToString())
             .AddHttpMessageHandler<HttpClientBaseConfigHandler>()
             .AddHttpMessageHandler<AccessTokenHeaderHandler>()
             .AddHttpMessageHandler<HttpSocketExceptionHandler>();

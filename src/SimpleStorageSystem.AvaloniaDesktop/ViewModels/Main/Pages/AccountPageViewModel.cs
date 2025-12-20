@@ -52,7 +52,7 @@ public class AccountPageViewModel : ReactiveObject
         IpcResponse res = await _accountClient.RequestUpdateAccountInformation(Username, Email, Password);
         LoadingOverlay.Close();
 
-        if (res.Status == IpcStatus.OK)
+        if (res.Status == IpcStatus.Ok)
         {
             await DialogBox.Show(res.Status.ToString(), "Information updated successfully!");
             return;

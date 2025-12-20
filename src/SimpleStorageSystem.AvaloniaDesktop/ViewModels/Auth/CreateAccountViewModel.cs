@@ -80,7 +80,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
         LoadingOverlay.Close();
         RePassword = "";
         
-        if (ipcResponse.Status == IpcStatus.OK)
+        if (ipcResponse.Status == IpcStatus.Ok)
         {
             Password = "";
             await DialogBox.Show("Account created successfully!", 

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Services.Helper;
@@ -27,7 +28,7 @@ public class AccountService
                 Email = email,
                 Password = password
             };
-            var httpClient = _httpFactory.CreateClient("AuthenticatedClient");
+            var httpClient = _httpFactory.CreateClient(HttpClientName.AuthenticatedClient.ToString());
             var response = await httpClient.PutAsJsonAsync("account/update", data);
 
             var res = await response.Content.ReadFromJsonAsync<ApiResponse>();

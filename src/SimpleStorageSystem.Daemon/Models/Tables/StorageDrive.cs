@@ -4,7 +4,7 @@ namespace SimpleStorageSystem.Daemon.Models.Tables;
 
 public class StorageDrive
 {
-    public int StorageDriveId { get; set; }
+    public long StorageDriveId { get; set; }
     public required string Name { get; set; }
     public MountOption Mount { get; set; }
     

@@ -12,7 +12,7 @@ public class AuthClient
     public async Task<IpcResponse> RequestLoginAsync(string email, string password)
     {
         var loginRequest = new LoginRequest { Email = email, Password = password };
-        var ipcRequest = IpcRequest.Create(IpcCommand.LOGIN, loginRequest);
+        var ipcRequest = IpcRequest.Create(IpcCommand.Login, loginRequest);
 
         try
         {
@@ -24,14 +24,14 @@ public class AuthClient
         }
         catch (Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.ERROR, ex.Message);
+            return IpcResponse.Create(IpcStatus.Error, ex.Message);
         }
     }
 
     public async Task<IpcResponse> RequestCreateAccountAsync(string username, string email, string password)
     {
         var createAccountRequest = new CreateAccountRequest { Username = username, Email = email, Password = password };
-        var ipcRequest = IpcRequest.Create(IpcCommand.CREATE_ACCOUNT, createAccountRequest);
+        var ipcRequest = IpcRequest.Create(IpcCommand.CreateAccount, createAccountRequest);
 
         try
         {
@@ -43,14 +43,14 @@ public class AuthClient
         }
         catch (Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.ERROR, ex.Message);
+            return IpcResponse.Create(IpcStatus.Error, ex.Message);
         }
 
     }
 
     public async Task<IpcResponse> RequestLogoutAsync()
     {
-        var ipcRequest = IpcRequest.Create(IpcCommand.LOGOUT);
+        var ipcRequest = IpcRequest.Create(IpcCommand.Logout);
 
         try
         {
@@ -62,14 +62,14 @@ public class AuthClient
         }
         catch (Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.ERROR, ex.Message);
+            return IpcResponse.Create(IpcStatus.Error, ex.Message);
         }
 
     }
 
     public async Task<IpcResponse> RequestHasSessionAsync()
     {
-        var ipcRequest = IpcRequest.Create(IpcCommand.HAS_SESSION);
+        var ipcRequest = IpcRequest.Create(IpcCommand.HasSession);
 
         try
         {
@@ -81,7 +81,7 @@ public class AuthClient
         }
         catch (Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.ERROR, ex.Message);
+            return IpcResponse.Create(IpcStatus.Error, ex.Message);
         }
 
     }
