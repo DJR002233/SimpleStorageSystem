@@ -20,6 +20,7 @@ public static class BaseCollection
 
         services.AddTransient<AuthClient>();
         services.AddTransient<AccountClient>();
+        services.AddTransient<StorageDriveClient>();
 
         return services;
     }

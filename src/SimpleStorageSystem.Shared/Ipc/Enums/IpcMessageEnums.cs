@@ -13,6 +13,8 @@ public enum IpcCommand
     HasSession,
     Logout,
     UpdateAccount,
+    GetStorageDriveList,
+    
 }
 
 public enum IpcStatus

@@ -22,6 +22,7 @@ public static class FileItemTableConfiguration
             entity.Property(f => f.CreationTime).HasColumnName("creation_time").IsRequired();
             entity.Property(f => f.LastModified).HasColumnName("last_modified").IsRequired();
             entity.Property(f => f.LastSync).HasColumnName("last_sync");
+            entity.Property(f => f.DeletionTime).HasColumnName("deletion_time");
             // entity.Property(f => f.PendingSyncOperation).HasColumnName("pending_sync_operation");
 
             entity.Property(f => f.StorageDriveId).HasColumnName("storage_drive_id");

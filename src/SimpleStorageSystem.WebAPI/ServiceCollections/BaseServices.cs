@@ -8,7 +8,6 @@ public static class BaseCollection
 {
     public static IServiceCollection InitializeBaseServices(this IServiceCollection services)
     {
-        //services.AddAutoMapper(typeof(Program));
         services.AddScoped<AuthService>();
         services.AddScoped<AccountService>();
         services.AddScoped<PasswordHasher<AccountInformation>>();

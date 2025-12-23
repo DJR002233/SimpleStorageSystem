@@ -67,7 +67,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         }
 
         LoadingOverlay.Show("Logging in...");
-        IpcResponse ipcResponse = await _authClient.RequestLoginAsync(Email, Password);
+        IpcResponse<string> ipcResponse = await _authClient.RequestLoginAsync(Email, Password);
         LoadingOverlay.Close();
         Password = "";
         

@@ -9,7 +9,7 @@ public static class RequiredCollection
 {
     public static IServiceCollection InitializeRequiredServices(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<MyDbContext>(options =>
+        services.AddDbContext<ApiDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
                 npgsqlOptions =>

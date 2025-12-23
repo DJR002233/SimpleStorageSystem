@@ -35,7 +35,6 @@ public class AuthController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
             return Problem(ex.Message);
         }
 

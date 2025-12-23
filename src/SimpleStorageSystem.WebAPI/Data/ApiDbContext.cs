@@ -5,9 +5,9 @@ using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Data;
 
-public class MyDbContext : DbContext
+public class ApiDbContext : DbContext
 {
-    public MyDbContext(DbContextOptions<MyDbContext> options) : base(options) { }
+    public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options) { }
 
     // Tables
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -21,9 +21,9 @@ public class MyDbContext : DbContext
     public DbSet<RefreshToken> Tokens { get; set; }
 }
 
-public class MyDbContextFactory : IDesignTimeDbContextFactory<MyDbContext>
+public class MyDbContextFactory : IDesignTimeDbContextFactory<ApiDbContext>
 {
-    public MyDbContext CreateDbContext(string[] args)
+    public ApiDbContext CreateDbContext(string[] args)
     {
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -33,9 +33,9 @@ public class MyDbContextFactory : IDesignTimeDbContextFactory<MyDbContext>
         // Use the migration connection for design-time tools
         var connectionString = configuration.GetConnectionString("MigrationConnection");
 
-        var optionsBuilder = new DbContextOptionsBuilder<MyDbContext>();
+        var optionsBuilder = new DbContextOptionsBuilder<ApiDbContext>();
         optionsBuilder.UseNpgsql(connectionString);
 
-        return new MyDbContext(optionsBuilder.Options);
+        return new ApiDbContext(optionsBuilder.Options);
     }
 }

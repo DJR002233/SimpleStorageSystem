@@ -17,13 +17,8 @@ public class HasSessionCommand : IIpcCommandHandler
 
     public async Task<IpcResponse> HandleAsync(IpcRequest request)
     {
-        var response = await Task.Run(() =>
-        {
-            bool hasSession = _authService.HasSession();
-            return IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.Ok : IpcStatus.Failed);
-        });
+        bool hasSession = _authService.HasSession();
 
-        return response;
-        
+        return IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.Ok : IpcStatus.Failed);
     }
 }

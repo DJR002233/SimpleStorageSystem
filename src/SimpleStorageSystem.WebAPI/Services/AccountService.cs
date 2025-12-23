@@ -10,21 +10,21 @@ namespace SimpleStorageSystem.WebAPI.Services;
 
 public class AccountService
 {
-    private readonly MyDbContext _context;
+    private readonly ApiDbContext _dbContext;
     private PasswordHasher<AccountInformation> _passwordHasher;
-    public AccountService(MyDbContext context, PasswordHasher<AccountInformation> passwordHasher)
+    public AccountService(ApiDbContext context, PasswordHasher<AccountInformation> passwordHasher)
     {
-        _context = context;
+        _dbContext = context;
         _passwordHasher = passwordHasher;
     }
 
     public async Task<ApiResponse> UpdateAccountAsync(string userId, UpdateAccountRequest request)
     {
-        var account = _context.Accounts.FirstOrDefault( a => a.UserId.ToString() == userId);
+        var account = _dbContext.Accounts.FirstOrDefault( a => a.UserId.ToString() == userId);
         if (account is null)
             return CreateApiResponse.Unauthorized("Invalid Account");
         
-        bool emailExists = await _context.Accounts.AnyAsync(a => a.Email == request.Email);
+        bool emailExists = await _dbContext.Accounts.AnyAsync(a => a.Email == request.Email);
         if (emailExists)
             return CreateApiResponse.Failed("Email is already taken!");
 
@@ -37,7 +37,7 @@ public class AccountService
         if (!String.IsNullOrWhiteSpace(request.Password))
             account.Password = request.Password;
 
-        int rowAffected = await _context.SaveChangesAsync();
+        int rowAffected = await _dbContext.SaveChangesAsync();
         if (rowAffected > 0) return CreateApiResponse.Success();
 
         return CreateApiResponse.Error("Database Problem!", "Update Failed");

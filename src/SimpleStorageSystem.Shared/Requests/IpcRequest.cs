@@ -29,6 +29,7 @@ public class IpcRequest
             Payload = payload,
         };
     }
+
 }
 
 public class IpcRequest<T> : IpcRequest
@@ -52,6 +53,24 @@ public class IpcRequest<T> : IpcRequest
             Command = ipcCommand,
             RequestId = response.RequestId,
             Payload = payload,
+        };
+    }
+    
+    public static IpcRequest<T> Create(IpcCommand ipcCommand)
+    {
+        return new IpcRequest<T>
+        {
+            Command = ipcCommand,
+            RequestId = Guid.NewGuid().ToString(),
+        };
+    }
+
+    public static IpcRequest<T> CreateFromIpcResponse(IpcResponse response, IpcCommand ipcCommand)
+    {
+        return new IpcRequest<T>
+        {
+            Command = ipcCommand,
+            RequestId = response.RequestId,
         };
     }
 

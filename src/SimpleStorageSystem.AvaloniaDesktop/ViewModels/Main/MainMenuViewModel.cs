@@ -100,7 +100,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
 
     public async Task Logout()
     {
-        IpcResponse ipcResponse = await _authClient.RequestLogoutAsync();
+        IpcResponse<string> ipcResponse = await _authClient.RequestLogoutAsync();
 
         if (ipcResponse.Status == IpcStatus.Ok)
         {

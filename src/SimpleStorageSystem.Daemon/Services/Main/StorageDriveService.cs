@@ -6,6 +6,8 @@ using SimpleStorageSystem.Shared.DTOs;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
+using SimpleStorageSystem.Shared.Results;
+using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Main;
 
@@ -20,12 +22,17 @@ public class StorageDriveService
         _dbContext = dbContext;
     }
 
-    public async ValueTask<ApiResponse<List<StorageDriveDTO>>> GetStorageDrives()
+    public async ValueTask<List<StorageDriveResult>> GetStorageDrives()
     {
-        var httpClient = _httpFactory.CreateClient(HttpClientName.AuthenticatedClient.ToString());
-        var apiResponse = await httpClient.GetFromJsonAsync<ApiResponse<List<StorageDriveDTO>>>("storage_drive/get_drives");
+        var storageDrives = _dbContext.Drives.Where(d => d.DeletionTime != null);
+        var listOfDrives = new List<StorageDriveResult>();
 
-        return apiResponse!;
+        foreach(var drive in storageDrives)
+        {
+            listOfDrives.Add(ModelMapper.Map<StorageDriveResult>(drive));
+        }
+
+        return listOfDrives;
     }
 
     public async ValueTask<ApiResponse> CreateStorageDrive(string name)

@@ -9,10 +9,10 @@ namespace SimpleStorageSystem.AvaloniaDesktop.Client;
 
 public class AuthClient
 {
-    public async Task<IpcResponse> RequestLoginAsync(string email, string password)
+    public async ValueTask<IpcResponse<string>> RequestLoginAsync(string email, string password)
     {
-        var loginRequest = new LoginRequest { Email = email, Password = password };
-        var ipcRequest = IpcRequest.Create(IpcCommand.Login, loginRequest);
+        var data = new LoginRequest { Email = email, Password = password };
+        var ipcRequest = IpcRequest.Create(IpcCommand.Login, data);
 
         try
         {
@@ -20,18 +20,18 @@ public class AuthClient
             
             await pipeClient.PostMessageAsync(ipcRequest);
 
-            return pipeClient.GetResponse();
+            return pipeClient.GetResponse<string>();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.Error, ex.Message);
+            return IpcResponse.CreateErrorResponseFromIpcRequest<string>(ipcRequest, ex.Message);
         }
     }
 
-    public async Task<IpcResponse> RequestCreateAccountAsync(string username, string email, string password)
+    public async ValueTask<IpcResponse<string>> RequestCreateAccountAsync(string username, string email, string password)
     {
-        var createAccountRequest = new CreateAccountRequest { Username = username, Email = email, Password = password };
-        var ipcRequest = IpcRequest.Create(IpcCommand.CreateAccount, createAccountRequest);
+        var data = new CreateAccountRequest { Username = username, Email = email, Password = password };
+        var ipcRequest = IpcRequest.Create(IpcCommand.CreateAccount, data);
 
         try
         {
@@ -39,16 +39,16 @@ public class AuthClient
             
             await pipeClient.PostMessageAsync(ipcRequest);
 
-            return pipeClient.GetResponse();
+            return pipeClient.GetResponse<string>();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.Error, ex.Message);
+            return IpcResponse.CreateErrorResponseFromIpcRequest<string>(ipcRequest, ex.Message);
         }
 
     }
 
-    public async Task<IpcResponse> RequestLogoutAsync()
+    public async ValueTask<IpcResponse<string>> RequestLogoutAsync()
     {
         var ipcRequest = IpcRequest.Create(IpcCommand.Logout);
 
@@ -58,16 +58,16 @@ public class AuthClient
             
             await pipeClient.PostMessageAsync(ipcRequest);
 
-            return pipeClient.GetResponse();
+            return pipeClient.GetResponse<string>();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.Error, ex.Message);
+            return IpcResponse.CreateErrorResponseFromIpcRequest<string>(ipcRequest, ex.Message);
         }
 
     }
 
-    public async Task<IpcResponse> RequestHasSessionAsync()
+    public async ValueTask<IpcResponse<string>> RequestHasSessionAsync()
     {
         var ipcRequest = IpcRequest.Create(IpcCommand.HasSession);
 
@@ -77,11 +77,11 @@ public class AuthClient
             
             await pipeClient.PostMessageAsync(ipcRequest);
 
-            return pipeClient.GetResponse();
+            return pipeClient.GetResponse<string>();
         }
-        catch (Exception ex)
+        catch(Exception ex)
         {
-            return IpcResponse.Create(IpcStatus.Error, ex.Message);
+            return IpcResponse.CreateErrorResponseFromIpcRequest<string>(ipcRequest, ex.Message);
         }
 
     }

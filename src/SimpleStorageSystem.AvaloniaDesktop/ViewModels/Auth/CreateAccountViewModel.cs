@@ -76,7 +76,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
         }
 
         LoadingOverlay.Show("Creating account...");
-        IpcResponse ipcResponse = await _authClient.RequestCreateAccountAsync(Username!, Email!, Password!);
+        IpcResponse<string> ipcResponse = await _authClient.RequestCreateAccountAsync(Username!, Email!, Password!);
         LoadingOverlay.Close();
         RePassword = "";
         

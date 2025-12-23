@@ -23,9 +23,10 @@ public class LocalSyncer
     public async ValueTask FileStructureSync(List<(string FullName, ItemType Item)> structure)
     {
         var filesDb = _dbContext.Files;
-        await filesDb.LoadAsync(); // Note to Self: don't use this. occupies memory. especially if there are a lot of records.
 
+        // Note to self: replace fileStructure below with new iterative object or replace parameter with HashSet by default. Don't know which is best
         HashSet<string>? fileStructure = structure.Where(file => file.Item == ItemType.File).Select(col => col.FullName).ToHashSet();
+        HashSet<string>? dbFullName = filesDb.Select(col => col.FullName).AsNoTracking().ToHashSet();
 
         foreach (var file in fileStructure)
         {
@@ -34,7 +35,7 @@ public class LocalSyncer
             if (!fileInfo.Exists)
                 continue;
 
-            if (filesDb.Local.Any(f => f.FullName == file))
+            if (dbFullName.Contains(file))
             {
                 var dbFileItem = filesDb.Local.SingleOrDefault(f => f.FullName == file);
                 if(dbFileItem is not null && fileInfo.LastWriteTimeUtc > dbFileItem.LastModified)
@@ -52,9 +53,16 @@ public class LocalSyncer
             );
         }
 
-        filesDb.RemoveRange(
-            filesDb.Local.Where(files => !fileStructure.Contains(files.FullName))
-        );
+        var deletedFiles = filesDb.Where(files => !fileStructure.Contains(files.FullName) && files.DeletionTime == null).AsAsyncEnumerable();
+
+        await foreach(var file in deletedFiles)
+        {
+            file.DeletionTime = DateTime.UtcNow;
+        }
+        
+        // filesDb.RemoveRange(
+        //     filesDb.Local.Where(files => !fileStructure.Contains(files.FullName))
+        // );
 
         await _dbContext.SaveChangesAsync();
     }

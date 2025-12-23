@@ -49,7 +49,7 @@ public class AccountPageViewModel : ReactiveObject
         }
 
         LoadingOverlay.Show("Delaying Task for 3 sec.");
-        IpcResponse res = await _accountClient.RequestUpdateAccountInformation(Username, Email, Password);
+        IpcResponse<string> res = await _accountClient.RequestUpdateAccountInformation(Username, Email, Password);
         LoadingOverlay.Close();
 
         if (res.Status == IpcStatus.Ok)

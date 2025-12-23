@@ -15,6 +15,7 @@ public static class FolderItemTableConfiguration
             entity.Property(f => f.CreationTime).HasColumnName("creation_time").IsRequired();
             entity.Property(f => f.LastModified).HasColumnName("last_modified").IsRequired();
             entity.Property(f => f.LastSync).HasColumnName("last_sync");
+            entity.Property(f => f.DeletionTime).HasColumnName("deletion_time");
             entity.Property(f => f.MountFolder).HasColumnName("mount_folder");
 
             entity.Property(f => f.StorageDriveId).HasColumnName("storage_drive_id");

@@ -15,13 +15,13 @@ namespace SimpleStorageSystem.WebAPI.Services;
 
 public class AuthService
 {
-    private readonly MyDbContext _context;
+    private readonly ApiDbContext _dbContext;
     private IConfiguration _configuration;
     private PasswordHasher<AccountInformation> _passwordHasher;
 
-    public AuthService(MyDbContext context, IConfiguration configuration, PasswordHasher<AccountInformation> passwordHasher)
+    public AuthService(ApiDbContext context, IConfiguration configuration, PasswordHasher<AccountInformation> passwordHasher)
     {
-        _context = context;
+        _dbContext = context;
         _configuration = configuration;
         _passwordHasher = passwordHasher;
     }
@@ -30,7 +30,7 @@ public class AuthService
     {
         var invalidResponse = CreateApiResponse.Failed<Session>("Invalid Credentials!");
 
-        var account = await _context.Accounts.FirstOrDefaultAsync(b => b.Email == user.Email);
+        var account = await _dbContext.Accounts.FirstOrDefaultAsync(b => b.Email == user.Email);
         if (account is null || account.UserId is null)
             return invalidResponse;
 
@@ -42,7 +42,7 @@ public class AuthService
         AccessToken jwtToken = GenerateAccessToken(account.UserId.Value, account.Email!);
 
         account.Token.Add(new RefreshToken { Token = dbToken, UserId = account.UserId.Value });
-        await _context.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync();
 
         return CreateApiResponse.Success(
             new Session
@@ -64,14 +64,14 @@ public class AuthService
             return CreateApiResponse.Unauthorized("Account creation is disabled");
             
         user.Password = _passwordHasher.HashPassword(user, user.Password!);
-        bool emailExists = await _context.Accounts.AnyAsync(b => b.Email == user.Email);
+        bool emailExists = await _dbContext.Accounts.AnyAsync(b => b.Email == user.Email);
 
         if (emailExists)
             return CreateApiResponse.Failed("Email is already taken!");
 
-        _context.Accounts.Add(user);
+        _dbContext.Accounts.Add(user);
 
-        int rowsAffected = await _context.SaveChangesAsync();
+        int rowsAffected = await _dbContext.SaveChangesAsync();
         if (rowsAffected > 0)
             return CreateApiResponse.Success("Account Created!");
 
@@ -80,7 +80,7 @@ public class AuthService
 
     public async Task<ApiResponse<Session>> GetAccessTokenAsync(string refreshToken)
     {
-        var rfToken = await _context.Tokens.Include(t => t.Account).FirstOrDefaultAsync(t => t.Token == refreshToken);
+        var rfToken = await _dbContext.Tokens.Include(t => t.Account).FirstOrDefaultAsync(t => t.Token == refreshToken);
         if (rfToken is null)
             return CreateApiResponse.Failed<Session>("Token Not Found!");
 
@@ -93,7 +93,7 @@ public class AuthService
         if (rfToken.ExpiresAt <= DateTime.UtcNow)
         {
             rfToken.Revoked = true;
-            await _context.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
             return CreateApiResponse.Failed<Session>("Token Expired!\nPlease login again...");
         }
 
@@ -102,13 +102,13 @@ public class AuthService
         rfToken.Revoked = true;
         rfToken.ReplacedByToken = newRefreshToken;
 
-        _context.Tokens.Add(new RefreshToken { Token = newRefreshToken, UserId = rfToken.UserId });
+        _dbContext.Tokens.Add(new RefreshToken { Token = newRefreshToken, UserId = rfToken.UserId });
 
         AccessToken accessToken = GenerateAccessToken(rfToken.UserId, rfToken.Account.Email!);
 
         try
         {
-            int rowsAffected = await _context.SaveChangesAsync();
+            int rowsAffected = await _dbContext.SaveChangesAsync();
 
             if (rowsAffected <= 0)
             {
@@ -166,7 +166,7 @@ public class AuthService
 
     public async Task<ApiResponse> ClearTokenAsync(string? refreshToken)
     {
-        var rfToken = await _context.Tokens.Include(t => t.Account).FirstOrDefaultAsync(t => t.Token == refreshToken);
+        var rfToken = await _dbContext.Tokens.Include(t => t.Account).FirstOrDefaultAsync(t => t.Token == refreshToken);
         if (rfToken is null)
             return CreateApiResponse.Failed("Token Not Found!");
 
@@ -180,7 +180,7 @@ public class AuthService
 
         try
         {
-            int rowsAffected = await _context.SaveChangesAsync();
+            int rowsAffected = await _dbContext.SaveChangesAsync();
 
             if (rowsAffected <= 0)
             {
@@ -245,10 +245,10 @@ public class AuthService
 
     public async Task<bool> RevokeAllUserTokensAsync(Guid userId)
     {
-        var tokens = _context.Tokens.Where(t => t.UserId == userId).ToList();
+        var tokens = _dbContext.Tokens.Where(t => t.UserId == userId).ToList();
         foreach (var token in tokens)
             token.Revoked = true;
-        return await _context.SaveChangesAsync() > 0;
+        return await _dbContext.SaveChangesAsync() > 0;
     }
 
     /*
