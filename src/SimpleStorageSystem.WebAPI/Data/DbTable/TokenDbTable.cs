@@ -3,13 +3,13 @@ using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Data.Configurations;
 
-public static class TokensConfiguration
+public static class TokensDbTable
 {
-    public static void ConfigureToken(this ModelBuilder modelBuilder)
+    public static void CreateTableToken(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<RefreshToken>(entity =>
         {
-            entity.ToTable("refresh_tokens");
+            entity.ToTable("tokens");
             entity.HasKey(b => b.Id);
             entity.Property(b => b.Id).HasColumnName("id").IsRequired();
             entity.Property(b => b.Token).HasColumnName("token").HasColumnType("Text").IsRequired();

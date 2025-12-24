@@ -15,7 +15,7 @@ public class LogoutCommand : IIpcCommandHandler
         _authService = authService;
     }
 
-    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    public async ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
         ApiResponse apiResponse = await _authService.LogoutAsync();
 

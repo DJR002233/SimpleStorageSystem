@@ -24,10 +24,10 @@ public class StorageDriveService
 
     public async ValueTask<List<StorageDriveResult>> GetStorageDrives()
     {
-        var storageDrives = _dbContext.Drives.Where(d => d.DeletionTime != null);
+        var storageDrives = _dbContext.Drives.AsNoTracking().Where(d => d.DeletionTime != null).AsAsyncEnumerable();
         var listOfDrives = new List<StorageDriveResult>();
 
-        foreach(var drive in storageDrives)
+        await foreach(var drive in storageDrives)
         {
             listOfDrives.Add(ModelMapper.Map<StorageDriveResult>(drive));
         }

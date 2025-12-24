@@ -8,8 +8,9 @@ public class FolderItem : MetaData
     // public DateTime? LastModified { get; set; }
     // public DateTime? LastSync { get; set; }
     public string? MountFolder { get; set; }
+    public bool IsRootFolder { get; set; }
 
-    public int? StorageDriveId { get; set; }
+    public long StorageDriveId { get; set; }
     public StorageDrive Drive { get; set; } = null!;
     
 }

@@ -14,10 +14,12 @@ namespace SimpleStorageSystem.WebAPI.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly AuthService _authService;
+
     public AuthController(AuthService authService)
     {
         _authService = authService;
     }
+    
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {

@@ -13,15 +13,34 @@ public class ApiDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema("main");
-        modelBuilder.ConfigureAccount();
-        modelBuilder.ConfigureToken();
+
+        modelBuilder.CreateTableAccount();
+        modelBuilder.CreateTableToken();
+
+        modelBuilder.CreateTableStorageName();
+        modelBuilder.CreateTableUserStorageDrive();
+
+        modelBuilder.CreateTableFileItem();
+        modelBuilder.CreateTableUserFile();
+
+        modelBuilder.CreateTableUserFolder();
+
         base.OnModelCreating(modelBuilder);
     }
+    
     public DbSet<AccountInformation> Accounts { get; set; }
     public DbSet<RefreshToken> Tokens { get; set; }
+
+    public DbSet<StorageName> StorageNames { get; set; }
+    public DbSet<UserStorageDrive> StorageDrives { get; set; }
+
+    public DbSet<FileItem> Files { get; set; }
+    public DbSet<UserFile> UserFiles { get; set; }
+
+    public DbSet<UserFolder> UserFolders { get; set; }
 }
 
-public class MyDbContextFactory : IDesignTimeDbContextFactory<ApiDbContext>
+public class ApiDbContextFactory : IDesignTimeDbContextFactory<ApiDbContext>
 {
     public ApiDbContext CreateDbContext(string[] args)
     {

@@ -17,24 +17,28 @@ public class StorageDriveController : Controller
     [HttpGet("get_drives")]
     public async ValueTask<IActionResult> GetUserStorageDrives()
     {
+        await Task.Delay(1000);
         return Problem("Unimplemented");
     }
 
     [HttpPost("create_drive")]
     public async ValueTask<IActionResult> AddUserStorageDrive()
     {
+        await Task.Delay(1000);
         return Problem("Unimplemented");
     }
 
     [HttpPut("rename_drive")]
     public async ValueTask<IActionResult> RenameUserStorageDrive()
     {
+        await Task.Delay(1000);
         return Problem("Unimplemented");
     }
 
     [HttpDelete("delete_drive")]
     public async ValueTask<IActionResult> DeleteUserStorageDrive()
     {
+        await Task.Delay(1000);
         return Problem("Unimplemented");
     }
 }

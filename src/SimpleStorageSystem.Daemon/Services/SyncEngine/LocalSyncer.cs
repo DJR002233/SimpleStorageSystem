@@ -70,6 +70,7 @@ public class LocalSyncer
     public async ValueTask FolderStructureSync(List<(string FullName, ItemType Item)> structure)
     {
         var foldersDb = _dbContext.Folders;
+        await Task.Delay(1000);
     }
 
 }

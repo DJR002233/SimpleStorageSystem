@@ -6,19 +6,22 @@ namespace SimpleStorageSystem.Daemon.Services.Worker;
 
 public class StorageDriveSyncer
 {
-    private readonly SqLiteDbContext _dbContext;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly List<(string, ItemType)> _directoryStructure = new();
 
-    public StorageDriveSyncer(SqLiteDbContext dbContext)
+    public StorageDriveSyncer(IServiceScopeFactory serviceScopeFactory)
     {
-        _dbContext = dbContext;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async Task ListenAsync(CancellationToken stoppingToken)
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            var mainDrive = await _dbContext.Drives.SingleOrDefaultAsync(
+            using var scope = _serviceScopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+
+            var mainDrive = await dbContext.Drives.SingleOrDefaultAsync(
                 d => d.Mount == MountOption.MainOnDrive ||
                 d.Mount == MountOption.MainOnServer
             );
@@ -58,11 +61,11 @@ public class StorageDriveSyncer
         var files = dir.EnumerateFiles();
         foreach (var file in files)
         {
-            await SyncFile(file);
+            SyncFile(file);
         }
     }
 
-    public async Task SyncFile(FileInfo file)
+    public void SyncFile(FileInfo file)
     {
         // FileItem fileItem = new FileItem
         // {

@@ -7,5 +7,5 @@ namespace SimpleStorageSystem.Daemon.Commands;
 public interface IIpcCommandHandler
 {
     IpcCommand Command { get; }
-    Task<IpcResponse> HandleAsync(IpcRequest request);
+    ValueTask<IpcResponse> HandleAsync(IpcRequest request);
 }

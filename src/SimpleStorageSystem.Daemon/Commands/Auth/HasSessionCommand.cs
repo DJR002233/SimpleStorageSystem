@@ -15,10 +15,10 @@ public class HasSessionCommand : IIpcCommandHandler
         _authService = authService;
     }
 
-    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    public ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
-        bool hasSession = _authService.HasSession();
+        var hasSession = _authService.HasSession();
 
-        return IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.Ok : IpcStatus.Failed);
+        return ValueTask.FromResult(IpcResponse.CreateFromIpcRequest(request, hasSession ? IpcStatus.Ok : IpcStatus.Failed));
     }
 }

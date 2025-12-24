@@ -15,8 +15,10 @@ public class HttpClientBaseConfigHandler : DelegatingHandler
     {
         if (_settings.BaseUri is null) throw new Exception("No uri!");
 
-        request.RequestUri = new Uri(_settings.BaseUri, request.RequestUri ?? new Uri("", UriKind.Relative));
-        
+        var requestUriPath = new Uri("api" + request.RequestUri!.AbsolutePath, UriKind.Relative);
+
+        request.RequestUri = new Uri(_settings.BaseUri, requestUriPath);
+
         return await base.SendAsync(request, cancellationToken);
     }
 

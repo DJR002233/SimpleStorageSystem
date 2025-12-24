@@ -3,13 +3,13 @@ using SimpleStorageSystem.WebAPI.Models.Tables;
 
 namespace SimpleStorageSystem.WebAPI.Data.Configurations;
 
-public static class AccountInformationConfiguration
+public static class AccountDbTable
 {
-    public static void ConfigureAccount(this ModelBuilder modelBuilder)
+    public static void CreateTableAccount(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AccountInformation>(entity =>
         {
-            entity.ToTable("account_informations");
+            entity.ToTable("accounts");
             entity.HasKey(a => a.UserId);
             entity.Property(a => a.UserId).HasColumnName("user_id").IsRequired();
             // entity.Property(a => a.Id).HasColumnName("id").UseIdentityByDefaultColumn();

@@ -16,7 +16,7 @@ public class GetStorageDrivesCommand : IIpcCommandHandler
         _storageDriveService = storageDriveService;
     }
 
-    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    public async ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
         List<StorageDriveResult> data = await _storageDriveService.GetStorageDrives();
 

@@ -34,10 +34,13 @@ public static class BaseCollection
 
         services.AddSingleton<ITokenStore, TokenStore>();
 
+        // service classes
         services.AddTransient<AuthService>();
         services.AddTransient<AccountService>();
 
+        // Workers (background services)
         services.AddSingleton<PipeServer>();
+        services.AddSingleton<StorageDriveSyncer>();
 
         return services;
     }

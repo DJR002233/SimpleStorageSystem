@@ -14,7 +14,7 @@ public class FileItem : MetaData
     // public DateTime? LastSync { get; set; }
     // public int? PendingSyncOperation { get; set; }
 
-    public int StorageDriveId { get; set; }
+    public long StorageDriveId { get; set; }
     public StorageDrive Drive { get; set; } = null!;
     
 }

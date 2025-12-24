@@ -16,7 +16,7 @@ public class UpdateAccountCommand : IIpcCommandHandler
         _accountService = accountService;
     }
 
-    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    public async ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
         var payload = JsonSerializer.Deserialize<UpdateAccountRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _accountService.UpdateAccountInformationAsync(payload!.Username, payload.Email, payload.Password);

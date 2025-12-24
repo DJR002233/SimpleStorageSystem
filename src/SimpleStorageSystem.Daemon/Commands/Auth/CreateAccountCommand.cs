@@ -16,7 +16,7 @@ public class CreateAccountCommand : IIpcCommandHandler
         _authService = authService;
     }
 
-    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    public async ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
         var payload = JsonSerializer.Deserialize<CreateAccountRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _authService.CreateAccountAsync(payload!.Username, payload.Email, payload.Password);

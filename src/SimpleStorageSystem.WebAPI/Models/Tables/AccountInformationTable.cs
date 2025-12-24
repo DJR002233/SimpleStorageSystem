@@ -10,5 +10,6 @@ public class AccountInformation
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public ICollection<RefreshToken> Token { get; set; } = new List<RefreshToken>();
+    public ICollection<UserStorageDrive> Drives { get; set; } = new List<UserStorageDrive>();
     
 }

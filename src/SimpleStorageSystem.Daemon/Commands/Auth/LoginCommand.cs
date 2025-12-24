@@ -16,7 +16,7 @@ public class LoginCommand : IIpcCommandHandler
         _authService = authService;
     }
 
-    public async Task<IpcResponse> HandleAsync(IpcRequest request)
+    public async ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
         var payload = JsonSerializer.Deserialize<LoginRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _authService.LoginAsync(payload!.Email, payload.Password);
