@@ -8,25 +8,28 @@ public class IpcResponse
     public IpcType? Type { get; set; } = IpcType.Response;
     public required string RequestId { get; set; }
     public IpcStatus? Status { get; set; }
+    public string? Message { get; set; }
     public string? ErrorMessage { get; init; }
     public object? Payload { get; set; }
 
-    public static IpcResponse Create(IpcStatus status, object? payload = null)
+    public static IpcResponse Create(IpcStatus status, string? message = null, object? payload = null)
     {
         return new IpcResponse
         {
             RequestId = Guid.NewGuid().ToString(),
             Status = status,
+            Message = message,
             Payload = payload,
         };
     }
 
-    public static IpcResponse CreateFromIpcRequest(IpcRequest request, IpcStatus status, object? payload = null)
+    public static IpcResponse CreateFromIpcRequest(IpcRequest request, IpcStatus status, string? message = null, object? payload = null)
     {
         return new IpcResponse
         {
             RequestId = request.RequestId,
             Status = status,
+            Message = message,
             Payload = payload,
         };
     }
@@ -42,41 +45,45 @@ public class IpcResponse
     }
 
 
-    public static IpcResponse<T> Create<T>(IpcStatus status, T? payload)
+    public static IpcResponse<T> Create<T>(IpcStatus status, T? payload, string? message = null)
     {
         return new IpcResponse<T>
         {
             RequestId = Guid.NewGuid().ToString(),
             Status = status,
+            Message = message,
             Payload = payload,
         };
     }
 
-    public static IpcResponse<T> CreateFromIpcRequest<T>(IpcRequest request, IpcStatus status, T? payload)
+    public static IpcResponse<T> CreateFromIpcRequest<T>(IpcRequest request, IpcStatus status, T? payload, string? message = null)
     {
         return new IpcResponse<T>
         {
             RequestId = request.RequestId,
             Status = status,
+            Message = message,
             Payload = payload,
         };
     }
 
-    public static IpcResponse<T> Create<T>(IpcStatus status)
+    public static IpcResponse<T> Create<T>(IpcStatus status, string? message = null)
     {
         return new IpcResponse<T>
         {
             RequestId = Guid.NewGuid().ToString(),
             Status = status,
+            Message = message,
         };
     }
 
-    public static IpcResponse<T> CreateFromIpcRequest<T>(IpcRequest request, IpcStatus status)
+    public static IpcResponse<T> CreateFromIpcRequest<T>(IpcRequest request, IpcStatus status, string? message = null)
     {
         return new IpcResponse<T>
         {
             RequestId = request.RequestId,
             Status = status,
+            Message = message,
         };
     }
     
@@ -86,7 +93,7 @@ public class IpcResponse
         {
             RequestId = Guid.NewGuid().ToString(),
             Status = IpcStatus.Error,
-            ErrorMessage = errorMessage
+            ErrorMessage = errorMessage,
         };
     }
 
@@ -96,7 +103,7 @@ public class IpcResponse
         {
             RequestId = request.RequestId,
             Status = IpcStatus.Error,
-            ErrorMessage = errorMessage
+            ErrorMessage = errorMessage,
         };
     }
 

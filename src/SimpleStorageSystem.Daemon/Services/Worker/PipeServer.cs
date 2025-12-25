@@ -40,6 +40,7 @@ public class PipeServer
 
             try
             {
+                // note to self: handling Errors from ApiResponses is non existent
                 IpcResponse ipcResponse = await _commandRouter.DispatchAsync(ipcRequest);
 
                 string response = JsonSerializer.Serialize(ipcResponse);
@@ -47,7 +48,7 @@ public class PipeServer
             }
             catch (Exception ex)
             {
-                IpcResponse ipcResponse = IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.Error, ex.Message);
+                IpcResponse ipcResponse = IpcResponse.CreateErrorResponseFromIpcRequest(ipcRequest, ex.Message);
 
                 string json = JsonSerializer.Serialize(ipcResponse);
 

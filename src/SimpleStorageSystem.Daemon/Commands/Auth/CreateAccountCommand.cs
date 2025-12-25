@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using SimpleStorageSystem.Daemon.Services.Auth;
 using SimpleStorageSystem.Shared.Enums;
@@ -21,7 +22,7 @@ public class CreateAccountCommand : IIpcCommandHandler
         var payload = JsonSerializer.Deserialize<CreateAccountRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _authService.CreateAccountAsync(payload!.Username, payload.Email, payload.Password);
 
-        bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
+        bool isSuccess = apiResponse.StatusCode == HttpStatusCode.OK;
         return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 }

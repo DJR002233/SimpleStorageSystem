@@ -10,6 +10,7 @@ using SimpleStorageSystem.WebAPI.Models.Tables;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Services.Helper;
+using System.Net;
 
 namespace SimpleStorageSystem.WebAPI.Services;
 
@@ -26,9 +27,9 @@ public class AuthService
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<ApiResponse<Session>> LoginAccountAsync(LoginRequest user)
+    public async ValueTask<ApiResponse<Session>> LoginAccountAsync(LoginRequest user)
     {
-        var invalidResponse = CreateApiResponse.Failed<Session>("Invalid Credentials!");
+        var invalidResponse = new ApiResponse<Session> { StatusCode = HttpStatusCode.BadRequest, Message = "Invalid Credentials!" };
 
         var account = await _dbContext.Accounts.FirstOrDefaultAsync(b => b.Email == user.Email);
         if (account is null || account.UserId is null)
@@ -44,8 +45,10 @@ public class AuthService
         account.Token.Add(new RefreshToken { Token = dbToken, UserId = account.UserId.Value });
         await _dbContext.SaveChangesAsync();
 
-        return CreateApiResponse.Success(
-            new Session
+        return new ApiResponse<Session>
+        {
+            StatusCode = HttpStatusCode.OK,
+            Data = new Session
             {
                 AccessToken = new AccessToken
                 {
@@ -54,47 +57,47 @@ public class AuthService
                 },
                 RefreshToken = dbToken
             }
-        );
+        };
     }
 
-    public async Task<ApiResponse> CreateAccountAsync(AccountInformation user)
+    public async ValueTask<ApiResponse> CreateAccountAsync(AccountInformation user)
     {
         bool isDisabled = false;
-        if(isDisabled)
-            return CreateApiResponse.Unauthorized("Account creation is disabled");
-            
+        if (isDisabled)
+            return new ApiResponse { StatusCode = HttpStatusCode.Forbidden, Message = "Account creation is disabled" };
+
         user.Password = _passwordHasher.HashPassword(user, user.Password!);
         bool emailExists = await _dbContext.Accounts.AnyAsync(b => b.Email == user.Email);
 
         if (emailExists)
-            return CreateApiResponse.Failed("Email is already taken!");
+            return new ApiResponse { StatusCode = HttpStatusCode.Conflict, Message = "Email is already taken!" };
 
         _dbContext.Accounts.Add(user);
 
         int rowsAffected = await _dbContext.SaveChangesAsync();
         if (rowsAffected > 0)
-            return CreateApiResponse.Success("Account Created!");
+            return new ApiResponse { StatusCode = HttpStatusCode.OK, Message = "Account Created!" };
 
-        return CreateApiResponse.Error("Failed to create account!");
+        return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, ErrorMessage = "Failed to create account!" };
     }
 
-    public async Task<ApiResponse<Session>> GetAccessTokenAsync(string refreshToken)
+    public async ValueTask<ApiResponse<Session>> GetAccessTokenAsync(string refreshToken)
     {
         var rfToken = await _dbContext.Tokens.Include(t => t.Account).FirstOrDefaultAsync(t => t.Token == refreshToken);
         if (rfToken is null)
-            return CreateApiResponse.Failed<Session>("Token Not Found!");
+            return new ApiResponse<Session> { StatusCode = HttpStatusCode.BadRequest, Message = "Token Not Found!" };
 
         if (rfToken.Revoked)
         {
             // await RevokeAllUserTokensAsync(rfToken.UserId);
-            return CreateApiResponse.Failed<Session>("Invalid Token!\nPlease login again...");
+            return new ApiResponse<Session> { StatusCode = HttpStatusCode.Unauthorized, ErrorMessage = "Invalid Token!\nPlease login again..." };
         }
 
         if (rfToken.ExpiresAt <= DateTime.UtcNow)
         {
             rfToken.Revoked = true;
             await _dbContext.SaveChangesAsync();
-            return CreateApiResponse.Failed<Session>("Token Expired!\nPlease login again...");
+            return new ApiResponse<Session> { StatusCode = HttpStatusCode.Unauthorized, Message = "Token Expired!\nPlease login again..." };
         }
 
         string newRefreshToken = GenerateRefreshToken();
@@ -113,11 +116,13 @@ public class AuthService
             if (rowsAffected <= 0)
             {
                 await RevokeAllUserTokensAsync(rfToken.UserId);
-                return CreateApiResponse.Failed<Session>("Failed to create token!");
+                return new ApiResponse<Session> { StatusCode = HttpStatusCode.Conflict, Message = "Failed to create token!\nToken was already revoked!\nAll tokens revoked for security reasons" };
             }
 
-            return CreateApiResponse.Success(
-                new Session
+            return new ApiResponse<Session>
+            {
+                StatusCode = HttpStatusCode.OK,
+                Data = new Session
                 {
                     AccessToken = new AccessToken
                     {
@@ -126,9 +131,10 @@ public class AuthService
                     },
                     RefreshToken = newRefreshToken
                 }
-            );
+            };
 
-        } catch (DbUpdateConcurrencyException)
+        }
+        catch (DbUpdateConcurrencyException)
         {
             // This happens if EF detects someone else modified the same record
             // await RevokeAllUserTokensAsync(token.UserId);
@@ -164,16 +170,23 @@ public class AuthService
 
     }
 
-    public async Task<ApiResponse> ClearTokenAsync(string? refreshToken)
+    public async ValueTask<ApiResponse> ClearTokenAsync(string? refreshToken)
     {
         var rfToken = await _dbContext.Tokens.Include(t => t.Account).FirstOrDefaultAsync(t => t.Token == refreshToken);
         if (rfToken is null)
-            return CreateApiResponse.Failed("Token Not Found!");
+            return new ApiResponse { StatusCode = HttpStatusCode.BadRequest, Message = "Token Not Found!" };
 
         if (rfToken.Revoked)
         {
             //await RevokeAllUserTokensAsync(rfToken.UserId);
-            return CreateApiResponse.Failed("Invalid Token!\nPlease login again...");
+            return new ApiResponse { StatusCode = HttpStatusCode.Unauthorized, Message = "Invalid Token!\nPlease login again..." };
+        }
+
+        if (rfToken.ExpiresAt <= DateTime.UtcNow)
+        {
+            rfToken.Revoked = true;
+            await _dbContext.SaveChangesAsync();
+            return new ApiResponse { StatusCode = HttpStatusCode.Unauthorized, Message = "Token Expired!\nPlease login again..." };
         }
 
         rfToken.Revoked = true;
@@ -184,15 +197,13 @@ public class AuthService
 
             if (rowsAffected <= 0)
             {
-                await RevokeAllUserTokensAsync(rfToken.UserId);
-                return CreateApiResponse.Failed("Token already revoked!\nRevoked all live tokens!");
+                // await RevokeAllUserTokensAsync(rfToken.UserId);
+                return new ApiResponse { StatusCode = HttpStatusCode.Conflict, Message = "Token already revoked!" };
             }
 
-            if (rfToken.ExpiresAt <= DateTime.UtcNow)
-                return CreateApiResponse.Failed("Token Expired!\nPlease login again...");
-
-            return CreateApiResponse.Success();
-        } catch (DbUpdateConcurrencyException)
+            return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
+        }
+        catch (DbUpdateConcurrencyException)
         {
             // This happens if EF detects someone else modified the same record
             // await RevokeAllUserTokensAsync(token.UserId);
@@ -243,7 +254,7 @@ public class AuthService
         return token;
     }
 
-    public async Task<bool> RevokeAllUserTokensAsync(Guid userId)
+    public async ValueTask<bool> RevokeAllUserTokensAsync(Guid userId)
     {
         var tokens = _dbContext.Tokens.Where(t => t.UserId == userId).ToList();
         foreach (var token in tokens)

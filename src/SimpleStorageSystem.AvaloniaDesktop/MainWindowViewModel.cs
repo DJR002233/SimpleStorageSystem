@@ -41,8 +41,10 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
     )
     {
         Navigation = navigation;
+        // does not work properly yet
         _authEvent = authEvent;
         _authEvent.OnUnauthorized += HandleUnauthorized;
+        // 
         _authClient = authClient;
         _loginVM = loginVM;
         _mainMenuVM = mainMenuVM;
@@ -66,6 +68,7 @@ public class MainWindowViewModel : ReactiveObject, IActivatableViewModel
         Navigation.NavigateTo(_loginVM, new CrossFade {Duration = TimeSpan.FromMilliseconds(600)});
     }
 
+    // does not work properly yet
     private void HandleUnauthorized()
     {
         Navigation.NavigateTo(_loginVM);

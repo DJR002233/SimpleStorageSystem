@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json;
 using SimpleStorageSystem.Daemon.Services.Main;
 using SimpleStorageSystem.Shared.Enums;
@@ -21,7 +22,7 @@ public class UpdateAccountCommand : IIpcCommandHandler
         var payload = JsonSerializer.Deserialize<UpdateAccountRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _accountService.UpdateAccountInformationAsync(payload!.Username, payload.Email, payload.Password);
 
-        bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
+        bool isSuccess = apiResponse.StatusCode == HttpStatusCode.OK;
         return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 }

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authorization;
 using SimpleStorageSystem.WebAPI.Models.Tables;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Models;
-using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.WebAPI.Services;
 using SimpleStorageSystem.Shared.Services.Helper;
+using System.Net;
 
 namespace SimpleStorageSystem.WebAPI.Controllers;
 
@@ -30,10 +30,11 @@ public class AuthController : ControllerBase
         {
             ApiResponse<Session> res = await _authService.LoginAccountAsync(request);
 
-            if (res.StatusMessage == ApiStatus.Success && !String.IsNullOrWhiteSpace(res?.Data?.ToString()))
+            if (res.StatusCode == HttpStatusCode.OK && res.Data is not null)
                 return Ok(res);
+            else if (res.StatusCode == HttpStatusCode.BadRequest) return ValidationProblem();
 
-            return Unauthorized(res);
+            throw new Exception("Response not sent");
         }
         catch (Exception ex)
         {
@@ -54,10 +55,12 @@ public class AuthController : ControllerBase
 
             ApiResponse res = await _authService.CreateAccountAsync(account);
 
-            if (res.StatusMessage == ApiStatus.Success) return Ok(res);
-            else if (res.StatusMessage == ApiStatus.Failed) return Conflict(res);
+            if (res.StatusCode == HttpStatusCode.OK) return Ok(res);
+            else if (res.StatusCode == HttpStatusCode.Forbidden) return Forbid();
+            else if (res.StatusCode == HttpStatusCode.Conflict) return Conflict(res);
+            else if (res.StatusCode == HttpStatusCode.InternalServerError) return Problem();
 
-            return Forbid(res.Message!);
+            throw new Exception("Response not sent");
         }
         catch (Exception ex)
         {
@@ -76,9 +79,12 @@ public class AuthController : ControllerBase
 
             ApiResponse<Session> res = await _authService.GetAccessTokenAsync(refreshToken);
 
-            if (res.StatusMessage == ApiStatus.Success) return Ok(res);
+            if (res.StatusCode == HttpStatusCode.OK) return Ok(res);
+            if (res.StatusCode == HttpStatusCode.BadRequest) return BadRequest(res);
+            if (res.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(res);
+            if (res.StatusCode == HttpStatusCode.Conflict) return Conflict(res);
 
-            return Unauthorized(res);
+            throw new Exception("Response not sent");
         }
         catch (Exception ex)
         {
@@ -98,9 +104,12 @@ public class AuthController : ControllerBase
 
             ApiResponse res = await _authService.ClearTokenAsync(refreshToken);
 
-            if (res.StatusMessage == ApiStatus.Success) return Ok(res);
+            if (res.StatusCode == HttpStatusCode.NoContent) return NoContent();
+            else if (res.StatusCode == HttpStatusCode.BadRequest) return BadRequest(res);
+            else if (res.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(res);
+            else if (res.StatusCode == HttpStatusCode.Conflict) return Conflict(res);
 
-            return Unauthorized(res);/**/
+            throw new Exception("Response not sent");
         }
         catch (Exception ex)
         {

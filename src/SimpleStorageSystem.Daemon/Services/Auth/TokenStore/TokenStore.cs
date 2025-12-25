@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 using SimpleStorageSystem.Shared.Enums;
@@ -29,19 +30,19 @@ public class TokenStore : ITokenStore
 
     public async ValueTask<ApiResponse<string?>> GetTokenAsync()
     {
-        await _lock.WaitAsync();
+        // await _lock.WaitAsync();
 
-        try
-        {
+        // try
+        // {
             ApiResponse<AccessToken> accessToken = await GetAccessTokenAsync();
             ApiResponse<string?> res = ModelMapper.Map<ApiResponse<string?>>(accessToken);
             res.Data = accessToken.Data?.Token;
             return res;
-        }
-        finally
-        {
-            _lock.Release();
-        }
+        // }
+        // finally
+        // {
+        //     _lock.Release();
+        // }
 
     }
 
@@ -56,11 +57,11 @@ public class TokenStore : ITokenStore
             _accessToken.Expiration is not null &&
             _accessToken.Expiration >= DateTime.UtcNow.AddMinutes(3)
             )
-                return CreateApiResponse.Success(_accessToken);
+                return new ApiResponse<AccessToken> { StatusCode = HttpStatusCode.OK, Data = _accessToken};
 
             ApiResponse apiResponse = await RefreshAccessTokenAsync();
-            if (apiResponse.StatusMessage == ApiStatus.Success)
-                return CreateApiResponse.Success(_accessToken);
+            if (apiResponse.StatusCode == HttpStatusCode.OK)
+                return new ApiResponse<AccessToken> { StatusCode = HttpStatusCode.OK, Data = _accessToken};
 
             return ModelMapper.Map<ApiResponse<AccessToken>>(apiResponse);
         }
@@ -108,22 +109,33 @@ public class TokenStore : ITokenStore
     {
         // await _lock.WaitAsync();
 
-        // try
-        // {
+        try
+        {
             if (String.IsNullOrWhiteSpace(await _credentialStore.GetAsync()))
-                return CreateApiResponse.Unauthenticated();
+                return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
 
             var client = _httpFactory.CreateClient(HttpClientName.TokenClient.ToString());
             var apiResponse = await client.GetFromJsonAsync<ApiResponse<Session>>("auth/refresh_session");
 
-            if (apiResponse!.StatusMessage == ApiStatus.Success && apiResponse.Data is not null)
+            if (apiResponse!.StatusCode == HttpStatusCode.OK && apiResponse.Data is not null)
             {
                 await _credentialStore.StoreAsync(apiResponse.Data.RefreshToken!);
                 _accessToken.SetNew(apiResponse.Data.AccessToken!);
             }
 
             return apiResponse;
-        // }
+        }
+        catch (HttpRequestException ex)
+        {
+            if(ex.StatusCode == HttpStatusCode.Unauthorized)
+                return CreateApiResponse.ErrorFromException(ex, "Token is invalid!");
+            
+            return CreateApiResponse.ErrorFromException(ex);
+        }
+        catch (Exception ex)
+        {
+            return CreateApiResponse.ErrorFromException(ex);
+        }
         // finally
         // {
         //     _lock.Release();

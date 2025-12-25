@@ -37,11 +37,13 @@ public class AccountService
         }
         catch (HttpRequestException ex)
         {
+            // Note to self: don't use model mapper
             ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }
         catch (Exception ex)
         {
+            // Note to self: don't use model mapper
             ApiResponse apiResponse = ModelMapper.Map<ApiResponse>(ex);
             return apiResponse;
         }

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using SimpleStorageSystem.Shared.Requests;
 using SimpleStorageSystem.Shared.Models;
-using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.WebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using System.Net;
 
 namespace SimpleStorageSystem.WebAPI.Controllers;
 
@@ -29,10 +29,14 @@ public class AccountController : ControllerBase
 
             ApiResponse res = await _accountService.UpdateAccountAsync(userId, request);
 
-            if (res.StatusMessage == ApiStatus.Success)
+            if (res.StatusCode == HttpStatusCode.NoContent)
                 return Ok(res);
+            else if (res.StatusCode == HttpStatusCode.Conflict)
+                return Conflict(res);
+            else if (res.StatusCode == HttpStatusCode.NotFound)
+                return NotFound(res);
 
-            return Unauthorized(res);
+            throw new Exception("Response not sent");
         }
         catch (Exception ex)
         {

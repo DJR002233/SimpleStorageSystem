@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http.Json;
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Daemon.Data;
@@ -46,7 +47,7 @@ public class StorageDriveService
         var httpResponse = await httpClient.PostAsJsonAsync("storage_drive/create_drive", data);
         var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<StorageDriveDTO>>();
 
-        if (apiResponse!.StatusMessage == ApiStatus.Success)
+        if (apiResponse!.StatusCode == HttpStatusCode.OK)
         {
             _dbContext.Drives.Add(
                 new StorageDrive
@@ -72,7 +73,7 @@ public class StorageDriveService
         var httpResponse = await httpClient.PutAsJsonAsync($"storage_drives/{id}/rename_drive", data);
         var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<StorageDriveDTO>>();
 
-        if (apiResponse!.StatusMessage == ApiStatus.Success)
+        if (apiResponse!.StatusCode == HttpStatusCode.OK)
         {
             var drive = await _dbContext.Drives.SingleOrDefaultAsync(d => d.StorageDriveId == id);
 
@@ -103,7 +104,7 @@ public class StorageDriveService
         var httpClient = _httpFactory.CreateClient(HttpClientName.AuthenticatedClient.ToString());
         var apiResponse = await httpClient.DeleteFromJsonAsync<ApiResponse>($"storage_drive/{id}/delete_drive");
 
-        if(apiResponse!.StatusMessage == ApiStatus.Success)
+        if(apiResponse!.StatusCode == HttpStatusCode.OK)
             await _dbContext.Drives.Where(d => d.StorageDriveId == id).ExecuteDeleteAsync();
 
         return apiResponse!;

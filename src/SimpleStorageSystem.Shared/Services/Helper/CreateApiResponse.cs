@@ -1,3 +1,4 @@
+using System.Net;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 
@@ -10,7 +11,8 @@ public class CreateApiResponse
         return new ApiResponse<T>
         {
             Title = ApiStatus.Success.ToString(),
-            StatusMessage = ApiStatus.Success,
+            // StatusMessage = ApiStatus.Success,
+            StatusCode = data is not null || !String.IsNullOrWhiteSpace(message) ? HttpStatusCode.OK : HttpStatusCode.NoContent,
             Message = message,
             Data = data
         };
@@ -21,7 +23,7 @@ public class CreateApiResponse
         return new ApiResponse<T>
         {
             Title = title ?? ApiStatus.Failed.ToString(),
-            StatusMessage = ApiStatus.Failed,
+            // StatusMessage = ApiStatus.Failed,
             Message = message
         };
     }
@@ -31,7 +33,7 @@ public class CreateApiResponse
         return new ApiResponse<T>
         {
             Title = title ?? ApiStatus.Unauthenticated.ToString(),
-            StatusMessage = ApiStatus.Unauthenticated,
+            // StatusMessage = ApiStatus.Unauthenticated,
             Message = message
         };
     }
@@ -41,7 +43,7 @@ public class CreateApiResponse
         return new ApiResponse<T>
         {
             Title = title ?? ApiStatus.Unauthorized.ToString(),
-            StatusMessage = ApiStatus.Unauthorized,
+            // StatusMessage = ApiStatus.Unauthorized,
             Message = message
         };
     }
@@ -51,20 +53,21 @@ public class CreateApiResponse
         return new ApiResponse<T>
         {
             Title = title ?? ApiStatus.Error.ToString(),
-            StatusMessage = ApiStatus.Error,
+            // StatusMessage = ApiStatus.Error,
             Message = message
         };
     }
     
-    public static ApiResponse<T> ErrorFromException<T>(Exception exception)
+    public static ApiResponse<T> ErrorFromException<T>(Exception exception, string? message = null)
     {
         return new ApiResponse<T>
         {
             Title = exception?.GetType().ToString(),
-            StatusMessage = ApiStatus.Error,
-            Message = exception?.Message
+            // StatusMessage = ApiStatus.Error,
+            Message = message ?? exception?.Message
         };
     }
+
 
     public static ApiResponse Success(string? message = null)
     {
@@ -91,8 +94,8 @@ public class CreateApiResponse
         return Error<object>(message, title);
     }
     
-    public static ApiResponse ErrorFromException(Exception exception)
+    public static ApiResponse ErrorFromException(Exception exception, string? message = null)
     {
-        return ErrorFromException<object>(exception);
+        return ErrorFromException<object>(exception, message);
     }
 }

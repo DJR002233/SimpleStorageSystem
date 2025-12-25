@@ -9,7 +9,7 @@
 
     xmlns:components="using:SimpleStorageSystem.AvaloniaDesktop.Views.Components">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding Items}"
+        <ItemsControl ItemsSource="{Binding Drives}"
         Margin="10">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
@@ -21,7 +21,7 @@
                 <DataTemplate>
                     <Button x:Name="StorageDrivesButton" Width="150" Height="200">
                         <Grid ColumnDefinitions="*" RowDefinitions="*,Auto">
-                            <TextBlock Text="{Binding Icon}" TextAlignment="Center"
+                            <TextBlock Text="{Binding Id}" TextAlignment="Center"
                             Grid.Row="0"
                             HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <TextBlock Text="{Binding Name}" TextAlignment="Center"

@@ -1,15 +1,31 @@
+using System.Reactive.Disposables;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
+using SimpleStorageSystem.Shared.Results;
+using System.Reactive.Linq;
+using System;
+using SimpleStorageSystem.Shared.Models;
+using System.Collections.Generic;
+using SimpleStorageSystem.AvaloniaDesktop.Client.Main;
+using SimpleStorageSystem.Shared.Enums;
+using DynamicData;
+using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
-public class StorageDrivesPageViewModel : ReactiveObject
+public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel
 {
     #region Services
     public LoadingOverlay LoadingOverlay { get; }
+    public ViewModelActivator Activator { get; } = new();
     #endregion Services
+
+    #region Clients
+    private readonly StorageDriveClient _storageDriveClient;
+    #endregion Clients
 
     #region VMs
     #endregion VMs
@@ -18,28 +34,37 @@ public class StorageDrivesPageViewModel : ReactiveObject
     #endregion Commands
 
     #region Properties
-    [Reactive] public ObservableCollection<Info> Items { get; set; }
+    [Reactive] public ObservableCollection<StorageDriveResult> Drives { get; set; }
     #endregion Properties
 
     public StorageDrivesPageViewModel(
-        LoadingOverlay loadingOverlay
+        LoadingOverlay loadingOverlay,
+        StorageDriveClient storageDriveClient
     )
     {
         LoadingOverlay = loadingOverlay;
-        Items = new ObservableCollection<Info>
+
+        _storageDriveClient = storageDriveClient;
+
+        Drives = new ObservableCollection<StorageDriveResult>();
+
+        this.WhenActivated(disposables =>
         {
-            new Info {Name = "Main Android", Icon = "Smartphone"},
-            new Info {Name = "Shared", Icon = "Harddisk"},
-            new Info {Name = "My Laptop", Icon = "Laptop"},
-            new Info {Name = "i5-4460_xubuntu.minimal", Icon = "Linux"},
-            new Info {Name = "i5-4460_win10", Icon = "Windows"},
-        };
+            Observable.FromAsync(GetStorageDrives).Subscribe().DisposeWith(disposables);
+        });
+    }
+
+    public async Task GetStorageDrives()
+    {
+        IpcResponse<List<StorageDriveResult>> res = await _storageDriveClient.RequestGetStorageDriveList();
+
+        if (res.Status == IpcStatus.Ok && res.Payload is not null)
+        {
+            Drives.Add(res.Payload);
+            return;
+        }
+
+        await DialogBox.Show(res.Status.ToString(), res.ErrorMessage);
     }
     
-}
-
-public class Info
-{
-    public required string Name { get; set; }
-    public required string Icon { get; set; }
 }

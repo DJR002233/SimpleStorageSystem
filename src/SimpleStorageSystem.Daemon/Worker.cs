@@ -44,12 +44,18 @@ public class Worker : BackgroundService
         {
             try
             {
-                await _authService!.InitializeSessionAsync();
+                await _authService.InitializeSessionAsync();
+                // note to self:
+                // should at least add desktop notification or open SimpleStorageApp and show session/token is expired
+                // _authService.InitializeSessionAsync() already catches Unauthorized Response
                 
                 await Task.WhenAll(
                     _pipeServer.ListenAsync(stoppingToken),
                     _syncer.ListenAsync(stoppingToken)
                 );
+                // note to self:
+                // if an error catches here while uploading chunks, would it affect the other loop/background Task?
+                // the ones that handle uploads and scanning and other loops could behave differently.
             }
             catch (Exception ex)
             {

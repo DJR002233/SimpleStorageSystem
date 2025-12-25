@@ -1,3 +1,4 @@
+using System.Net;
 using SimpleStorageSystem.Daemon.Services.Auth;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
@@ -19,7 +20,8 @@ public class LogoutCommand : IIpcCommandHandler
     {
         ApiResponse apiResponse = await _authService.LogoutAsync();
 
-        bool isSuccess = apiResponse.StatusMessage == ApiStatus.Success;
+        bool isSuccess = apiResponse.StatusCode == HttpStatusCode.NoContent;
+
         return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
     }
 

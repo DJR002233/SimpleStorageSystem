@@ -11,7 +11,7 @@ namespace SimpleStorageSystem.AvaloniaDesktop.Client.Main;
 
 public class StorageDriveClient
 {
-    public async ValueTask<IpcResponse<List<StorageDriveResult>>> RequestGetDriveList()
+    public async ValueTask<IpcResponse<List<StorageDriveResult>>> RequestGetStorageDriveList()
     {
         var ipcRequest = IpcRequest.Create(IpcCommand.GetStorageDriveList);
 

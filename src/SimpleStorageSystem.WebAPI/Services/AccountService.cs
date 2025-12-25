@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Shared.Models;
@@ -18,15 +19,15 @@ public class AccountService
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<ApiResponse> UpdateAccountAsync(string userId, UpdateAccountRequest request)
+    public async ValueTask<ApiResponse> UpdateAccountAsync(string userId, UpdateAccountRequest request)
     {
         var account = _dbContext.Accounts.FirstOrDefault( a => a.UserId.ToString() == userId);
         if (account is null)
-            return CreateApiResponse.Unauthorized("Invalid Account");
+            return new ApiResponse { StatusCode = HttpStatusCode.NotFound, Message = "Account not found" };
         
         bool emailExists = await _dbContext.Accounts.AnyAsync(a => a.Email == request.Email);
         if (emailExists)
-            return CreateApiResponse.Failed("Email is already taken!");
+            return new ApiResponse { StatusCode = HttpStatusCode.Conflict, Message = "Email is already taken!" };
 
         request.Password = _passwordHasher.HashPassword(account, request.Password!);
 
@@ -38,8 +39,9 @@ public class AccountService
             account.Password = request.Password;
 
         int rowAffected = await _dbContext.SaveChangesAsync();
-        if (rowAffected > 0) return CreateApiResponse.Success();
+        if (rowAffected > 0) return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
 
-        return CreateApiResponse.Error("Database Problem!", "Update Failed");
+        return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, ErrorMessage = "Database Problem!\n\nUpdate Failed" };
     }
+    
 }
