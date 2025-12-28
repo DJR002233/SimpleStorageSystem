@@ -1,6 +1,7 @@
 using SimpleStorageSystem.Daemon.Commands;
 using SimpleStorageSystem.Daemon.Commands.Auth;
 using SimpleStorageSystem.Daemon.Commands.Main.Account;
+using SimpleStorageSystem.Daemon.Commands.Main.StorageDrive;
 using SimpleStorageSystem.Daemon.Services;
 
 namespace SimpleStorageSystem.Daemon.ServiceCollections;
@@ -19,6 +20,10 @@ public static class IpcCommandHandlerCollection
         #region Account CommandHandlers
         services.AddTransient<IIpcCommandHandler, UpdateAccountCommand>();
         #endregion Account CommandHandlers
+
+        #region StorageDrive CommandHandlers
+        services.AddTransient<IIpcCommandHandler, GetStorageDrivesCommand>();
+        #endregion StorageDrive CommandHandlers
 
         services.AddTransient<IpcCommandRouter>();
         

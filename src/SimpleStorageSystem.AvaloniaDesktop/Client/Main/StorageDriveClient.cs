@@ -25,7 +25,7 @@ public class StorageDriveClient
         }
         catch(Exception ex)
         {
-            return IpcResponse.CreateErrorResponseFromIpcRequest<List<StorageDriveResult>>(ipcRequest, ex.Message);
+            return IpcResponse.CreateFromIpcRequest<List<StorageDriveResult>>(ipcRequest, IpcStatus.Error, ex.Message);
         }
     }
 

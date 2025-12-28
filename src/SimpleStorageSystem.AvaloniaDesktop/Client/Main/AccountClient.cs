@@ -10,7 +10,7 @@ namespace SimpleStorageSystem.AvaloniaDesktop.Client.Main;
 public class AccountClient
 {
 
-    public async ValueTask<IpcResponse<string>> RequestUpdateAccountInformation(string? username, string? email, string? password)
+    public async ValueTask<IpcResponse> RequestUpdateAccountInformation(string? username, string? email, string? password)
     {
         var data = new UpdateAccountRequest { Username = username, Email = email, Password = password };
         var ipcRequest = IpcRequest.Create(IpcCommand.UpdateAccount, data);
@@ -20,11 +20,11 @@ public class AccountClient
             
             await pipeClient.PostMessageAsync(ipcRequest);
 
-            return pipeClient.GetResponse<string>();
+            return pipeClient.GetResponse();
         }
         catch(Exception ex)
         {
-            return IpcResponse.CreateErrorResponseFromIpcRequest<string>(ipcRequest, ex.Message);
+            return IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.Error, ex.Message);
         }
     }
     

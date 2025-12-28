@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Daemon.Data;
+using SimpleStorageSystem.Daemon.Models.Tables;
+using SimpleStorageSystem.Daemon.Services.Auth;
 using SimpleStorageSystem.Shared.Enums;
 
 namespace SimpleStorageSystem.Daemon.Services.Worker;
@@ -7,36 +9,54 @@ namespace SimpleStorageSystem.Daemon.Services.Worker;
 public class StorageDriveSyncer
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
+    private readonly AuthService _authService;
     private readonly List<(string, ItemType)> _directoryStructure = new();
 
-    public StorageDriveSyncer(IServiceScopeFactory serviceScopeFactory)
+    public StorageDriveSyncer(IServiceScopeFactory serviceScopeFactory, AuthService authService)
     {
         _serviceScopeFactory = serviceScopeFactory;
+        _authService = authService;
     }
 
     public async Task ListenAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            using var scope = _serviceScopeFactory.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
-
-            var mainDrive = await dbContext.Drives.SingleOrDefaultAsync(
-                d => d.Mount == MountOption.MainOnDrive ||
-                d.Mount == MountOption.MainOnServer
-            );
-
-            foreach (var folder in mainDrive?.Folders!)
+            while (!stoppingToken.IsCancellationRequested)
             {
-                await DirectoryRecursiver(folder.FullName);
+                if (!_authService.HasSession())
+                {
+                    await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+                    continue;
+                }
+
+                using var scope = _serviceScopeFactory.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+
+                var mainDrive = await dbContext.Drives.SingleOrDefaultAsync(
+                    d => d.Mount == MountOption.MainOnDrive ||
+                    d.Mount == MountOption.MainOnServer
+                );
+
+                foreach (var folder in mainDrive?.Folders ?? Enumerable.Empty<FolderItem>())
+                {
+                    await DirectoryRecursiver(folder.FullName);
+                }
+
+                Console.WriteLine("\n\nFINISHED SCANNING DIRECTORY!\n\n");
+
+                await Broadcaster.PublishInParallelAsync(_directoryStructure);
+
+                ClearStructureList();
+
+                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
             }
-
-            await Broadcaster.PublishInParallelAsync(_directoryStructure);
-
-            ClearStructureList();
-
-            await Task.Delay(15 * 1000);
         }
+        catch (OperationCanceledException) //when (stoppingToken.IsCancellationRequested)
+        {
+            Console.WriteLine("StorageDriveSyncer service worker operation cancelled...");
+        }
+
 
     }
 
@@ -44,6 +64,8 @@ public class StorageDriveSyncer
     {
         DirectoryInfo dir = new DirectoryInfo(path);
         var subDirs = dir.EnumerateDirectories();
+
+        Console.WriteLine($"FOLDER: {path}");
 
         foreach (var subDir in subDirs)
         {
@@ -55,7 +77,7 @@ public class StorageDriveSyncer
             //     CreationTime = dir.CreationTimeUtc,
             //     LastModified = dir.LastWriteTimeUtc,
             // };
-            _directoryStructure.Add((subDir.FullName,ItemType.Folder));
+            _directoryStructure.Add((subDir.FullName, ItemType.Folder));
         }
 
         var files = dir.EnumerateFiles();
@@ -73,6 +95,7 @@ public class StorageDriveSyncer
         //     CreationTime = file.CreationTimeUtc,
         //     LastModified = file.LastWriteTimeUtc,
         // };
+        Console.WriteLine($"FILE: {file.FullName}");
         _directoryStructure.Add((file.FullName, ItemType.File));
     }
 

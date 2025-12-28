@@ -20,9 +20,12 @@ public class LogoutCommand : IIpcCommandHandler
     {
         ApiResponse apiResponse = await _authService.LogoutAsync();
 
-        bool isSuccess = apiResponse.StatusCode == HttpStatusCode.NoContent;
+        IpcStatus ipcStatus = IpcStatus.Failed;
 
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
+        if (apiResponse.StatusCode is not null && (int)apiResponse.StatusCode < 300) ipcStatus = IpcStatus.Ok;
+        else if (apiResponse.StatusCode == HttpStatusCode.InternalServerError) ipcStatus = IpcStatus.Error;
+
+        return IpcResponse.CreateFromIpcRequest(request, ipcStatus, apiResponse.Message);
     }
 
 }

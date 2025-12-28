@@ -15,20 +15,23 @@ namespace SimpleStorageSystem.Daemon.Services.Main;
 public class StorageDriveService
 {
     private readonly IHttpClientFactory _httpFactory;
-    private readonly SqLiteDbContext _dbContext;
+    private readonly IServiceScopeFactory _serviceScopeFactory;
 
-    public StorageDriveService(IHttpClientFactory httpFactory, SqLiteDbContext dbContext)
+    public StorageDriveService(IHttpClientFactory httpFactory, IServiceScopeFactory serviceScopeFactory)
     {
         _httpFactory = httpFactory;
-        _dbContext = dbContext;
+        _serviceScopeFactory = serviceScopeFactory;
     }
 
     public async ValueTask<List<StorageDriveResult>> GetStorageDrives()
     {
-        var storageDrives = _dbContext.Drives.AsNoTracking().Where(d => d.DeletionTime != null).AsAsyncEnumerable();
+        using var scope = _serviceScopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+
+        var storageDrives = dbContext.Drives.AsNoTracking().Where(d => d.DeletionTime != null).AsAsyncEnumerable();
         var listOfDrives = new List<StorageDriveResult>();
 
-        await foreach(var drive in storageDrives)
+        await foreach (var drive in storageDrives)
         {
             listOfDrives.Add(ModelMapper.Map<StorageDriveResult>(drive));
         }
@@ -49,14 +52,18 @@ public class StorageDriveService
 
         if (apiResponse!.StatusCode == HttpStatusCode.OK)
         {
-            _dbContext.Drives.Add(
+            using var scope = _serviceScopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+
+            dbContext.Drives.Add(
                 new StorageDrive
                 {
                     StorageDriveId = apiResponse.Data!.Id ?? throw new Exception("Missing Id from ApiResponse"),
                     Name = name
                 }
             );
-            await _dbContext.SaveChangesAsync();
+            
+            await dbContext.SaveChangesAsync();
         }
 
         return apiResponse;
@@ -75,11 +82,13 @@ public class StorageDriveService
 
         if (apiResponse!.StatusCode == HttpStatusCode.OK)
         {
-            var drive = await _dbContext.Drives.SingleOrDefaultAsync(d => d.StorageDriveId == id);
+            using var scope = _serviceScopeFactory.CreateScope();
+            var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+            var drive = await dbContext.Drives.SingleOrDefaultAsync(d => d.StorageDriveId == id);
 
-            if(drive is null)
+            if (drive is null)
             {
-                _dbContext.Drives.Add(
+                dbContext.Drives.Add(
                     new StorageDrive
                     {
                         StorageDriveId = apiResponse.Data!.Id ?? throw new Exception("Missing Id from ApiResponse"),
@@ -92,8 +101,8 @@ public class StorageDriveService
                 drive.StorageDriveId = apiResponse.Data!.Id ?? throw new Exception("Missing Id from ApiResponse");
                 drive.Name = name;
             }
-            
-            await _dbContext.SaveChangesAsync();
+
+            await dbContext.SaveChangesAsync();
         }
 
         return apiResponse;
@@ -104,10 +113,13 @@ public class StorageDriveService
         var httpClient = _httpFactory.CreateClient(HttpClientName.AuthenticatedClient.ToString());
         var apiResponse = await httpClient.DeleteFromJsonAsync<ApiResponse>($"storage_drive/{id}/delete_drive");
 
-        if(apiResponse!.StatusCode == HttpStatusCode.OK)
-            await _dbContext.Drives.Where(d => d.StorageDriveId == id).ExecuteDeleteAsync();
+        using var scope = _serviceScopeFactory.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+
+        if (apiResponse!.StatusCode == HttpStatusCode.OK)
+            await dbContext.Drives.Where(d => d.StorageDriveId == id).ExecuteDeleteAsync();
 
         return apiResponse!;
     }
-    
+
 }

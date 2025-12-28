@@ -37,6 +37,7 @@ public static class BaseCollection
         // service classes
         services.AddTransient<AuthService>();
         services.AddTransient<AccountService>();
+        services.AddTransient<StorageDriveService>();
 
         // Workers (background services)
         services.AddSingleton<PipeServer>();

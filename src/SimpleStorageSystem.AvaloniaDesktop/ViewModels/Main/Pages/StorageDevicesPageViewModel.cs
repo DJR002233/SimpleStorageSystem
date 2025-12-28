@@ -58,13 +58,13 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel
     {
         IpcResponse<List<StorageDriveResult>> res = await _storageDriveClient.RequestGetStorageDriveList();
 
-        if (res.Status == IpcStatus.Ok && res.Payload is not null)
+        if (res.Status == IpcStatus.Ok)
         {
-            Drives.Add(res.Payload);
+            Drives.Add(res.Payload!);
             return;
         }
 
-        await DialogBox.Show(res.Status.ToString(), res.ErrorMessage);
+        await DialogBox.Show(res.Status.ToString(), res.Message);
     }
     
 }

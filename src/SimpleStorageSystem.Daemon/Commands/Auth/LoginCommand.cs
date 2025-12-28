@@ -22,8 +22,11 @@ public class LoginCommand : IIpcCommandHandler
         var payload = JsonSerializer.Deserialize<LoginRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _authService.LoginAsync(payload!.Email, payload.Password);
 
-        bool isSuccess = apiResponse.StatusCode == HttpStatusCode.OK;
+        IpcStatus ipcStatus = IpcStatus.Failed;
 
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
+        if (apiResponse.StatusCode is not null && (int)apiResponse.StatusCode < 300) ipcStatus = IpcStatus.Ok;
+        else if (apiResponse.StatusCode == HttpStatusCode.InternalServerError) ipcStatus = IpcStatus.Error;
+
+        return IpcResponse.CreateFromIpcRequest(request, ipcStatus, apiResponse.Message);
     }
 }

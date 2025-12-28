@@ -20,6 +20,7 @@ public static class ModelChecker
         }
         return true;
     }
+
     public static bool AnyPropertyIsNullorWhiteSpace<T>(this T poco)
     {
         if (poco is null)

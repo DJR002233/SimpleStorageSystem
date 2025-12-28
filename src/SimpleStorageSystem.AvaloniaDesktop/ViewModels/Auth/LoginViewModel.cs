@@ -67,7 +67,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         }
 
         LoadingOverlay.Show("Logging in...");
-        IpcResponse<string> ipcResponse = await _authClient.RequestLoginAsync(Email, Password);
+        IpcResponse ipcResponse = await _authClient.RequestLoginAsync(Email, Password);
         LoadingOverlay.Close();
         Password = "";
         
@@ -77,7 +77,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
-        await DialogBox.Show(ipcResponse.Status.ToString(), ipcResponse.Payload);
+        await DialogBox.Show(ipcResponse.Status.ToString(), ipcResponse.Message);
     }
 
     public void CreateAccountViewAsync()

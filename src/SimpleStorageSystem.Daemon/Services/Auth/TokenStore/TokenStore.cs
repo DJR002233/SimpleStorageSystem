@@ -127,14 +127,11 @@ public class TokenStore : ITokenStore
         }
         catch (HttpRequestException ex)
         {
-            if(ex.StatusCode == HttpStatusCode.Unauthorized)
-                return CreateApiResponse.ErrorFromException(ex, "Token is invalid!");
-            
-            return CreateApiResponse.ErrorFromException(ex);
+            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = ex.StatusCode, Message = ex.Message };
         }
         catch (Exception ex)
         {
-            return CreateApiResponse.ErrorFromException(ex);
+            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
         // finally
         // {

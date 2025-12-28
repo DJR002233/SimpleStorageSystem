@@ -9,7 +9,7 @@ namespace SimpleStorageSystem.Daemon.Commands.Main.StorageDrive;
 public class GetStorageDrivesCommand : IIpcCommandHandler
 {
     private readonly StorageDriveService _storageDriveService;
-    public IpcCommand Command => IpcCommand.UpdateAccount;
+    public IpcCommand Command => IpcCommand.GetStorageDriveList;
 
     public GetStorageDrivesCommand(StorageDriveService storageDriveService)
     {

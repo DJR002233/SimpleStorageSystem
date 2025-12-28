@@ -1,8 +1,8 @@
+using System.Net;
 using System.Net.Http.Json;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
-using SimpleStorageSystem.Shared.Services.Helper;
 using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Main;
@@ -33,7 +33,7 @@ public class AccountService
 
             var res = await response.Content.ReadFromJsonAsync<ApiResponse>();
 
-            return res ?? CreateApiResponse.Failed("Unknown Error");
+            return res ?? new ApiResponse { StatusCode = HttpStatusCode.BadRequest, Message = "Unknown Error" };
         }
         catch (HttpRequestException ex)
         {

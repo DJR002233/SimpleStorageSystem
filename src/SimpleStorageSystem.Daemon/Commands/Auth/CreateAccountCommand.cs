@@ -22,7 +22,11 @@ public class CreateAccountCommand : IIpcCommandHandler
         var payload = JsonSerializer.Deserialize<CreateAccountRequest>((JsonElement)request.Payload!);
         ApiResponse apiResponse = await _authService.CreateAccountAsync(payload!.Username, payload.Email, payload.Password);
 
-        bool isSuccess = apiResponse.StatusCode == HttpStatusCode.OK;
-        return IpcResponse.CreateFromIpcRequest(request, isSuccess ? IpcStatus.Ok : IpcStatus.Failed, apiResponse.Message);
+        IpcStatus ipcStatus = IpcStatus.Failed;
+
+        if (apiResponse.StatusCode is not null && (int)apiResponse.StatusCode < 300) ipcStatus = IpcStatus.Ok;
+        else if (apiResponse.StatusCode == HttpStatusCode.InternalServerError) ipcStatus = IpcStatus.Error;
+
+        return IpcResponse.CreateFromIpcRequest(request, ipcStatus, apiResponse.Errors, apiResponse.Message);
     }
 }

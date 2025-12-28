@@ -9,7 +9,8 @@ public class IpcResponse
     public required string RequestId { get; set; }
     public IpcStatus? Status { get; set; }
     public string? Message { get; set; }
-    public string? ErrorMessage { get; init; }
+    // public string? ErrorMessage { get; init; }
+    // public Dictionary<string, string[]>? Errors { get; set; }
     public object? Payload { get; set; }
 
     public static IpcResponse Create(IpcStatus status, string? message = null, object? payload = null)
@@ -34,15 +35,15 @@ public class IpcResponse
         };
     }
 
-    public static IpcResponse CreateErrorResponse(string errorMessage)
-    {
-        return CreateErrorResponse<object>(errorMessage);
-    }
+    // public static IpcResponse CreateErrorResponse(string errorMessage)
+    // {
+    //     return CreateErrorResponse<object>(errorMessage);
+    // }
 
-    public static IpcResponse CreateErrorResponseFromIpcRequest(IpcRequest request, string errorMessage)
-    {
-        return CreateErrorResponseFromIpcRequest<object>(request, errorMessage);
-    }
+    // public static IpcResponse CreateErrorResponseFromIpcRequest(IpcRequest request, string errorMessage)
+    // {
+    //     return CreateErrorResponseFromIpcRequest<object>(request, errorMessage);
+    // }
 
 
     public static IpcResponse<T> Create<T>(IpcStatus status, T? payload, string? message = null)
@@ -87,25 +88,25 @@ public class IpcResponse
         };
     }
     
-    public static IpcResponse<T> CreateErrorResponse<T>(string errorMessage)
-    {
-        return new IpcResponse<T>
-        {
-            RequestId = Guid.NewGuid().ToString(),
-            Status = IpcStatus.Error,
-            ErrorMessage = errorMessage,
-        };
-    }
+    // public static IpcResponse<T> CreateErrorResponse<T>(string errorMessage)
+    // {
+    //     return new IpcResponse<T>
+    //     {
+    //         RequestId = Guid.NewGuid().ToString(),
+    //         Status = IpcStatus.Error,
+    //         ErrorMessage = errorMessage,
+    //     };
+    // }
 
-    public static IpcResponse<T> CreateErrorResponseFromIpcRequest<T>(IpcRequest request, string errorMessage)
-    {
-        return new IpcResponse<T>
-        {
-            RequestId = request.RequestId,
-            Status = IpcStatus.Error,
-            ErrorMessage = errorMessage,
-        };
-    }
+    // public static IpcResponse<T> CreateErrorResponseFromIpcRequest<T>(IpcRequest request, string errorMessage)
+    // {
+    //     return new IpcResponse<T>
+    //     {
+    //         RequestId = request.RequestId,
+    //         Status = IpcStatus.Error,
+    //         ErrorMessage = errorMessage,
+    //     };
+    // }
 
 }
 

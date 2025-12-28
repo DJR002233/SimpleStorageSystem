@@ -17,44 +17,51 @@ public class PipeServer
 
     public async Task ListenAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
+        try
         {
-            using var pipeServer = new NamedPipeServerStream(
-                "SimpleStorageDaemon",
-                PipeDirection.InOut,
-                1,
-                PipeTransmissionMode.Byte,
-                PipeOptions.Asynchronous
-            );
-
-            await pipeServer.WaitForConnectionAsync(stoppingToken);
-
-            using var reader = new StreamReader(pipeServer, leaveOpen: true);
-            using var writer = new StreamWriter(pipeServer, leaveOpen: true) { AutoFlush = true };
-
-            string? request = await reader.ReadLineAsync(stoppingToken);
-            if (request == null) continue;
-
-            var ipcRequest = JsonSerializer.Deserialize<IpcRequest>(request);
-            if (ipcRequest is null) continue;
-
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                // note to self: handling Errors from ApiResponses is non existent
-                IpcResponse ipcResponse = await _commandRouter.DispatchAsync(ipcRequest);
+                using var pipeServer = new NamedPipeServerStream(
+                    "SimpleStorageDaemon",
+                    PipeDirection.InOut,
+                    1,
+                    PipeTransmissionMode.Byte,
+                    PipeOptions.Asynchronous
+                );
 
-                string response = JsonSerializer.Serialize(ipcResponse);
-                await writer.WriteLineAsync(response);
+                await pipeServer.WaitForConnectionAsync(stoppingToken);
+
+                using var reader = new StreamReader(pipeServer, leaveOpen: true);
+                using var writer = new StreamWriter(pipeServer, leaveOpen: true) { AutoFlush = true };
+
+                string? request = await reader.ReadLineAsync(stoppingToken);
+                if (request == null) continue;
+
+                var ipcRequest = JsonSerializer.Deserialize<IpcRequest>(request);
+                if (ipcRequest is null) continue;
+
+                try
+                {
+                    IpcResponse ipcResponse = await _commandRouter.DispatchAsync(ipcRequest);
+
+                    string response = JsonSerializer.Serialize(ipcResponse);
+                    await writer.WriteLineAsync(response);
+                }
+                catch (Exception ex)
+                {
+                    IpcResponse ipcResponse = IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.Error, ex.Message);
+
+                    string json = JsonSerializer.Serialize(ipcResponse);
+
+                    await writer.WriteLineAsync(json);
+                }
+
             }
-            catch (Exception ex)
-            {
-                IpcResponse ipcResponse = IpcResponse.CreateErrorResponseFromIpcRequest(ipcRequest, ex.Message);
-
-                string json = JsonSerializer.Serialize(ipcResponse);
-
-                await writer.WriteLineAsync(json);
-            }
-
         }
+        catch (OperationCanceledException) //when (stoppingToken.IsCancellationRequested)
+        {
+            Console.WriteLine("PipeServer service worker operation cancelled...");
+        }
+
     }
 }

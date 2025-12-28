@@ -25,14 +25,13 @@ public class AuthController : ControllerBase
     {
         // if (request.AnyPropertyIsNullorWhiteSpace())
         //     return Unauthorized(CreateApiResponse.Failed("Invalid Credentials!"));
-
+        
         try
         {
             ApiResponse<Session> res = await _authService.LoginAccountAsync(request);
 
-            if (res.StatusCode == HttpStatusCode.OK && res.Data is not null)
-                return Ok(res);
-            else if (res.StatusCode == HttpStatusCode.BadRequest) return ValidationProblem();
+            if (res.StatusCode == HttpStatusCode.OK && res.Data is not null) return Ok(res);
+            else if (res.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(res);
 
             throw new Exception("Response not sent");
         }
@@ -75,7 +74,7 @@ public class AuthController : ControllerBase
         try
         {
             if (String.IsNullOrWhiteSpace(refreshToken))
-                return BadRequest(CreateApiResponse.Failed("Missing Token Header"));
+                return BadRequest(new ApiResponse { StatusCode = HttpStatusCode.UnprocessableContent, Message = "Missing Token Header" });
 
             ApiResponse<Session> res = await _authService.GetAccessTokenAsync(refreshToken);
 
@@ -100,7 +99,7 @@ public class AuthController : ControllerBase
         try
         {
             if (String.IsNullOrWhiteSpace(refreshToken))
-                return BadRequest(CreateApiResponse.Failed("Missing Token Header"));
+                return BadRequest(new ApiResponse { StatusCode = HttpStatusCode.UnprocessableContent, Message = "Missing Token Header" });
 
             ApiResponse res = await _authService.ClearTokenAsync(refreshToken);
 

@@ -47,19 +47,18 @@ public class AuthService
                 _tokenStore.SetAccessToken(apiResponse.Data.AccessToken!);
             }
 
-            // note to self: Convert Errors property to string and put in Message property
+            if (apiResponse.Errors is not null)
+                apiResponse.ErrorsToMessage();
+
             return apiResponse;
         }
         catch (HttpRequestException ex)
         {
-            if (ex.StatusCode == HttpStatusCode.BadRequest)
-                return new ApiResponse { StatusCode = ex.StatusCode, Message = "Incorrect Credentials!" };
-
             return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = ex.StatusCode, Message = ex.Message };
         }
         catch (Exception ex)
         {
-            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadGateway, Message = ex.Message };
+            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
 
     }
@@ -80,18 +79,18 @@ public class AuthService
 
             var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse>();
 
+            if (apiResponse!.Errors is not null)
+                apiResponse.ErrorsToMessage();
+
             return apiResponse!;
         }
         catch (HttpRequestException ex)
         {
-            if (ex.StatusCode == HttpStatusCode.Forbidden)
-                return new ApiResponse { StatusCode = ex.StatusCode, Message = "Creation of account is not available!" };
-
             return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = ex.StatusCode, Message = ex.Message };
         }
         catch (Exception ex)
         {
-            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadGateway, Message = ex.Message };
+            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
 
     }
@@ -101,26 +100,29 @@ public class AuthService
         try
         {
             var httpClient = _httpFactory.CreateClient(HttpClientName.LogoutClient.ToString());
-            var apiResponse = await httpClient.PostAsync("auth/logout", null);
+            var httpResponse = await httpClient.GetAsync("auth/logout");
             
-            if (apiResponse.IsSuccessStatusCode)
+            if (httpResponse.IsSuccessStatusCode)
             {
                 await _credentialStore.DeleteAsync();
                 _tokenStore.ClearAccessToken();
+                return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
             }
 
-            return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
+            var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse>();
+
+            if (apiResponse!.Errors is not null)
+                apiResponse.ErrorsToMessage();
+
+            return apiResponse!;
         }
         catch (HttpRequestException ex)
         {
-            if (ex.StatusCode == HttpStatusCode.Unauthorized)
-                return new ApiResponse { StatusCode = ex.StatusCode, Message = "Please login again" };
-
             return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = ex.StatusCode, Message = ex.Message };
         }
         catch (Exception ex)
         {
-            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadGateway, Message = ex.Message };
+            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
     }
 
@@ -129,18 +131,19 @@ public class AuthService
         try
         {
             ApiResponse apiResponse = await _tokenStore.RefreshAccessTokenAsync();
+
+            if (apiResponse.Errors is not null)
+                apiResponse.ErrorsToMessage();
+                
             return apiResponse;
         }
         catch (HttpRequestException ex)
         {
-            if (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-                return new ApiResponse { StatusCode = ex.StatusCode, Message = "Token Expired!" };
-
             return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = ex.StatusCode, Message = ex.Message };
         }
         catch (Exception ex)
         {
-            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadGateway, Message = ex.Message };
+            return new ApiResponse { Title = ex.GetType().ToString(), StatusCode = HttpStatusCode.BadRequest, Message = ex.Message };
         }
     }
 

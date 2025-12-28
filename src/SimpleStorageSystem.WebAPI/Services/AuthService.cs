@@ -29,7 +29,7 @@ public class AuthService
 
     public async ValueTask<ApiResponse<Session>> LoginAccountAsync(LoginRequest user)
     {
-        var invalidResponse = new ApiResponse<Session> { StatusCode = HttpStatusCode.BadRequest, Message = "Invalid Credentials!" };
+        var invalidResponse = new ApiResponse<Session> { StatusCode = HttpStatusCode.Unauthorized, Message = "Invalid Credentials!" };
 
         var account = await _dbContext.Accounts.FirstOrDefaultAsync(b => b.Email == user.Email);
         if (account is null || account.UserId is null)
@@ -78,7 +78,7 @@ public class AuthService
         if (rowsAffected > 0)
             return new ApiResponse { StatusCode = HttpStatusCode.OK, Message = "Account Created!" };
 
-        return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, ErrorMessage = "Failed to create account!" };
+        return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, Message = "Failed to create account!" };
     }
 
     public async ValueTask<ApiResponse<Session>> GetAccessTokenAsync(string refreshToken)
@@ -90,7 +90,7 @@ public class AuthService
         if (rfToken.Revoked)
         {
             // await RevokeAllUserTokensAsync(rfToken.UserId);
-            return new ApiResponse<Session> { StatusCode = HttpStatusCode.Unauthorized, ErrorMessage = "Invalid Token!\nPlease login again..." };
+            return new ApiResponse<Session> { StatusCode = HttpStatusCode.Unauthorized, Message = "Invalid Token!\nPlease login again..." };
         }
 
         if (rfToken.ExpiresAt <= DateTime.UtcNow)
