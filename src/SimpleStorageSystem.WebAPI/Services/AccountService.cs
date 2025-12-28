@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
-using SimpleStorageSystem.Shared.Services.Helper;
 using SimpleStorageSystem.WebAPI.Data;
 using SimpleStorageSystem.WebAPI.Models.Tables;
 
@@ -41,7 +40,7 @@ public class AccountService
         int rowAffected = await _dbContext.SaveChangesAsync();
         if (rowAffected > 0) return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
 
-        return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, ErrorMessage = "Database Problem!\n\nUpdate Failed" };
+        return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, Message = "Database Problem!\n\nUpdate Failed" };
     }
     
 }
