@@ -6,7 +6,6 @@ using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Client;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 using SimpleStorageSystem.Shared.Enums;
@@ -100,7 +99,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
 
     public async Task Logout()
     {
-        IpcResponse ipcResponse = await _authClient.RequestLogoutAsync();
+        IpcResponse ipcResponse = await LoadingOverlay.FromAsync( () => _authClient.RequestLogoutAsync(), "Logging out...");
 
         if (ipcResponse.Status == IpcStatus.Ok)
         {
@@ -108,7 +107,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
         
-        await DialogBox.Show(ipcResponse.Status.ToString(), ipcResponse.Message);
+        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!);
     }
     
 }

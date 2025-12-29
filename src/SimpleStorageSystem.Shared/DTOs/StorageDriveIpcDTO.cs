@@ -1,8 +1,8 @@
 using SimpleStorageSystem.Shared.Enums;
 
-namespace SimpleStorageSystem.Shared.Results;
+namespace SimpleStorageSystem.Shared.DTOs;
 
-public class StorageDriveResult
+public class StorageDriveIpcDTO
 {
     public long? Id { get; set; }
     public string? Name { get; set; }

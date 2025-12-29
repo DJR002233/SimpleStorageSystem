@@ -5,11 +5,11 @@ using System.Reactive;
 using System;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 using SimpleStorageSystem.Shared.Models;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.AvaloniaDesktop.Client;
+using Avalonia.Controls;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Auth;
 
@@ -62,13 +62,11 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
     {
         if (String.IsNullOrWhiteSpace(Email) || String.IsNullOrWhiteSpace(Password))
         {
-            await DialogBox.Show(ApiStatus.Failed.ToString(), "Invalid Credentials!");
+            await DialogBox.ShowOk(ApiStatus.Failed.ToString(), "Invalid Credentials!");
             return;
         }
 
-        LoadingOverlay.Show("Logging in...");
-        IpcResponse ipcResponse = await _authClient.RequestLoginAsync(Email, Password);
-        LoadingOverlay.Close();
+        IpcResponse ipcResponse = await LoadingOverlay.FromAsync( () => _authClient.RequestLoginAsync(Email, Password), "Logging in...");
         Password = "";
         
         if (ipcResponse.Status == IpcStatus.Ok)
@@ -77,7 +75,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
-        await DialogBox.Show(ipcResponse.Status.ToString(), ipcResponse.Message);
+        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
     }
 
     public void CreateAccountViewAsync()

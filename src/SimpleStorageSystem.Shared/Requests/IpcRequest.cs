@@ -30,13 +30,8 @@ public class IpcRequest
         };
     }
 
-}
 
-public class IpcRequest<T> : IpcRequest
-{
-    public new T? Payload { get; set; }
-
-    public static IpcRequest<T> Create(IpcCommand ipcCommand, T payload)
+    public static IpcRequest<T> Create<T>(IpcCommand ipcCommand, T payload)
     {
         return new IpcRequest<T>
         {
@@ -46,7 +41,7 @@ public class IpcRequest<T> : IpcRequest
         };
     }
 
-    public static IpcRequest<T> CreateFromIpcResponse(IpcResponse response, IpcCommand ipcCommand, T payload)
+    public static IpcRequest<T> CreateFromIpcResponse<T>(IpcResponse response, IpcCommand ipcCommand, T payload)
     {
         return new IpcRequest<T>
         {
@@ -56,7 +51,7 @@ public class IpcRequest<T> : IpcRequest
         };
     }
     
-    public static IpcRequest<T> Create(IpcCommand ipcCommand)
+    public static IpcRequest<T> Create<T>(IpcCommand ipcCommand)
     {
         return new IpcRequest<T>
         {
@@ -65,7 +60,7 @@ public class IpcRequest<T> : IpcRequest
         };
     }
 
-    public static IpcRequest<T> CreateFromIpcResponse(IpcResponse response, IpcCommand ipcCommand)
+    public static IpcRequest<T> CreateFromIpcResponse<T>(IpcResponse response, IpcCommand ipcCommand)
     {
         return new IpcRequest<T>
         {
@@ -73,5 +68,11 @@ public class IpcRequest<T> : IpcRequest
             RequestId = response.RequestId,
         };
     }
+
+}
+
+public class IpcRequest<T> : IpcRequest
+{
+    public new T? Payload { get; set; }
 
 }

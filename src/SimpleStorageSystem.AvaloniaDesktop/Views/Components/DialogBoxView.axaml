@@ -6,8 +6,33 @@
         CanResize="False"
         ShowInTaskbar="False"
         Title="Title">
-    <StackPanel VerticalAlignment="Center" Margin="10" Spacing="10">
-        <TextBlock x:Name="MessageText" FontSize="14" TextWrapping="Wrap"/>
-        <Button Content="OK" Width="80" HorizontalAlignment="Right" Click="OnOkClick"/>
-    </StackPanel>
+    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="3">
+        <StackPanel VerticalAlignment="Center" Margin="10" Spacing="10">
+
+            <TextBlock x:Name="MessageTextBlock" FontSize="14" TextWrapping="Wrap"/>
+
+            <TextBox x:Name="InputTextBox" FontSize="14" TextWrapping="Wrap" Watermark=""
+            MinWidth="200" IsVisible="False"/>
+
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+
+                <Button x:Name="OkButton" Content="Ok" 
+                Width="80" IsVisible="False"
+                HorizontalAlignment="Right"
+                Click="Ok"/>
+            
+                <Button x:Name="ConfirmButton" Content="Confirm" 
+                Width="80" IsVisible="False"
+                HorizontalAlignment="Right"
+                Click="Confirm"/>
+
+                <Button x:Name="CancelButton" Content="Cancel" 
+                Width="80" IsVisible="False"
+                Margin="5,0,0,0" HorizontalAlignment="Right"
+                Click="Close"/>
+
+            </StackPanel>
+
+        </StackPanel>
+    </Border>
 </Window>

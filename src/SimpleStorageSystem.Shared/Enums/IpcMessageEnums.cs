@@ -14,7 +14,9 @@ public enum IpcCommand
     Logout,
     UpdateAccount,
     GetStorageDriveList,
-    
+    AddStorageDrive,
+    UpdateStorageDrive,
+    DeleteStorageDrive,
 }
 
 public enum IpcStatus

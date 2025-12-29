@@ -25,10 +25,5 @@ public partial class LoadingOverlay : ReactiveUserControl<object>
     public LoadingOverlay()
     {
         InitializeComponent();
-        // this.WhenActivated( disposables =>
-        // {
-        //     this.Bind(ViewModel, vm => vm.IsVisible, v => v.Visible).DisposeWith(disposables);
-        //     this.Bind(ViewModel, vm => vm.Message, v => v.Message).DisposeWith(disposables);
-        // });
     }
 }

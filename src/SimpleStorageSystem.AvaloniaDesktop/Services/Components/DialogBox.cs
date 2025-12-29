@@ -1,17 +1,38 @@
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using SimpleStorageSystem.AvaloniaDesktop.Enums;
 using SimpleStorageSystem.AvaloniaDesktop.Views.Components;
 
-namespace SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
+namespace SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 
 public static class DialogBox
 {
-    public static async Task Show(string? title, string? message)
+    public static async ValueTask ShowOk(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
     {
-        var dialog = new DialogBoxView(title, message);
+        var dialog = new DialogBoxView(title, message, decorations);
 
         var lifetime = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
 
         await dialog.ShowDialog(lifetime!.MainWindow!);
     }
+
+    public static async ValueTask<string?> ShowTextInput(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
+    {
+        var dialog = new DialogBoxView(title, message, DialogBoxButtons.ConfirmCancel, decorations);
+
+        var lifetime = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+
+        return await dialog.ShowDialog<string?>(lifetime!.MainWindow!);
+    }
+
+    public static async ValueTask<bool> ShowConfirmation(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
+    {
+        var dialog = new DialogBoxView(title, message, DialogBoxButtons.ConfirmCancel, decorations);
+
+        var lifetime = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+
+        return await dialog.ShowDialog<bool?>(lifetime!.MainWindow!) ?? false;
+    }
+
 }

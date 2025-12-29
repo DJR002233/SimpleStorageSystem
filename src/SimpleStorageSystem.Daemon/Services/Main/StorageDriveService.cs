@@ -7,7 +7,6 @@ using SimpleStorageSystem.Shared.DTOs;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
-using SimpleStorageSystem.Shared.Results;
 using SimpleStorageSystem.Shared.Services.Mapper;
 
 namespace SimpleStorageSystem.Daemon.Services.Main;
@@ -23,17 +22,17 @@ public class StorageDriveService
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    public async ValueTask<List<StorageDriveResult>> GetStorageDrives()
+    public async ValueTask<List<StorageDriveIpcDTO>> GetStorageDrives()
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
 
         var storageDrives = dbContext.Drives.AsNoTracking().Where(d => d.DeletionTime != null).AsAsyncEnumerable();
-        var listOfDrives = new List<StorageDriveResult>();
+        var listOfDrives = new List<StorageDriveIpcDTO>();
 
         await foreach (var drive in storageDrives)
         {
-            listOfDrives.Add(ModelMapper.Map<StorageDriveResult>(drive));
+            listOfDrives.Add(ModelMapper.Map<StorageDriveIpcDTO>(drive));
         }
 
         return listOfDrives;
@@ -48,7 +47,7 @@ public class StorageDriveService
 
         var httpClient = _httpFactory.CreateClient(HttpClientName.AuthenticatedClient.ToString());
         var httpResponse = await httpClient.PostAsJsonAsync("storage_drive/create_drive", data);
-        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<StorageDriveDTO>>();
+        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<StorageDriveApiDTO>>();
 
         if (apiResponse!.StatusCode == HttpStatusCode.OK)
         {
@@ -78,7 +77,7 @@ public class StorageDriveService
 
         var httpClient = _httpFactory.CreateClient(HttpClientName.AuthenticatedClient.ToString());
         var httpResponse = await httpClient.PutAsJsonAsync($"storage_drives/{id}/rename_drive", data);
-        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<StorageDriveDTO>>();
+        var apiResponse = await httpResponse.Content.ReadFromJsonAsync<ApiResponse<StorageDriveApiDTO>>();
 
         if (apiResponse!.StatusCode == HttpStatusCode.OK)
         {

@@ -6,7 +6,6 @@ using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Client;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 
@@ -71,25 +70,23 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
 
         if (!String.IsNullOrWhiteSpace(emptyTextBox))
         {
-            await DialogBox.Show(ApiStatus.Failed.ToString(), emptyTextBox);
+            await DialogBox.ShowOk(ApiStatus.Failed.ToString(), emptyTextBox);
             return;
         }
 
-        LoadingOverlay.Show("Creating account...");
-        IpcResponse ipcResponse = await _authClient.RequestCreateAccountAsync(Username!, Email!, Password!);
-        LoadingOverlay.Close();
+        IpcResponse ipcResponse = await LoadingOverlay.FromAsync( () => _authClient.RequestCreateAccountAsync(Username!, Email!, Password!), "Creating account...");
         RePassword = "";
         
         if (ipcResponse.Status == IpcStatus.Ok)
         {
             Password = "";
-            await DialogBox.Show("Account created successfully!", 
+            await DialogBox.ShowOk("Account created successfully!", 
                 "Click Ok to redirect to the login page...");
             Navigation.NavigateTo(_loginVM());
             return;
         }
 
-        await DialogBox.Show(ipcResponse.Status.ToString(), ipcResponse.Message);
+        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!);
     }
 
     public void Back()

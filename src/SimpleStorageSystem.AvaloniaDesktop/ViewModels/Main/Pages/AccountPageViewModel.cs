@@ -5,7 +5,6 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Client.Main;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
-using SimpleStorageSystem.AvaloniaDesktop.Services.Helper;
 using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 
@@ -44,21 +43,21 @@ public class AccountPageViewModel : ReactiveObject
     {
         if (!String.IsNullOrWhiteSpace(Password) && !String.Equals(Password, RePassword))
         {
-            await DialogBox.Show("Warning", "Password does not match!\n\nClear password textbox to not change it");
+            await DialogBox.ShowOk("Warning", "Password does not match!\n\nClear password textbox to not change it");
             return;
         }
 
-        LoadingOverlay.Show("Delaying Task for 3 sec.");
-        IpcResponse res = await _accountClient.RequestUpdateAccountInformation(Username, Email, Password);
-        LoadingOverlay.Close();
+        IpcResponse ipcResponse = await LoadingOverlay.FromAsync( () => _accountClient.RequestUpdateAccountInformation(Username, Email, Password), "Updating account information...");
+        RePassword = "";
 
-        if (res.Status == IpcStatus.Ok)
+        if (ipcResponse.Status == IpcStatus.Ok)
         {
-            await DialogBox.Show(res.Status.ToString(), "Information updated successfully!");
+            Password = "";
+            await DialogBox.ShowOk(IpcStatus.Ok.ToString(), "Information updated successfully!");
             return;
         }
 
-        await DialogBox.Show(res.Status.ToString(), res.Message);
+        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!);
     }
     
 }

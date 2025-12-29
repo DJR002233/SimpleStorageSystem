@@ -14,6 +14,7 @@ public class AccountClient
     {
         var data = new UpdateAccountRequest { Username = username, Email = email, Password = password };
         var ipcRequest = IpcRequest.Create(IpcCommand.UpdateAccount, data);
+        
         try
         {
             using var pipeClient = new PipeClient();
