@@ -1,4 +1,4 @@
-using SimpleStorageSystem.WebAPI.Data.Configurations;
+using SimpleStorageSystem.WebAPI.Data.DbTable;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using SimpleStorageSystem.WebAPI.Models.Tables;

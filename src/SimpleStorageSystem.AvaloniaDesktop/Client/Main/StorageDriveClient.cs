@@ -48,9 +48,9 @@ public class StorageDriveClient
         }
     }
 
-    public async ValueTask<IpcResponse> RequestUpdateStorageDriveList(StorageDriveIpcDTO data)
+    public async ValueTask<IpcResponse> RequestRenameStorageDriveList(StorageDriveIpcDTO data)
     {
-        var ipcRequest = IpcRequest.Create(IpcCommand.UpdateAccount, data);
+        var ipcRequest = IpcRequest.Create(IpcCommand.RenameStorageDrive, data);
 
         try
         {
@@ -66,8 +66,9 @@ public class StorageDriveClient
         }
     }
 
-    public async ValueTask<IpcResponse> RequestDeleteStorageDriveList(StorageDriveIpcDTO data)
+    public async ValueTask<IpcResponse> RequestDeleteStorageDriveList(long id)
     {
+        var data = new StorageDriveIpcDTO { Id = id };
         var ipcRequest = IpcRequest.Create(IpcCommand.DeleteStorageDrive, data);
 
         try

@@ -1,6 +1,7 @@
 using System;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Client;
@@ -70,7 +71,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
 
         if (!String.IsNullOrWhiteSpace(emptyTextBox))
         {
-            await DialogBox.ShowOk(ApiStatus.Failed.ToString(), emptyTextBox);
+            await DialogBox.ShowOk(ApiStatus.Failed.ToString(), emptyTextBox, SystemDecorations.None);
             return;
         }
 
@@ -86,7 +87,7 @@ public class CreateAccountViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
 
-        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!);
+        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
     }
 
     public void Back()

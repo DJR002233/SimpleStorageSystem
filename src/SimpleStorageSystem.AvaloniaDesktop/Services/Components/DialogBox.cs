@@ -19,7 +19,7 @@ public static class DialogBox
 
     public static async ValueTask<string?> ShowTextInput(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
     {
-        var dialog = new DialogBoxView(title, message, DialogBoxButtons.ConfirmCancel, decorations);
+        var dialog = new DialogBoxView(title, message, DialogBoxMode.InputText, decorations);
 
         var lifetime = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
 
@@ -28,7 +28,7 @@ public static class DialogBox
 
     public static async ValueTask<bool> ShowConfirmation(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
     {
-        var dialog = new DialogBoxView(title, message, DialogBoxButtons.ConfirmCancel, decorations);
+        var dialog = new DialogBoxView(title, message, DialogBoxMode.ConfirmCancel, decorations);
 
         var lifetime = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
 

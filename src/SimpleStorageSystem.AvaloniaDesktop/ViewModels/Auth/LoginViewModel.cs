@@ -55,14 +55,14 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         _createAccountVM = createAccountVM;
 
         LoginCommand = ReactiveCommand.CreateFromTask(LoginButtonAsync);
-        CreateAccountViewCommand = ReactiveCommand.Create(CreateAccountViewAsync);
+        CreateAccountViewCommand = ReactiveCommand.Create(CreateAccountView);
     }
 
     public async Task LoginButtonAsync()
     {
         if (String.IsNullOrWhiteSpace(Email) || String.IsNullOrWhiteSpace(Password))
         {
-            await DialogBox.ShowOk(ApiStatus.Failed.ToString(), "Invalid Credentials!");
+            await DialogBox.ShowOk(ApiStatus.Failed.ToString(), "Invalid Credentials!", SystemDecorations.None);
             return;
         }
 
@@ -78,7 +78,7 @@ public class LoginViewModel : ReactiveObject, IRoutableViewModel
         await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
     }
 
-    public void CreateAccountViewAsync()
+    public void CreateAccountView()
     {
         Navigation.NavigateTo(_createAccountVM());
     }

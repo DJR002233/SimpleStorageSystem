@@ -15,7 +15,7 @@ public enum IpcCommand
     UpdateAccount,
     GetStorageDriveList,
     AddStorageDrive,
-    UpdateStorageDrive,
+    RenameStorageDrive,
     DeleteStorageDrive,
 }
 

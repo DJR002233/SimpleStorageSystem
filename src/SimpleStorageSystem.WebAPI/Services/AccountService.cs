@@ -20,27 +20,33 @@ public class AccountService
 
     public async ValueTask<ApiResponse> UpdateAccountAsync(string userId, UpdateAccountRequest request)
     {
-        var account = _dbContext.Accounts.FirstOrDefault( a => a.UserId.ToString() == userId);
+        var account = _dbContext.Accounts.FirstOrDefault(a => a.UserId.ToString() == userId);
         if (account is null)
             return new ApiResponse { StatusCode = HttpStatusCode.NotFound, Message = "Account not found" };
-        
+
         bool emailExists = await _dbContext.Accounts.AnyAsync(a => a.Email == request.Email);
+
         if (emailExists)
             return new ApiResponse { StatusCode = HttpStatusCode.Conflict, Message = "Email is already taken!" };
 
-        request.Password = _passwordHasher.HashPassword(account, request.Password!);
-
-        if (!String.IsNullOrWhiteSpace(request.Username))
+        if (!String.IsNullOrWhiteSpace(request.Username) && !account.Username!.Equals(request.Username))
             account.Username = request.Username;
         if (!String.IsNullOrWhiteSpace(request.Email))
             account.Email = request.Email;
         if (!String.IsNullOrWhiteSpace(request.Password))
-            account.Password = request.Password;
+        {
+            var passwordIsEqual = _passwordHasher.VerifyHashedPassword(new AccountInformation { }, account.Password!, request.Password);
+            if (passwordIsEqual == PasswordVerificationResult.Failed)
+            {
+                request.Password = _passwordHasher.HashPassword(account, request.Password!);
+                account.Password = request.Password;
+            }
+        }
 
         int rowAffected = await _dbContext.SaveChangesAsync();
-        if (rowAffected > 0) return new ApiResponse { StatusCode = HttpStatusCode.NoContent };
+        if (rowAffected > 0) return new ApiResponse { StatusCode = HttpStatusCode.OK, Message = "Account Information Updated!" };
 
         return new ApiResponse { StatusCode = HttpStatusCode.InternalServerError, Message = "Database Problem!\n\nUpdate Failed" };
     }
-    
+
 }

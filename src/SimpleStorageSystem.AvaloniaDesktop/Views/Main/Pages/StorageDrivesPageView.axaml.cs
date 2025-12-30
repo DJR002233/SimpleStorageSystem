@@ -1,4 +1,5 @@
 using Avalonia.ReactiveUI;
+using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages;
@@ -8,11 +9,11 @@ public partial class StorageDrivesPageView : ReactiveUserControl<StorageDrivesPa
     public StorageDrivesPageView()
     {
         InitializeComponent();
-        // this.WhenActivated(disposables =>
-        // {
-        //     // this.OneWayBind(ViewModel, vm => vm.Items, v => v.StorageDeviceItemsRepeater.ItemsSource).DisposeWith(disposables);
-        // });
-
+        this.WhenActivated(disposables =>
+        {
+            this.BindCommand(ViewModel, vm => vm.AddStorageDriveCommand, v => v.AddStorageDriveButton);
+            // this.OneWayBind(ViewModel, vm => vm.Items, v => v.StorageDeviceItemsRepeater.ItemsSource).DisposeWith(disposables);
+        });
     }
 
 }

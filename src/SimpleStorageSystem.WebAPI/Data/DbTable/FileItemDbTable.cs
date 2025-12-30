@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.WebAPI.Models.Tables;
 
-namespace SimpleStorageSystem.WebAPI.Data.Configurations;
+namespace SimpleStorageSystem.WebAPI.Data.DbTable;
 
 public static class FileItemDbTable
 {
@@ -14,6 +14,7 @@ public static class FileItemDbTable
             entity.Property(fi => fi.FileId).HasColumnName("file_id");
             entity.Property(fi => fi.FullName).HasColumnName("full_name");
             entity.Property(fi => fi.Hash).HasColumnName("hash");
+            entity.Property(fi => fi.Size).HasColumnName("size");
         });
     }
 }

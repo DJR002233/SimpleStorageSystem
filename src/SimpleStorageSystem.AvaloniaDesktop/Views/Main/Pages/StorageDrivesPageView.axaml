@@ -9,28 +9,58 @@
 
     xmlns:components="using:SimpleStorageSystem.AvaloniaDesktop.Views.Components">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding Drives}"
-        Margin="10">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <WrapPanel ItemSpacing="15" LineSpacing="15"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
+        <StackPanel>
 
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Button x:Name="StorageDrivesButton" Width="150" Height="200">
-                        <Grid ColumnDefinitions="*" RowDefinitions="*,Auto">
-                            <TextBlock Text="{Binding Id}" TextAlignment="Center"
-                            Grid.Row="0"
-                            HorizontalAlignment="Center" VerticalAlignment="Center" />
-                            <TextBlock Text="{Binding Name}" TextAlignment="Center"
-                            Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
-                            Margin="0,15,0,10"/>
-                        </Grid>
-                    </Button>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            <Button x:Name="AddStorageDriveButton"
+            Background="Transparent"
+            HorizontalAlignment="Right" VerticalAlignment="Top" Margin="10,5,10,0"
+            Grid.Column="1">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Add Drive" Margin="0,0,5,0" 
+                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <TextBlock Text="+" FontSize="23"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+            
+            <ItemsControl ItemsSource="{Binding Drives}" Margin="10,5,10,5">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ItemSpacing="15" LineSpacing="15"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Button x:Name="StorageDriveButton" Width="150" Height="150"
+                        Command="{Binding $parent[UserControl].DataContext.OpenStorageDriveInformationCommand}" CommandParameter="{Binding Id}">
+                            <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
+                                <TextBlock Text="{Binding Id}" TextAlignment="Center"
+                                Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
+                                HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                                <TextBlock Text="{Binding Name}" TextAlignment="Center"
+                                Grid.Column="0" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                Margin="0,15,0,10"/>
+
+                                <Button Content="⁝"
+                                Background="Transparent" FontSize="23"
+                                Grid.Column="1" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
+                                    <Button.Flyout>
+                                        <MenuFlyout Placement="TopEdgeAlignedRight">
+                                            <MenuItem x:Name="ActivityMenuItem" Header="Rename"
+                                            Command="{Binding $parent[UserControl].DataContext.RenameStorageDriveCommand}" CommandParameter="{Binding Id}"/>
+
+                                            <MenuItem x:Name="AccountMenuItem" Header="Delete"
+                                            Command="{Binding $parent[UserControl].DataContext.DeleteStorageDriveCommand}" CommandParameter="{Binding Id}"/>
+                                        </MenuFlyout>
+                                    </Button.Flyout>
+                                </Button>
+                            </Grid>
+                        </Button>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
     </ScrollViewer>
 </UserControl>

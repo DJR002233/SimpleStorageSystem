@@ -33,7 +33,7 @@ public class AuthController : ControllerBase
             if (res.StatusCode == HttpStatusCode.OK && res.Data is not null) return Ok(res);
             else if (res.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(res);
 
-            throw new Exception("Response not sent");
+            throw new Exception("No qualified return");
         }
         catch (Exception ex)
         {
@@ -59,7 +59,7 @@ public class AuthController : ControllerBase
             else if (res.StatusCode == HttpStatusCode.Conflict) return Conflict(res);
             else if (res.StatusCode == HttpStatusCode.InternalServerError) return Problem();
 
-            throw new Exception("Response not sent");
+            throw new Exception("No qualified return");
         }
         catch (Exception ex)
         {
@@ -83,7 +83,7 @@ public class AuthController : ControllerBase
             if (res.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(res);
             if (res.StatusCode == HttpStatusCode.Conflict) return Conflict(res);
 
-            throw new Exception("Response not sent");
+            throw new Exception("No qualified return");
         }
         catch (Exception ex)
         {
@@ -108,7 +108,7 @@ public class AuthController : ControllerBase
             else if (res.StatusCode == HttpStatusCode.Unauthorized) return Unauthorized(res);
             else if (res.StatusCode == HttpStatusCode.Conflict) return Conflict(res);
 
-            throw new Exception("Response not sent");
+            throw new Exception("No qualified return");
         }
         catch (Exception ex)
         {

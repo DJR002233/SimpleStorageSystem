@@ -1,7 +1,8 @@
 namespace SimpleStorageSystem.AvaloniaDesktop.Enums;
 
-public enum DialogBoxButtons
+public enum DialogBoxMode
 {
-    Ok,
+    OkOnly,
     ConfirmCancel,
+    InputText,
 }

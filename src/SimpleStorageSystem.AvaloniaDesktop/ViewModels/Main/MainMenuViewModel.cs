@@ -1,6 +1,7 @@
 using System;
 using System.Reactive;
 using System.Threading.Tasks;
+using Avalonia.Controls;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Client;
@@ -97,6 +98,11 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
         PageTitle = "Storage Drives";
     }
 
+    public void StorageDriveInformationView(long id)
+    {
+        Navigation.NavigateTo(_loginVM());
+    }
+    
     public async Task Logout()
     {
         IpcResponse ipcResponse = await LoadingOverlay.FromAsync( () => _authClient.RequestLogoutAsync(), "Logging out...");
@@ -107,7 +113,7 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
             return;
         }
         
-        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!);
+        await DialogBox.ShowOk(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
     }
     
 }

@@ -1,4 +1,3 @@
-using System;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using SimpleStorageSystem.AvaloniaDesktop.Enums;
@@ -12,84 +11,66 @@ public partial class DialogBoxView : Window
         InitializeComponent();
     }
 
-    public DialogBoxView(string title = "", string message = "") : this()
+    private DialogBoxView(DialogBoxMode buttons, SystemDecorations decorations) : this()
     {
-        this.Title = title;
-        MessageTextBlock.Text = message;
-        OkButton.IsVisible = true;
-        SystemDecorations = SystemDecorations.Full;
-    }
-
-    public DialogBoxView(
-        string title, string message,
-        DialogBoxButtons buttons
-    ) : this()
-    {
-        this.Title = title;
-        MessageTextBlock.Text = message;
-
-        if (buttons == DialogBoxButtons.Ok)
-            OkButton.IsVisible = true;
-        else if (buttons == DialogBoxButtons.ConfirmCancel)
-        {
-            ConfirmButton.IsVisible = true;
-            CancelButton.IsVisible = true;
-        }
-        else throw new Exception("DialogBoxButtons is null");
-
-        this.SystemDecorations = SystemDecorations.Full;
-    }
-
-    public DialogBoxView(
-        string title, string message,
-        SystemDecorations buttons
-    ) : this()
-    {
-        this.Title = title;
-        MessageTextBlock.Text = message;
-        this.SystemDecorations = buttons;
-
-        OkButton.IsVisible = true;
-    }
-
-    public DialogBoxView(
-        string title, string message,
-        DialogBoxButtons buttons, SystemDecorations decorations
-    ) : this()
-    {
-        this.Title = title;
-        MessageTextBlock.Text = message;
-
-        if (buttons == DialogBoxButtons.Ok)
-            OkButton.IsVisible = true;
-        else if (buttons == DialogBoxButtons.ConfirmCancel)
-        {
-            ConfirmButton.IsVisible = true;
-            CancelButton.IsVisible = true;
-        }
-        else throw new Exception("DialogBoxButtons is null");
-
         this.SystemDecorations = decorations;
+
+        if (buttons == DialogBoxMode.OkOnly)
+            OkButton.IsVisible = true;
+        else if (buttons == DialogBoxMode.ConfirmCancel)
+        {
+            ConfirmButton.IsVisible = true;
+            CancelButton.IsVisible = true;
+        }else if (buttons == DialogBoxMode.InputText)
+        {
+            InputTextBox.IsVisible = true;
+            ConfirmButton.IsVisible = true;
+            CancelButton.IsVisible = true;
+        }
+    }
+
+    public DialogBoxView(
+        string title = "", string message = ""
+    ) : this(DialogBoxMode.OkOnly, SystemDecorations.Full)
+    {
+        this.Title = title;
+        MessageTextBlock.Text = message;
     }
 
     public DialogBoxView(
         string title, string message,
-        SystemDecorations decorations, DialogBoxButtons buttons
-    ) : this()
+        DialogBoxMode buttons
+    ) : this(buttons, SystemDecorations.Full)
     {
         this.Title = title;
         MessageTextBlock.Text = message;
+    }
 
-        if (buttons == DialogBoxButtons.Ok)
-            OkButton.IsVisible = true;
-        else if (buttons == DialogBoxButtons.ConfirmCancel)
-        {
-            ConfirmButton.IsVisible = true;
-            CancelButton.IsVisible = true;
-        }
-        else throw new Exception("DialogBoxButtons is null");
+    public DialogBoxView(
+        string title, string message,
+        SystemDecorations decorations
+    ) : this(DialogBoxMode.OkOnly, decorations)
+    {
+        this.Title = title;
+        MessageTextBlock.Text = message;
+    }
 
-        this.SystemDecorations = decorations;
+    public DialogBoxView(
+        string title, string message,
+        DialogBoxMode buttons, SystemDecorations decorations
+    ) : this(buttons, decorations)
+    {
+        this.Title = title;
+        MessageTextBlock.Text = message;
+    }
+
+    public DialogBoxView(
+        string title, string message,
+        SystemDecorations decorations, DialogBoxMode buttons
+    ) : this(buttons, decorations)
+    {
+        this.Title = title;
+        MessageTextBlock.Text = message;
     }
 
     private void Ok(object? sender, RoutedEventArgs e)
@@ -99,17 +80,17 @@ public partial class DialogBoxView : Window
 
     private void Confirm(object? sender, RoutedEventArgs e)
     {
-        if (InputTextBox.IsVisible)
-        {
-            Close(InputTextBox.Text);
-            return;
-        }
-        Close(true);
+        if (InputTextBox.IsVisible) Close(InputTextBox.Text);
+        else if (!InputTextBox.IsVisible) Close(true);
+        else Close();
+        
     }
 
     private void Close(object? sender, RoutedEventArgs e)
     {
-        Close(false);
+        if (InputTextBox.IsVisible) Close(null);
+        else if (!InputTextBox.IsVisible) Close(true);
+        else Close();
     }
 
 }

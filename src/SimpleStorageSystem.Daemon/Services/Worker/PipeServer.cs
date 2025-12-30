@@ -51,9 +51,8 @@ public class PipeServer
                 {
                     IpcResponse ipcResponse = IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.Error, ex.Message);
 
-                    string json = JsonSerializer.Serialize(ipcResponse);
-
-                    await writer.WriteLineAsync(json);
+                    string response = JsonSerializer.Serialize(ipcResponse);
+                    await writer.WriteLineAsync(response);
                 }
 
             }

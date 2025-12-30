@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.WebAPI.Models.Tables;
 
-namespace SimpleStorageSystem.WebAPI.Data.Configurations;
+namespace SimpleStorageSystem.WebAPI.Data.DbTable;
 
 public static class AccountDbTable
 {
