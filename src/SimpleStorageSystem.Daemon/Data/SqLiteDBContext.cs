@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using SimpleStorageSystem.Daemon.Data.TableConfigurations;
+using SimpleStorageSystem.Daemon.Data.DbTables;
 using SimpleStorageSystem.Daemon.Models.Tables;
 
 namespace SimpleStorageSystem.Daemon.Data;
@@ -12,14 +12,24 @@ public class SqLiteDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // modelBuilder.HasDefaultSchema("main");
-        modelBuilder.ConfigureFileItemTable();
-        modelBuilder.ConfigureFolderItemTable();
-        modelBuilder.ConfigureStorageDrivesTable();
+        modelBuilder.CreateStorageDriveTable();
+        modelBuilder.CreateRootFolderTable();
+        modelBuilder.CreateFileItemTable();
+        modelBuilder.CreateFolderItemTable();
+
+        modelBuilder.CreateAppConfigurationTable();
+        modelBuilder.CreateStorageDriveConfigurationTable();
+        
         base.OnModelCreating(modelBuilder);
     }
+    
     public DbSet<FileItem> Files { get; set; }
     public DbSet<FolderItem> Folders { get; set; }
-    public DbSet<StorageDrive> Drives { get; set; }
+    public DbSet<RootFolder> RootFolders { get; set; }
+    public DbSet<StorageDrive> StorageDrives { get; set; }
+
+    public DbSet<AppConfiguration> AppConfigurations { get; set; }
+    public DbSet<StorageDriveConfiguration> StorageDriveConfigurations { get; set; }
 }
 
 /*

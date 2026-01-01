@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Daemon.Data;
 using SimpleStorageSystem.Daemon.Models.Tables;
-using SimpleStorageSystem.Daemon.Services.Auth;
 using SimpleStorageSystem.Shared.Enums;
 
 namespace SimpleStorageSystem.Daemon.Services.Worker;
@@ -9,13 +8,11 @@ namespace SimpleStorageSystem.Daemon.Services.Worker;
 public class StorageDriveSyncer
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly AuthService _authService;
     private readonly List<(string, ItemType)> _directoryStructure = new();
 
-    public StorageDriveSyncer(IServiceScopeFactory serviceScopeFactory, AuthService authService)
+    public StorageDriveSyncer(IServiceScopeFactory serviceScopeFactory)
     {
         _serviceScopeFactory = serviceScopeFactory;
-        _authService = authService;
     }
 
     public async Task ListenAsync(CancellationToken stoppingToken)
@@ -24,30 +21,32 @@ public class StorageDriveSyncer
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (!_authService.HasSession())
-                {
-                    await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
-                    continue;
-                }
+                // using var scope = _serviceScopeFactory.CreateScope();
+                // var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
 
-                using var scope = _serviceScopeFactory.CreateScope();
-                var dbContext = scope.ServiceProvider.GetRequiredService<SqLiteDbContext>();
+                // var mainDrive = dbContext.StorageDrives.Where( sd => sd.MirrorDrive );
+                // if (mainDrive is not null)
+                // {
+                    
+                // }else
+                // {
+                //     // var rootFolders = mainDrive.Folders.Select( folder => folder.MountFolder ).Distinct();
+                //     // if (String.IsNullOrWhiteSpace(mainDrive.Mount))
+                //     // {
+                        
+                //     // }
+                // }
 
-                var mainDrive = await dbContext.Drives.SingleOrDefaultAsync(
-                    d => d.Mount == MountOption.MainOnDrive ||
-                    d.Mount == MountOption.MainOnServer
-                );
+                // foreach (var folder in mainDrive?.Folders ?? Enumerable.Empty<FolderItem>())
+                // {
+                //     await DirectoryRecursiver(folder.FullName);
+                // }
 
-                foreach (var folder in mainDrive?.Folders ?? Enumerable.Empty<FolderItem>())
-                {
-                    await DirectoryRecursiver(folder.FullName);
-                }
+                // Console.WriteLine("\n\nFINISHED SCANNING DIRECTORY!\n\n");
 
-                Console.WriteLine("\n\nFINISHED SCANNING DIRECTORY!\n\n");
+                // await Broadcaster.PublishInParallelAsync(_directoryStructure);
 
-                await Broadcaster.PublishInParallelAsync(_directoryStructure);
-
-                ClearStructureList();
+                // ClearStructureList();
 
                 await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
             }

@@ -1,5 +1,11 @@
 namespace SimpleStorageSystem.Shared.Enums;
 
+public enum IpcSender
+{
+    UserInterface,
+    BackgroundService
+}
+
 public enum IpcType
 {
     Request,
@@ -16,7 +22,7 @@ public enum IpcCommand
     GetStorageDriveList,
     AddStorageDrive,
     RenameStorageDrive,
-    DeleteStorageDrive,
+    DisconnectStorageDrive,
 }
 
 public enum IpcStatus

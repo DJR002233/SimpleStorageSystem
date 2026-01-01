@@ -5,9 +5,8 @@ namespace SimpleStorageSystem.Daemon.Services.Auth.CredentialStore;
 
 public class LinuxSecretToolStore : ICredentialStore
 {
-    private const string AttrLabel = "RefreshToken";
-    private const string AttrApp = "SimpleStorageApp";
-    private const string AttrType = "Auth-Token";
+    private const string AttrLabel = "SimpleStorageDesktop";
+    private const string AttrKey = "StorageDriveId";
 
     private static bool IsSecretToolAvailable()
     {
@@ -25,7 +24,7 @@ public class LinuxSecretToolStore : ICredentialStore
         catch { return false; }
     }
 
-    public async Task StoreAsync(string token)
+    public async ValueTask StoreAsync(string password, string value)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             throw new PlatformNotSupportedException();
@@ -37,7 +36,7 @@ public class LinuxSecretToolStore : ICredentialStore
 
         // secret-tool store app <app> type <type>
         var psi = new ProcessStartInfo("secret-tool",
-            $"store --label='{AttrLabel}' app {AttrApp} type {AttrType}")
+            $"store --label='{AttrLabel}' {AttrKey} {value}")
         {
             RedirectStandardInput = true,
             UseShellExecute = false,
@@ -45,14 +44,14 @@ public class LinuxSecretToolStore : ICredentialStore
         };
 
         using var p = Process.Start(psi) ?? throw new InvalidOperationException("failed to start secret-tool");
-        await p.StandardInput.WriteAsync(token);
+        await p.StandardInput.WriteAsync(password);
         p.StandardInput.Close();
         await p.WaitForExitAsync();
         if (p.ExitCode != 0)
             throw new InvalidOperationException($"secret-tool store failed with exit code {p.ExitCode}");
     }
 
-    public async Task<string?> GetAsync()
+    public async ValueTask<string?> GetAsync(string value)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             throw new PlatformNotSupportedException();
@@ -61,7 +60,7 @@ public class LinuxSecretToolStore : ICredentialStore
             return null;
 
         var psi = new ProcessStartInfo("secret-tool",
-            $"lookup app {AttrApp}")
+            $"lookup {AttrKey} {value}")
         {
             RedirectStandardOutput = true,
             UseShellExecute = false,
@@ -84,7 +83,7 @@ public class LinuxSecretToolStore : ICredentialStore
         }
     }
 
-    public async Task DeleteAsync()
+    public async ValueTask DeleteAsync(string value)
     {
         if (!RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
             throw new PlatformNotSupportedException();
@@ -93,7 +92,7 @@ public class LinuxSecretToolStore : ICredentialStore
             throw new InvalidOperationException("secret-tool is not installed on this machine.");
 
         var psi = new ProcessStartInfo("secret-tool",
-            $"clear app {AttrApp}")
+            $"clear {AttrKey} {value}")
         {
             RedirectStandardOutput = false,
             UseShellExecute = false,

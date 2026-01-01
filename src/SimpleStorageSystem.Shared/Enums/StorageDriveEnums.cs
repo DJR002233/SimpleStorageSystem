@@ -1,10 +1,14 @@
 namespace SimpleStorageSystem.Shared.Enums;
 
+public enum SupportedStorageServer
+{
+    SimpleStorageServer,
+    GoogleDrive,
+}
+
 public enum MountOption
 {
     Inactive,
-    MainOnServer,
-    MainOnDrive,
-    OnServer,
-    OnDrive
+    OnStorageServer,
+    OnStorageDrive
 }

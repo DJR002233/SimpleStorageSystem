@@ -1,17 +1,18 @@
 using Microsoft.EntityFrameworkCore;
 using SimpleStorageSystem.Daemon.Models.Tables;
 
-namespace SimpleStorageSystem.Daemon.Data.TableConfigurations;
+namespace SimpleStorageSystem.Daemon.Data.DbTables;
 
-public static class FileItemTableConfiguration
+public static class FileItemDbTable
 {
-    public static void ConfigureFileItemTable(this ModelBuilder modelBuilder)
+    public static void CreateFileItemTable(this ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<FileItem>(entity =>
         {
             entity.ToTable("file_items");
             entity.HasKey(f => f.FileId);
-            entity.Property(f => f.FullName).HasColumnName("full_name").HasColumnType("varchar").IsRequired();
+            entity.Property(f => f.FileId).HasColumnName("file_id");
+            entity.Property(f => f.RelativePath).HasColumnName("relative_path").HasColumnType("varchar").IsRequired();
 
             // entity.Property(f => f.FirstHash).HasColumnName("first_hash").HasColumnType("varchar").IsRequired();
             // entity.Property(f => f.SecondHash).HasColumnName("second_hash").HasColumnType("varchar").IsRequired();
@@ -21,18 +22,17 @@ public static class FileItemTableConfiguration
 
             entity.Property(f => f.CreationTime).HasColumnName("creation_time").IsRequired();
             entity.Property(f => f.LastModified).HasColumnName("last_modified").IsRequired();
-            entity.Property(f => f.LastSync).HasColumnName("last_sync");
             entity.Property(f => f.DeletionTime).HasColumnName("deletion_time");
-            // entity.Property(f => f.PendingSyncOperation).HasColumnName("pending_sync_operation");
+            entity.Property(f => f.LastSync).HasColumnName("last_sync");
 
-            entity.Property(f => f.StorageDriveId).HasColumnName("storage_drive_id");
-            
-            entity.HasOne(f => f.Drive)
-                .WithMany(s => s.Files)
-                .HasForeignKey(f => f.StorageDriveId)
-                .HasPrincipalKey(s => s.StorageDriveId)
+            entity.Property(f => f.RootFolderId).HasColumnName("root_folder_id");
+
+            entity.HasOne(f => f.RootFolder)
+                .WithMany(rf => rf.Files)
+                .HasForeignKey(f => f.RootFolderId)
+                .HasPrincipalKey(rf => rf.RootFolderId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
     }
-    
+
 }

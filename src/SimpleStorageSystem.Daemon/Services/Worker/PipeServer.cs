@@ -1,6 +1,7 @@
 using System.IO.Pipes;
 using System.Text.Json;
 using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Exceptions;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 
@@ -43,6 +44,13 @@ public class PipeServer
                 try
                 {
                     IpcResponse ipcResponse = await _commandRouter.DispatchAsync(ipcRequest);
+
+                    string response = JsonSerializer.Serialize(ipcResponse);
+                    await writer.WriteLineAsync(response);
+                }
+                catch (ExpectedException ex)
+                {
+                    IpcResponse ipcResponse = IpcResponse.CreateFromIpcRequest(ipcRequest, IpcStatus.Failed, ex.Message);
 
                     string response = JsonSerializer.Serialize(ipcResponse);
                     await writer.WriteLineAsync(response);

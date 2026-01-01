@@ -1,5 +1,6 @@
-using SimpleStorageSystem.Daemon.Commands;
+using SimpleStorageSystem.Daemon.IpcCommands;
 using SimpleStorageSystem.Shared.Enums;
+using SimpleStorageSystem.Shared.Exceptions;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 
@@ -16,10 +17,10 @@ public class IpcCommandRouter
 
     public async Task<IpcResponse> DispatchAsync(IpcRequest request)
     {
-        IpcCommand ipcCommand = request.Command ?? throw new Exception("Command is null");
+        IpcCommand ipcCommand = request.Command ?? throw new ExpectedException("Command is null");
         
         if (!_commandHandler.TryGetValue(ipcCommand, out var handler))
-            return IpcResponse.CreateFromIpcRequest(request, IpcStatus.Error, $"Command not found. Command: {request.Command}");
+            throw new ExpectedException($"Command not found. Command: {request.Command}");
 
         return await handler.HandleAsync(request);
     }

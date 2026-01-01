@@ -4,21 +4,21 @@ using SimpleStorageSystem.Shared.Enums;
 using SimpleStorageSystem.Shared.Models;
 using SimpleStorageSystem.Shared.Requests;
 
-namespace SimpleStorageSystem.Daemon.Commands.Main.StorageDrive;
+namespace SimpleStorageSystem.Daemon.IpcCommands.StorageDrive;
 
-public class GetStorageDrivesCommand : IIpcCommandHandler
+public class GetStorageDriveIpcCommand : IIpcCommandHandler
 {
     private readonly StorageDriveService _storageDriveService;
     public IpcCommand Command => IpcCommand.GetStorageDriveList;
 
-    public GetStorageDrivesCommand(StorageDriveService storageDriveService)
+    public GetStorageDriveIpcCommand(StorageDriveService storageDriveService)
     {
         _storageDriveService = storageDriveService;
     }
 
     public async ValueTask<IpcResponse> HandleAsync(IpcRequest request)
     {
-        List<StorageDriveIpcDTO> data = await _storageDriveService.GetStorageDrives();
+        List<StorageDriveIpcDTO> data = await _storageDriveService.GetStorageDrivesAsync();
 
         return IpcResponse.CreateFromIpcRequest(request, IpcStatus.Ok, data);
     }

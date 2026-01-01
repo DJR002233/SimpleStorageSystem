@@ -3,14 +3,9 @@ namespace SimpleStorageSystem.Daemon.Models.Tables;
 public class FolderItem : MetaData
 {
     public long FolderId { get; set; }
-    // public required string FullName { get; set; }
-    // public DateTime? CreationTime { get; set; }
-    // public DateTime? LastModified { get; set; }
-    // public DateTime? LastSync { get; set; }
-    public string? MountFolder { get; set; }
-    public bool IsRootFolder { get; set; }
+    public required string RelativePath { get; set; }
 
-    public long StorageDriveId { get; set; }
-    public StorageDrive Drive { get; set; } = null!;
+    public long RootFolderId { get; set; }
+    public RootFolder RootFolder { get; set; } = null!;
     
 }

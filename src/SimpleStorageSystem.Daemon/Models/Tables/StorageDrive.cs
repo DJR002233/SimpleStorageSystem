@@ -4,14 +4,18 @@ namespace SimpleStorageSystem.Daemon.Models.Tables;
 
 public class StorageDrive
 {
-    public long StorageDriveId { get; set; }
+    public Guid StorageDriveId { get; set; }
     public required string Name { get; set; }
-    public DateTime? CreationTime { get; set; }
-    public DateTime? DeletionTime { get; set; }
-    public DateTime? LastSync { get; set; }
-    public MountOption Mount { get; set; }
-    public long StorageNameId { get; set; }
+    public required SupportedStorageServer StorageServer { get; set; }
+    public Uri? BaseAddress { get; set; }
 
-    public ICollection<FileItem> Files { get; set; } = new List<FileItem>();
-    public ICollection<FolderItem> Folders { get; set; } = new List<FolderItem>();
+    public MountOption MountOption { get; set; } = MountOption.Inactive;
+    public bool MirrorDrive { get; set; } = false;
+    public string? MountPath { get; set; }
+    
+    public DateTime CreationTime { get; set; } = DateTime.UtcNow;
+    public DateTime? LastSync { get; set; }
+
+    public ICollection<RootFolder> RootFolders { get; set; } = new List<RootFolder>();
+    
 }
