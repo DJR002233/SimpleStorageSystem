@@ -1,6 +1,6 @@
-using System.Reactive.Disposables;
-using Avalonia.ReactiveUI;
+using System.Reactive.Disposables.Fluent;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views.Main;
@@ -12,11 +12,9 @@ public partial class MainMenuView : ReactiveUserControl<MainMenuViewModel>
         InitializeComponent();
         this.WhenActivated(disposables =>
         {
-            this.BindCommand(ViewModel, vm => vm.ShowAccountPageCommand, v => v.AccountMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShowActivityPageCommand, v => v.ActivityMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShowSettingsPageCommand, v => v.SettingsMenuItem).DisposeWith(disposables);
             this.BindCommand(ViewModel, vm => vm.ShowStorageDevicesPageCommand, v => v.StorageDrivesMenuItem).DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.LogoutCommand, v => v.LogoutMenuItem).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.PageTitle, v => v.PageTitle.Text).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.CurrentPage, v => v.PageView.Content).DisposeWith(disposables);

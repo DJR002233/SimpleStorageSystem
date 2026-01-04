@@ -30,8 +30,8 @@
                 HorizontalAlignment="Center" VerticalAlignment="Center" />
             </Grid>
         </rxui:RoutedViewHost.DefaultContent>
-        <rxui:RoutedViewHost.ViewLocator>
+        <!-- <rxui:RoutedViewHost.ViewLocator>
             <app:AppViewLocator />
-        </rxui:RoutedViewHost.ViewLocator>
+        </rxui:RoutedViewHost.ViewLocator> -->
     </rxui:RoutedViewHost>
 </Window>

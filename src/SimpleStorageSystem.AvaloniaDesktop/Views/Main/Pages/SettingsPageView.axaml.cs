@@ -1,6 +1,5 @@
-using System.Reactive.Disposables;
-using Avalonia.ReactiveUI;
 using ReactiveUI;
+using ReactiveUI.Avalonia;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages;

@@ -6,9 +6,9 @@ using SimpleStorageSystem.AvaloniaDesktop.Views.Components;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 
-public static class DialogBox
+public class DialogBox
 {
-    public static async ValueTask ShowOk(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
+    public async ValueTask ShowOk(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
     {
         var dialog = new DialogBoxView(title, message, decorations);
 
@@ -17,7 +17,7 @@ public static class DialogBox
         await dialog.ShowDialog(lifetime!.MainWindow!);
     }
 
-    public static async ValueTask<string?> ShowTextInput(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
+    public async ValueTask<string?> ShowTextInput(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
     {
         var dialog = new DialogBoxView(title, message, DialogBoxMode.InputText, decorations);
 
@@ -26,7 +26,7 @@ public static class DialogBox
         return await dialog.ShowDialog<string?>(lifetime!.MainWindow!);
     }
 
-    public static async ValueTask<bool> ShowConfirmation(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
+    public async ValueTask<bool> ShowConfirmation(string title, string message, SystemDecorations decorations = SystemDecorations.Full)
     {
         var dialog = new DialogBoxView(title, message, DialogBoxMode.ConfirmCancel, decorations);
 

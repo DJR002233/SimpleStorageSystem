@@ -5,5 +5,5 @@ namespace SimpleStorageSystem.Daemon.Services.StorageServerControllers;
 public interface IStorageServerController
 {
     SupportedStorageServer StorageServer { get; }
-    ValueTask LoginAsync(string name);
+    ValueTask LoginAsync(string name, Uri? url);
 }

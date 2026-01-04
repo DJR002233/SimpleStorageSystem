@@ -7,6 +7,7 @@ public class StorageDriveIpcDTO
     public Guid? StorageDriveId { get; set; }
     public string? Name { get; set; }
     public SupportedStorageServer? StorageServer { get; set; }
+    public Uri? BaseAddress { get; set; } = null;
 
     public MountOption? MountOption { get; set; }
     public bool MirrorDrive { get; set; }

@@ -1,5 +1,5 @@
-using SimpleStorageSystem.Daemon.Commands;
-using SimpleStorageSystem.Daemon.Commands.Main.StorageDrive;
+using SimpleStorageSystem.Daemon.IpcCommands;
+using SimpleStorageSystem.Daemon.IpcCommands.StorageDrive;
 using SimpleStorageSystem.Daemon.Services;
 
 namespace SimpleStorageSystem.Daemon.ServiceCollections;

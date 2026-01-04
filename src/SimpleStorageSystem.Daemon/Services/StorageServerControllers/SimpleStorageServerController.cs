@@ -9,7 +9,7 @@ public class SimpleStorageServerController : IStorageServerController
 {
     public SupportedStorageServer StorageServer => SupportedStorageServer.SimpleStorageServer;
 
-    public async ValueTask LoginAsync(string name)
+    public async ValueTask LoginAsync(string name, Uri? url)
     {
         await Task.Delay(1000);
         throw new Exception("unimplemented");

@@ -1,11 +1,14 @@
 using System;
+using System.Reflection;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
+using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.ServiceCollections;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels;
 using SimpleStorageSystem.AvaloniaDesktop.Views;
+using Splat;
 
 namespace SimpleStorageSystem.AvaloniaDesktop;
 
@@ -15,6 +18,9 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        Locator.CurrentMutable.RegisterViewsForViewModels(
+            Assembly.GetExecutingAssembly()
+        );
     }
 
     public override void OnFrameworkInitializationCompleted()

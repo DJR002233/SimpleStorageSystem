@@ -12,9 +12,6 @@
     xmlns:pagev="using:SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages">
     
     <UserControl.DataTemplates>
-        <DataTemplate DataType="pagevm:AccountPageViewModel">
-            <pagev:AccountPageView/>
-        </DataTemplate>
         <DataTemplate DataType="pagevm:ActivityPageViewModel">
             <pagev:ActivityPageView/>
         </DataTemplate>
@@ -42,17 +39,10 @@
                             <MenuItem x:Name="ActivityMenuItem" Header="Activity">
                                 <!-- <PathIcon Data="M12 2a10..."/> -->
                             </MenuItem>
-                            <MenuItem x:Name="AccountMenuItem" Header="Account">
-                                <!-- <PathIcon Data="M12 2a10..."/> -->
-                            </MenuItem>
                             <MenuItem x:Name="StorageDrivesMenuItem" Header="Storage Drives">
                                 <!-- <PathIcon Data="M12 2a10..."/> -->
                             </MenuItem>
                             <MenuItem x:Name="SettingsMenuItem" Header="Settings">
-                                <!-- <PathIcon Data="M12 2a10..."/> -->
-                            </MenuItem>
-                            <MenuItem x:Name="LogoutMenuItem" Header="Logout" Classes="warning"
-                            Margin="0, 10, 0, 0">
                                 <!-- <PathIcon Data="M12 2a10..."/> -->
                             </MenuItem>
                         </MenuFlyout>
@@ -61,6 +51,6 @@
             </Grid>
             <ContentControl x:Name="PageView" />
         </DockPanel>
-        <components:LoadingOverlay x:Name="LoadingOverlay"/>
+        <components:LoadingOverlayView x:Name="LoadingOverlay"/>
     </Grid>
 </UserControl>

@@ -28,7 +28,7 @@ public class AddStorageDriveIpcCommand : IIpcCommandHandler
         var controller = _storageServerControllers.SingleOrDefault( c => c.StorageServer == payload.StorageServer);
         if (controller is null) throw new Exception("Controller not found");
         
-        await controller.LoginAsync(payload.Name);
+        await controller.LoginAsync(payload.Name, payload.BaseAddress);
 
         return IpcResponse.CreateFromIpcRequest(request, IpcStatus.Ok);
     }

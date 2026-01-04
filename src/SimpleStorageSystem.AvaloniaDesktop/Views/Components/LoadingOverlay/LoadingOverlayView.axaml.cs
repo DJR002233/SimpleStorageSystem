@@ -1,14 +1,19 @@
 using Avalonia;
-using Avalonia.ReactiveUI;
+using ReactiveUI.Avalonia;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views.Components;
 
-public partial class LoadingOverlay : ReactiveUserControl<object>
+public partial class LoadingOverlayView : ReactiveUserControl<object>
 {
+    public LoadingOverlayView()
+    {
+        InitializeComponent();
+    }
+    
     public static readonly StyledProperty<bool> VisibleProperty =
-        AvaloniaProperty.Register<LoadingOverlay, bool>(nameof(Visible));
+        AvaloniaProperty.Register<LoadingOverlayView, bool>(nameof(Visible));
     public static readonly StyledProperty<string> MessageProperty =
-        AvaloniaProperty.Register<LoadingOverlay, string>(nameof(Message), "Loading...");
+        AvaloniaProperty.Register<LoadingOverlayView, string>(nameof(Message), "Loading...");
 
     public bool Visible
     {
@@ -22,8 +27,4 @@ public partial class LoadingOverlay : ReactiveUserControl<object>
         set => SetValue(MessageProperty, value);
     }
 
-    public LoadingOverlay()
-    {
-        InitializeComponent();
-    }
 }

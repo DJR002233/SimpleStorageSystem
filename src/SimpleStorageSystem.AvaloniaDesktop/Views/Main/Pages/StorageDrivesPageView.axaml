@@ -33,9 +33,9 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button x:Name="StorageDriveButton" Width="150" Height="150"
-                        Command="{Binding $parent[UserControl].DataContext.OpenStorageDriveInformationCommand}" CommandParameter="{Binding Id}">
+                        Command="{Binding $parent[UserControl].DataContext.OpenStorageDriveInformationCommand}" CommandParameter="{Binding StorageDriveId}">
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
-                                <TextBlock Text="{Binding Id}" TextAlignment="Center"
+                                <TextBlock Text="{Binding StorageDriveId}" TextAlignment="Center"
                                 Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2"
                                 HorizontalAlignment="Center" VerticalAlignment="Center" />
 
@@ -49,10 +49,10 @@
                                     <Button.Flyout>
                                         <MenuFlyout Placement="TopEdgeAlignedRight">
                                             <MenuItem x:Name="ActivityMenuItem" Header="Rename"
-                                            Command="{Binding $parent[UserControl].DataContext.RenameStorageDriveCommand}" CommandParameter="{Binding Id}"/>
+                                            Command="{Binding $parent[UserControl].DataContext.RenameStorageDriveCommand}" CommandParameter="{Binding StorageDriveId}"/>
 
                                             <MenuItem x:Name="AccountMenuItem" Header="Delete"
-                                            Command="{Binding $parent[UserControl].DataContext.DeleteStorageDriveCommand}" CommandParameter="{Binding Id}"/>
+                                            Command="{Binding $parent[UserControl].DataContext.DeleteStorageDriveCommand}" CommandParameter="{Binding StorageDriveId}"/>
                                         </MenuFlyout>
                                     </Button.Flyout>
                                 </Button>

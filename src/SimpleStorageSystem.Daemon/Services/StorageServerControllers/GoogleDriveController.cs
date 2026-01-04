@@ -21,7 +21,7 @@ public class GoogleDriveController : IStorageServerController
         _credentialStore = credentialStore;
     }
 
-    public async ValueTask LoginAsync(string name)
+    public async ValueTask LoginAsync(string name, Uri? url)
     {
         Guid guid = Guid.NewGuid();
 

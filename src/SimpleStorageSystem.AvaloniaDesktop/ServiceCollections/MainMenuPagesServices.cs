@@ -7,7 +7,6 @@ public static class MainMenuPagesCollection
 {
     public static IServiceCollection InitializeMainMenuPagesServices(this IServiceCollection services)
     {
-        services.AddTransient<AccountPageViewModel>();
         services.AddTransient<ActivityPageViewModel>();
         services.AddTransient<SettingsPageViewModel>();
         services.AddTransient<StorageDrivesPageViewModel>();
