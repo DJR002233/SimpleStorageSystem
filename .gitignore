@@ -101,3 +101,5 @@ packages/
 docker-compose.override.yml
 .env.docker
 
+# secrets
+google_client_secret.json
