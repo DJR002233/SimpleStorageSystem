@@ -7,22 +7,8 @@
     x:Class="SimpleStorageSystem.AvaloniaDesktop.Views.Main.MainMenuView"
     x:DataType="vm:MainMenuViewModel"
     
-    xmlns:components="using:SimpleStorageSystem.AvaloniaDesktop.Views.Components"
-    xmlns:pagevm="using:SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages"
-    xmlns:pagev="using:SimpleStorageSystem.AvaloniaDesktop.Views.Main.Pages">
-    
-    <UserControl.DataTemplates>
-        <DataTemplate DataType="pagevm:ActivityPageViewModel">
-            <pagev:ActivityPageView/>
-        </DataTemplate>
-        <DataTemplate DataType="pagevm:SettingsPageViewModel">
-            <pagev:SettingsPageView/>
-        </DataTemplate>
-        <DataTemplate DataType="pagevm:StorageDrivesPageViewModel">
-            <pagev:StorageDrivesPageView/>
-        </DataTemplate>
-    </UserControl.DataTemplates>
-
+    xmlns:rxui="http://reactiveui.net"
+    xmlns:controls="using:SimpleStorageSystem.AvaloniaDesktop.Controls">
     <Grid ColumnDefinitions="*" RowDefinitions="*">
         <DockPanel>
             <Grid RowDefinitions="*" ColumnDefinitions="*, Auto"
@@ -49,8 +35,8 @@
                     </Button.Flyout>
                 </Button>
             </Grid>
-            <ContentControl x:Name="PageView" />
+            <rxui:ViewModelViewHost x:Name="CurrentView" />
         </DockPanel>
-        <components:LoadingOverlayView x:Name="LoadingOverlay"/>
+        <controls:LoadingOverlay x:Name="LoadingOverlay"/>
     </Grid>
 </UserControl>

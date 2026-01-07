@@ -1,10 +1,10 @@
-using System.Reactive;
+using System;
 using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
-public class ActivityPageViewModel : ReactiveObject
+public class ActivityPageViewModel : ReactiveObject, IMainMenuPage
 {
     #region Services
     public LoadingOverlay LoadingOverlay { get; }
@@ -18,7 +18,8 @@ public class ActivityPageViewModel : ReactiveObject
     #endregion Commands
 
     #region Properties
-    
+    public string Name => "Activity";
+    public Type PageType => GetType();
     #endregion Properties
 
     public ActivityPageViewModel(

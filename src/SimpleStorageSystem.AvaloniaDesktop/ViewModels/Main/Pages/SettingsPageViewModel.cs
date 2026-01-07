@@ -1,9 +1,10 @@
+using System;
 using ReactiveUI;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
-public class SettingsPageViewModel : ReactiveObject
+public class SettingsPageViewModel : ReactiveObject, IMainMenuPage
 {
     #region Services
     public LoadingOverlay LoadingOverlay { get; }
@@ -16,7 +17,8 @@ public class SettingsPageViewModel : ReactiveObject
     #endregion Commands
 
     #region Properties
-    
+    public string Name => "Settings";
+    public Type PageType => GetType();
     #endregion Properties
 
     public SettingsPageViewModel(

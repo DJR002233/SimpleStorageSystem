@@ -10,14 +10,15 @@ public partial class MainMenuView : ReactiveUserControl<MainMenuViewModel>
     public MainMenuView()
     {
         InitializeComponent();
+        
         this.WhenActivated(disposables =>
         {
-            this.BindCommand(ViewModel, vm => vm.ShowActivityPageCommand, v => v.ActivityMenuItem).DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.ShowSettingsPageCommand, v => v.SettingsMenuItem).DisposeWith(disposables);
-            this.BindCommand(ViewModel, vm => vm.ShowStorageDevicesPageCommand, v => v.StorageDrivesMenuItem).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowPageCommand, v => v.ActivityMenuItem, vm => vm.ActivityPage).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowPageCommand, v => v.SettingsMenuItem, vm => vm.SettingsPage).DisposeWith(disposables);
+            this.BindCommand(ViewModel, vm => vm.ShowPageCommand, v => v.StorageDrivesMenuItem, vm => vm.StorageDrivePage).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.PageTitle, v => v.PageTitle.Text).DisposeWith(disposables);
-            this.Bind(ViewModel, vm => vm.CurrentPage, v => v.PageView.Content).DisposeWith(disposables);
+            this.Bind(ViewModel, vm => vm.CurrentPage, v => v.CurrentView.ViewModel).DisposeWith(disposables);
 
             this.Bind(ViewModel, vm => vm.LoadingOverlay.IsVisible, v => v.LoadingOverlay.Visible).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.LoadingOverlay.Message, v => v.LoadingOverlay.Message).DisposeWith(disposables);

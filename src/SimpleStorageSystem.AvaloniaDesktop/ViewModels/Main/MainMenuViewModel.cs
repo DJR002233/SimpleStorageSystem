@@ -1,14 +1,18 @@
 using System;
 using System.Reactive;
+using System.Reactive.Disposables.Fluent;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using SimpleStorageSystem.AvaloniaDesktop.Handler;
 using SimpleStorageSystem.AvaloniaDesktop.Services.Components;
+using SimpleStorageSystem.AvaloniaDesktop.Services.PageFactory;
 using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main;
 
-public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
+public class MainMenuViewModel : ReactiveObject, IRoutableViewModel, IActivatableViewModel
 {
     #region IRoutableViewModel
     public string? UrlPathSegment => "MainMenuView";
@@ -16,68 +20,70 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel
     public IScreen HostScreen => Navigation;
     #endregion IRoutableViewModel
 
+    public ViewModelActivator Activator { get; } = new();
+
     #region Services
+    private readonly DialogBox _dialogBox;
     public LoadingOverlay LoadingOverlay { get; }
+    private readonly IPageFactory<IMainMenuPage> _mainMenuPageFactory;
     #endregion Services
 
     #region VMs
-    private readonly ActivityPageViewModel _activityPageVM;
-    private readonly SettingsPageViewModel _settingsPageVM;
-    private readonly StorageDrivesPageViewModel _storageDrivesPageVM;
+    public Type ActivityPage => typeof(ActivityPageViewModel);
+    public Type SettingsPage => typeof(SettingsPageViewModel);
+    public Type StorageDrivePage => typeof(StorageDrivesPageViewModel);
     #endregion VMs
-    
+
     #region Commands
-    public ReactiveCommand<Unit, Unit> ShowActivityPageCommand { get; }
-    public ReactiveCommand<Unit, Unit> ShowSettingsPageCommand { get; }
-    public ReactiveCommand<Unit, Unit> ShowStorageDevicesPageCommand { get; }
+    public ReactiveCommand<Type, Unit> ShowPageCommand { get; }
     #endregion Commands
 
     #region Properties
     [Reactive] public string? PageTitle { get; set; }
     [Reactive] public ReactiveObject? CurrentPage { get; set; }
     #endregion Properties
-    
+
     public MainMenuViewModel(
-        INavigation navigation, LoadingOverlay loadingOverlay,
-        ActivityPageViewModel activityPageVM, SettingsPageViewModel settingsPageVM, StorageDrivesPageViewModel storageDrivesPageVM
+        INavigation navigation,
+        LoadingOverlay loadingOverlay, DialogBox dialogBox,
+        IPageFactory<IMainMenuPage> mainMenuPageFactory
     )
     {
         Navigation = navigation;
 
         LoadingOverlay = loadingOverlay;
+        _dialogBox = dialogBox;
 
-        _activityPageVM = activityPageVM;
-        _settingsPageVM = settingsPageVM;
-        _storageDrivesPageVM = storageDrivesPageVM;
+        _mainMenuPageFactory = mainMenuPageFactory;
 
-        NavigateToActivityPage();
+        ShowPageCommand = ReactiveCommand.CreateFromTask<Type>(NavigateToPage);
 
-        ShowActivityPageCommand = ReactiveCommand.Create(NavigateToActivityPage);
-        ShowSettingsPageCommand = ReactiveCommand.Create(NavigateToSettingsPage);
-        ShowStorageDevicesPageCommand = ReactiveCommand.Create(NavigateToStorageDrivesPage);
+        this.WhenActivated(disposables =>
+        {
+            Observable.FromAsync(_ => NavigateToPage(typeof(StorageDrivesPageViewModel))).Subscribe().DisposeWith(disposables);
+        });
     }
 
-    public void NavigateToActivityPage()
+    public async Task NavigateToPage(Type pageType)
     {
-        CurrentPage = _activityPageVM;
-        PageTitle = "Activity";
-    }
+        try
+        {
+            var mainMenuPage = _mainMenuPageFactory.Create(pageType);
 
-    public void NavigateToSettingsPage()
-    {
-        CurrentPage = _settingsPageVM;
-        PageTitle = "Settings";
-    }
+            CurrentPage = (ReactiveObject)mainMenuPage;
 
-    public void NavigateToStorageDrivesPage()
-    {
-        CurrentPage = _storageDrivesPageVM;
-        PageTitle = "Storage Drives";
+            PageTitle = mainMenuPage.Name;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            await _dialogBox.ShowOkOnly("Page not found");
+        }
     }
 
     public void StorageDriveInformationView(Guid id)
     {
         // Navigation.NavigateTo(_viewContainer(vm));
     }
-    
+
 }

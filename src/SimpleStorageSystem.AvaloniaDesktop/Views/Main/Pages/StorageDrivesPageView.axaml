@@ -32,7 +32,7 @@
 
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button x:Name="StorageDriveButton" Width="150" Height="150"
+                        <Button x:Name="StorageDriveButton" Width="150" Height="180"
                         Command="{Binding $parent[UserControl].DataContext.OpenStorageDriveInformationCommand}" CommandParameter="{Binding StorageDriveId}">
                             <Grid ColumnDefinitions="*,Auto" RowDefinitions="*,Auto">
                                 <TextBlock Text="{Binding StorageDriveId}" TextAlignment="Center"
