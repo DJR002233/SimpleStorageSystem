@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+x:Class="SimpleStorageSystem.AvaloniaDesktop.Views.Components.MessageDialogBoxView"
+
+xmlns:vm="using:SimpleStorageSystem.AvaloniaDesktop.ViewModels.Components"
+x:DataType="vm:MessageDialogBoxViewModel">
+    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="3" Background="Transparent"
+    HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <StackPanel Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Border BorderBrush="Black" BorderThickness="0,0,0,1" Background="Gainsboro"
+            HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                <TextBlock x:Name="TitleTextBlock" FontSize="14" TextAlignment="Left"
+                HorizontalAlignment="Left" VerticalAlignment="Top"
+                Margin="3"/>
+            </Border>
+            
+            <TextBlock x:Name="MessageTextBlock" FontSize="14" TextWrapping="Wrap" Margin="5"/>
+
+            <TextBox x:Name="InputTextBox" Watermark="" FontSize="14" Width="250" Margin="5"/>
+
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal" Margin="5">
+                <Button x:Name="ConfirmButton" Content="Confirm" 
+                Width="80"
+                HorizontalAlignment="Right"/>
+
+                <Button x:Name="CancelButton" Content="Cancel" 
+                Width="80"
+                Margin="5,0,0,0" HorizontalAlignment="Right"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

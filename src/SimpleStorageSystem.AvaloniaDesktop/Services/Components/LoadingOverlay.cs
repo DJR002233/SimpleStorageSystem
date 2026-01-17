@@ -2,30 +2,31 @@ using System;
 using System.Threading.Tasks;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
+using SimpleStorageSystem.AvaloniaDesktop.ViewModels.Components;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Services.Components;
 
 public class LoadingOverlay : ReactiveObject
 {
+    private readonly IOverlay _overlay;
     #region Property
-    [Reactive] public bool IsVisible { get; set; }
     [Reactive] public string? Message { get; set; }
     #endregion Property
 
-    public LoadingOverlay()
+    public LoadingOverlay(IOverlay overlay)
     {
-        IsVisible = false;
+        _overlay = overlay;
     }
     
-    public void Show(string message)
+    private void Show(string message)
     {
         Message = message;
-        IsVisible = true;
+        _overlay.OverlayViewHost = new LoadingOverlayViewModel(message);
     }
     
-    public void Hide()
+    private void Hide()
     {
-        IsVisible = false;
+        _overlay.OverlayViewHost = null;
         Message = null;
     }
 

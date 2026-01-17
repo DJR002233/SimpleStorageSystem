@@ -1,4 +1,3 @@
-// using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using Avalonia.Controls;
 using ReactiveUI;
@@ -7,9 +6,9 @@ using SimpleStorageSystem.AvaloniaDesktop.ViewModels;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.Views;
 
-public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
+public partial class MainWindowView : ReactiveWindow<MainWindowViewModel>
 {
-    public MainWindow()
+    public MainWindowView()
     {
         var screen = Screens.Primary;
         if (screen != null)
@@ -23,6 +22,7 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
         this.WhenActivated(disposables =>
         {
             this.Bind(ViewModel, vm => vm.Navigation.Router, v => v.RoutedViewHost.Router).DisposeWith(disposables);
+            this.OneWayBind(ViewModel, vm => vm.OverlayViewHost, v => v.OverlayView.ViewModel).DisposeWith(disposables);
             this.OneWayBind(ViewModel, vm => vm.Navigation.Transition, v => v.RoutedViewHost.PageTransition).DisposeWith(disposables);
         });
     }

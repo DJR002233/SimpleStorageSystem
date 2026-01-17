@@ -8,9 +8,9 @@ public static class BaseCollection
 {
     public static IServiceCollection InitializeBaseServices(this IServiceCollection services)
     {
-        services.AddSingleton<LoadingOverlay>();
+        services.AddTransient<LoadingOverlay>();
         services.AddTransient<DialogBox>();
-
+        
         #region  Clients
         services.AddTransient<StorageDriveClient>();
         #endregion Clients

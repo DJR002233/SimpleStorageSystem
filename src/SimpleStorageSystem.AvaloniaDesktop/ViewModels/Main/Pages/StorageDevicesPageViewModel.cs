@@ -13,7 +13,6 @@ using DynamicData;
 using SimpleStorageSystem.Shared.DTOs;
 using System.Reactive;
 using System.Linq;
-using Avalonia.Controls;
 using System.Reactive.Disposables.Fluent;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
@@ -21,7 +20,7 @@ namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel, IMainMenuPage
 {
     #region Services
-    // public LoadingOverlay LoadingOverlay { get; }
+    private readonly LoadingOverlay _loadingOverlay;
     private readonly DialogBox _dialogBox;
     public ViewModelActivator Activator { get; } = new();
     #endregion Services
@@ -29,10 +28,6 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel,
     #region Clients
     private readonly StorageDriveClient _storageDriveClient;
     #endregion Clients
-
-    #region VMs
-    private readonly Func<MainMenuViewModel> _mainMenuVM;
-    #endregion VMs
 
     #region Commands
     public ReactiveCommand<Unit, Unit> AddStorageDriveCommand { get; }
@@ -42,23 +37,17 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel,
     #endregion Commands
 
     #region Properties
-    public string Name => "Storage Drive";
+    public string PageName => "Storage Drive";
     public Type PageType => GetType();
     [Reactive] public ObservableCollection<StorageDriveIpcDTO> Drives { get; set; }
     #endregion Properties
 
-    public StorageDrivesPageViewModel(
-        DialogBox dialogBox, //LoadingOverlay loadingOverlay,
-        StorageDriveClient storageDriveClient,
-        Func<MainMenuViewModel> mainMenuVM
-    )
+    public StorageDrivesPageViewModel(LoadingOverlay loadingOverlay, DialogBox dialogBox, StorageDriveClient storageDriveClient)
     {
-        // LoadingOverlay = loadingOverlay;
+        _loadingOverlay = loadingOverlay;
         _dialogBox = dialogBox;
 
         _storageDriveClient = storageDriveClient;
-
-        _mainMenuVM = mainMenuVM;
 
         Drives = new ObservableCollection<StorageDriveIpcDTO>();
 
@@ -75,7 +64,7 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel,
 
     public async Task GetStorageDrives()
     {
-        IpcResponse<List<StorageDriveIpcDTO>> ipcResponse = await _mainMenuVM().LoadingOverlay.FromAsync(() => _storageDriveClient.RequestGetStorageDriveList(), "Obtaining list of drives...");
+        IpcResponse<List<StorageDriveIpcDTO>> ipcResponse = await _loadingOverlay.FromAsync(() => _storageDriveClient.RequestGetStorageDriveList(), "Obtaining list of drives...");
 
         // test content
         ipcResponse.Status = IpcStatus.Ok;
@@ -96,30 +85,30 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel,
             return;
         }
 
-        await _dialogBox.ShowOkOnly(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
+        await _dialogBox.ShowConfirmation(ipcResponse.Message!, ipcResponse.Status.ToString());
     }
 
     public async Task AddStorageDrive()
     {
-        string? name = await _dialogBox.ShowTextInput("Add Storage Drive", "Enter a name:");
+        string? name = await _dialogBox.ShowMessageBox("Enter a name:", "Add Storage Drive");
         if (String.IsNullOrWhiteSpace(name)) return;
 
-        IpcResponse<StorageDriveIpcDTO> ipcResponse = await _mainMenuVM().LoadingOverlay.FromAsync(() => _storageDriveClient.RequestAddStorageDrive(name), "Creating storage drive...");
+        IpcResponse<StorageDriveIpcDTO> ipcResponse = await _loadingOverlay.FromAsync(() => _storageDriveClient.RequestAddStorageDrive(name), "Creating storage drive...");
         if (ipcResponse.Status == IpcStatus.Ok && ipcResponse.Payload is not null)
         {
             Drives.Add(ipcResponse.Payload);
             return;
         }
 
-        await _dialogBox.ShowOkOnly(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
+        await _dialogBox.ShowConfirmation(ipcResponse.Message!, ipcResponse.Status.ToString()!);
     }
 
     public async Task RenameStorageDrive(Guid id)
     {
-        string? name = await _dialogBox.ShowTextInput("Rename Storage Drive", "Enter a name:");
+        string? name = await _dialogBox.ShowMessageBox("Enter a name:", "Rename Storage Drive");
         if (String.IsNullOrWhiteSpace(name)) return;
 
-        IpcResponse ipcResponse = await _mainMenuVM().LoadingOverlay.FromAsync(() => _storageDriveClient.RequestRenameStorageDrive(id, name), "Renaming storage drive...");
+        IpcResponse ipcResponse = await _loadingOverlay.FromAsync(() => _storageDriveClient.RequestRenameStorageDrive(id, name), "Renaming storage drive...");
 
         if (ipcResponse.Status == IpcStatus.Ok)
         {
@@ -128,12 +117,15 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel,
             return;
         }
 
-        await _dialogBox.ShowOkOnly(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
+        await _dialogBox.ShowConfirmation(ipcResponse.Message!, ipcResponse.Status.ToString()!);
     }
 
     public async Task DeleteStorageDrive(Guid id)
     {
-        IpcResponse ipcResponse = await _mainMenuVM().LoadingOverlay.FromAsync(() => _storageDriveClient.RequestDisconnectStorageDrive(id), "Drive not found while deleting!");
+        bool IsTrue = await _dialogBox.ShowConfirmation("Are you sure you want to disconnect this drive?\n\nThis action will not delete files.", "Disconnect Storage Drive", OkOnly: false);
+        if (!IsTrue) return;
+
+        IpcResponse ipcResponse = await _loadingOverlay.FromAsync(() => _storageDriveClient.RequestDisconnectStorageDrive(id), "Disconnecting drive...");
 
         if (ipcResponse.Status == IpcStatus.Ok)
         {
@@ -142,12 +134,12 @@ public class StorageDrivesPageViewModel : ReactiveObject, IActivatableViewModel,
             return;
         }
 
-        await _dialogBox.ShowOkOnly(ipcResponse.Status.ToString()!, ipcResponse.Message!, SystemDecorations.None);
+        await _dialogBox.ShowConfirmation(ipcResponse.Message!, ipcResponse.Status.ToString()!);
     }
 
     public void OpenStorageDriveInformation(Guid id)
     {
-        _mainMenuVM().StorageDriveInformationView(id);
+        // _mainMenuVM().StorageDriveInformationView(id);
     }
 
 }

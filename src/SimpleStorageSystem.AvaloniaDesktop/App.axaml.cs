@@ -36,14 +36,14 @@ public partial class App : Application
             services.InitializeViewModelServices();
             services.InitializeMainMenuPagesServices();
 
-            services.AddTransient(sp => new MainWindow
+            services.AddTransient(sp => new MainWindowView
             {
                 DataContext = sp.GetRequiredService<MainWindowViewModel>()
             });
 
             Services = services.BuildServiceProvider();
 
-            desktop.MainWindow = Services.GetRequiredService<MainWindow>();
+            desktop.MainWindow = Services.GetRequiredService<MainWindowView>();
         }
 
         base.OnFrameworkInitializationCompleted();

@@ -5,7 +5,7 @@
              <!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
 
     <Application.Styles>
-        <StyleInclude Source="avares://SimpleStorageSystem.AvaloniaDesktop/Styles/GlobalStyles.axaml"/>
+        <StyleInclude Source="avares://SimpleStorageSystem.AvaloniaDesktop/Resources/Styles/GlobalStyles.axaml"/>
         <!-- <ResourceInclude Source="avares://YourApp/Themes/Controls/ButtonTheme.axaml"/> -->
 
         <FluentTheme />

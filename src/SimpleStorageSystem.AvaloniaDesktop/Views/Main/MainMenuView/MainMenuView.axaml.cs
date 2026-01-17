@@ -19,9 +19,6 @@ public partial class MainMenuView : ReactiveUserControl<MainMenuViewModel>
 
             this.Bind(ViewModel, vm => vm.PageTitle, v => v.PageTitle.Text).DisposeWith(disposables);
             this.Bind(ViewModel, vm => vm.CurrentPage, v => v.CurrentView.ViewModel).DisposeWith(disposables);
-
-            this.Bind(ViewModel, vm => vm.LoadingOverlay.IsVisible, v => v.LoadingOverlay.Visible).DisposeWith(disposables);
-            this.Bind(ViewModel, vm => vm.LoadingOverlay.Message, v => v.LoadingOverlay.Message).DisposeWith(disposables);
         });
 
     }

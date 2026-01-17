@@ -23,9 +23,9 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel, IActivatabl
     public ViewModelActivator Activator { get; } = new();
 
     #region Services
-    private readonly DialogBox _dialogBox;
-    public LoadingOverlay LoadingOverlay { get; }
+    private readonly IOverlay _overlay;
     private readonly IPageFactory<IMainMenuPage> _mainMenuPageFactory;
+    private readonly DialogBox _dialogBox;
     #endregion Services
 
     #region VMs
@@ -43,18 +43,13 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel, IActivatabl
     [Reactive] public ReactiveObject? CurrentPage { get; set; }
     #endregion Properties
 
-    public MainMenuViewModel(
-        INavigation navigation,
-        LoadingOverlay loadingOverlay, DialogBox dialogBox,
-        IPageFactory<IMainMenuPage> mainMenuPageFactory
-    )
+    public MainMenuViewModel(INavigation navigation, IOverlay overlay, IPageFactory<IMainMenuPage> mainMenuPageFactory, DialogBox dialogBox)
     {
         Navigation = navigation;
 
-        LoadingOverlay = loadingOverlay;
-        _dialogBox = dialogBox;
-
+        _overlay = overlay;
         _mainMenuPageFactory = mainMenuPageFactory;
+        _dialogBox = dialogBox;
 
         ShowPageCommand = ReactiveCommand.CreateFromTask<Type>(NavigateToPage);
 
@@ -72,18 +67,13 @@ public class MainMenuViewModel : ReactiveObject, IRoutableViewModel, IActivatabl
 
             CurrentPage = (ReactiveObject)mainMenuPage;
 
-            PageTitle = mainMenuPage.Name;
+            PageTitle = mainMenuPage.PageName;
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message);
-            await _dialogBox.ShowOkOnly("Page not found");
+            await _dialogBox.ShowConfirmation(ex.Message, ex.GetType().ToString());
         }
-    }
-
-    public void StorageDriveInformationView(Guid id)
-    {
-        // Navigation.NavigateTo(_viewContainer(vm));
     }
 
 }

@@ -37,6 +37,5 @@
             </Grid>
             <rxui:ViewModelViewHost x:Name="CurrentView" />
         </DockPanel>
-        <controls:LoadingOverlay x:Name="LoadingOverlay"/>
     </Grid>
 </UserControl>

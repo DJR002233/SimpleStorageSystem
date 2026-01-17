@@ -1,9 +1,5 @@
-using System;
+using SimpleStorageSystem.AvaloniaDesktop.Services;
 
 namespace SimpleStorageSystem.AvaloniaDesktop.ViewModels.Main.Pages;
 
-public interface IMainMenuPage
-{
-    string Name { get; }
-    Type PageType { get; }
-}
+public interface IMainMenuPage : IPage {}

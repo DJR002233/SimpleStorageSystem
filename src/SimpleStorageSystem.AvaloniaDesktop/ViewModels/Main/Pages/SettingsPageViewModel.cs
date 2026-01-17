@@ -17,7 +17,7 @@ public class SettingsPageViewModel : ReactiveObject, IMainMenuPage
     #endregion Commands
 
     #region Properties
-    public string Name => "Settings";
+    public string PageName => "Settings";
     public Type PageType => GetType();
     #endregion Properties
 

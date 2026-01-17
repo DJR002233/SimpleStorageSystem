@@ -18,7 +18,7 @@ public class ActivityPageViewModel : ReactiveObject, IMainMenuPage
     #endregion Commands
 
     #region Properties
-    public string Name => "Activity";
+    public string PageName => "Activity";
     public Type PageType => GetType();
     #endregion Properties
 
